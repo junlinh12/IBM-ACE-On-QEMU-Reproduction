@@ -1,0 +1,15 @@
+# IBM upstream sources and build artifacts: never published
+/upstream/
+/build/
+
+# logs: private by default
+/logs/**
+
+# Only material approved in G16 is published
+!/logs/public/
+!/logs/public/**
+
+# Editor and OS files
+*.swp
+*~
+.DS_Store
