@@ -1,4 +1,4 @@
-# IBM-ACE-On-QEMU-Reproduction: Project Charter (v1.1)
+# IBM-ACE-On-QEMU-Reproduction: Project Charter (v1.2)
 
 ## 1. Main task
 
@@ -90,7 +90,8 @@ All evidence of this project lives in `logs/` only:
 **4.4 Sanitization.**
 Published material contains no home paths, local user names, host names, IP or MAC addresses,
 tokens, or keys. Commits use the GitHub no-reply address, set in the repository's local Git
-configuration only (the global configuration is not changed).
+configuration only (the global configuration is not changed). Commits are made with `TZ=UTC0`, so
+commit dates do not reveal the host's time zone; G16 normalizes any earlier commit to `+0000`.
 
 **4.5 Upstream integrity.**
 IBM sources in `upstream/` are not edited in place. Any required change is stored as a patch in
@@ -101,8 +102,8 @@ No global defaults are changed (for example `rustup default`). Tools built by AC
 called by absolute path. Commands that stop processes are reviewed before use (G05).
 
 **4.7 Build parallelism.**
-Every build runs with `-j2`. The host is shared with other experiments, and about half of its
-memory was in use at G00. Builds therefore take longer than the upstream estimate.
+Every build runs with `-j2` (the upstream CI uses `-j8`). The host is shared with other experiments,
+and about half of its memory was in use at G00. Builds therefore take longer than the upstream estimate.
 
 ## 5. Checkpoint procedure (G05, G10, G15)
 
