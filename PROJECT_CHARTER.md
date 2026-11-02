@@ -1,4 +1,4 @@
-# IBM-ACE-On-QEMU-Reproduction: Project Charter (v1.2)
+# IBM-ACE-On-QEMU-Reproduction: Project Charter (v1.3)
 
 ## 1. Main task
 
@@ -10,8 +10,8 @@
 > result. Before publishing, audit for sensitive information, and publish only approved
 > material to github.com/junlinh12.
 
-This section is re-read at every checkpoint (G05, G10, G15) to confirm that the work has not
-drifted from the main task.
+This section is re-read at every checkpoint (after every 5 completed gates: after G04, G09, G14,
+and before G17) to confirm that the work has not drifted from the main task.
 
 **Out of scope for this stage:** porting to other boards, completing ACE's formal verification,
 hardware security guarantees on real silicon, remote attestation, and reproducing every
@@ -49,20 +49,20 @@ of full memory isolation or of resistance to attacks on real hardware.
 | G01 | Charter, project layout, Git ignore rules, local Git identity | layout and publication rules fixed |
 | G02 | Fetch the pinned ACE commit, check submodules | source provenance fixed (E1) |
 | G03 | Install missing Ubuntu 24.04 packages | only missing packages installed, apt history kept |
-| G04 | Rust toolchain | pinned nightly and target installed without changing the default |
-| **G05** | Audit Makefile and run scripts for side effects; safety patches | patches reviewed. **Checkpoint 1** |
+| **G04** | Rust toolchain | pinned nightly and target installed without changing the default. **Checkpoint 1** |
+| G05 | Audit Makefile and run scripts for side effects (read-only), then safety patches | audit reviewed, patches applied |
 | G06 | `make devtools` | RISC-V GNU toolchain verified |
 | G07 | `make tools` | TAP tool and ACE CLI verified |
 | G08 | `make emulator` | ACE QEMU build verified |
-| G09 | `make hypervisor` | RISC-V Linux / KVM image built |
-| **G10** | `make firmware` | OpenSBI + Security Monitor built (E2). **Checkpoint 2** |
+| **G09** | `make hypervisor` | RISC-V Linux / KVM image built. **Checkpoint 2** |
+| G10 | `make firmware` | OpenSBI + Security Monitor built (E2) |
 | G11 | `make confidential_vms` | Linux CVM and TAP built |
 | G12 | Integrated rebuild and artifact audit | final build consistent (E2) |
 | G13 | Boot the RISC-V hypervisor | OpenSBI, Linux, KVM running (E3, E4) |
-| G14 | Boot CVM, local attestation, secret | E5, E6, E7 |
-| **G15** | Integrated tests and result audit | E8. **Checkpoint 3** |
+| **G14** | Boot CVM, local attestation, secret | E5, E6, E7. **Checkpoint 3** |
+| G15 | Integrated tests and result audit | E8 |
 | G16 | Sanitization, Git history and license audit | E9 |
-| G17 | Publish to GitHub | pushed only after explicit final approval |
+| G17 | Publish to GitHub | **Checkpoint 4** before the push; pushed only after explicit final approval |
 
 ## 4. Working rules
 
@@ -105,7 +105,7 @@ called by absolute path. Commands that stop processes are reviewed before use (G
 Every build runs with `-j2` (the upstream CI uses `-j8`). The host is shared with other experiments,
 and about half of its memory was in use at G00. Builds therefore take longer than the upstream estimate.
 
-## 5. Checkpoint procedure (G05, G10, G15)
+## 5. Checkpoint procedure (after G04, G09, G14, and before G17)
 
 1. Re-read section 1 (Main task) and section 2 (Success criteria).
 2. List the gates completed since the last checkpoint and their judgements.
