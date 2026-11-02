@@ -12,3 +12,4 @@ export CARGO_HOME="$PROJECT_ROOT/build/cargo-home"         # crates, not the sha
 export BR2_JLEVEL=2                                        # Buildroot jobs (A1, needs patch 0001)
 export OMP_NUM_THREADS=2                                   # GNU nproc reports 2 (A2, A3)
 export CARGO_BUILD_JOBS=2                                  # cargo jobs (A4)
+export WGETRC="$PROJECT_ROOT/scripts/wgetrc"               # one line per wget download (log size only)

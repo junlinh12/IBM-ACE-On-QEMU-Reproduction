@@ -2,6 +2,7 @@
 
 Audited in G05 (read-only run `G05_20261102T025456Z_lCG0ac`) against IBM/ACE-RISCV
 `1ebdebf4cacc04fcb83191053b4e979cbcdcb2d6`. Line numbers refer to that commit.
+Revision 2 (G08): decision of A13 updated after G07; build settings and gate rules extended (A16, A17).
 
 The host is shared with other experiments, so the audit asks, for every Makefile target and run
 script used by the reproduction: what does it delete, kill, expose, modify, download, and how many
@@ -92,7 +93,9 @@ Rule: `ACE_DIR` always points into `build/`; the targets `clean`, `verify`, and
 
 **A13. The TAP tool floats with the host's stable Rust.** `tools/cove_tap_tool/rust-toolchain.toml`
 declares `channel = "stable"`, which is the host's shared stable toolchain (1.98.1 at G04).
-Decision: G07 records the exact version; the stable toolchain is not updated during the project.
+Decision (updated in G07): the host's `stable` had no `rustfmt`, which the TAP tool's `cargo fmt` needs.
+Instead of changing the shared `stable`, G07 installs toolchain `1.98.1`, checks that it prints the same version
+line as the host's `stable`, and selects it for `make tools` only with `RUSTUP_TOOLCHAIN=1.98.1`.
 
 **A14. Build-time downloads confirmed.**
 
@@ -110,6 +113,16 @@ confidential VM kernel with `cove-tap-tool measure` (base address `0x80000000` f
 `0x80200000` for kvmtool) and generate the TAP with PCR 4 and secret `0xc0ffeec0ffeec0ffeec0ffee`.
 This defines what E6 (measurement in the TAP) and E7 (the secret released to the VM) must show.
 
+### Gate rules added after the first builds
+
+**A16. Memory on the shared host.** Available memory fell from 12 GiB (G06) to 7.1 GiB (G07) because of other
+workloads. Rule: every build gate checks that at least 4 GiB (`MemAvailable` >= 4194304 kB) is available before
+building, and stops otherwise.
+
+**A17. Time zone in logs.** Commands such as `ls -l` print local times. Rule: from G08, the logging harness sets
+`TZ=UTC0`, so every time printed by a gate script is in UTC (files that store local times themselves, such as the
+apt history, are still checked in G16).
+
 ## Build settings used from G06 on
 
 Every build gate runs `make` in `upstream/ACE-RISCV` with these settings:
@@ -123,6 +136,7 @@ Every build gate runs `make` in `upstream/ACE-RISCV` with these settings:
 | `BR2_JLEVEL` | `2` | A1 (needs patch 0001) |
 | `OMP_NUM_THREADS` | `2` | A2, A3 |
 | `CARGO_BUILD_JOBS` | `2` | A4 |
+| `WGETRC` | `$PROJECT_ROOT/scripts/wgetrc` (`verbose = off`, from G08) | log size only: one line per download |
 | `make -j2` | top-level job limit | charter 4.7 |
 
 After patches 0001 and 0002, the upstream checkout is expected to show exactly these modified files,

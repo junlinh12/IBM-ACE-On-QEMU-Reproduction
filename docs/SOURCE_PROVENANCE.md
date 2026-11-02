@@ -1,6 +1,6 @@
 # Source Provenance (success criterion E1)
 
-Recorded in G02 on 2026-10-30 and extended in G05/G05b. Values come from the pinned upstream commit itself.
+Recorded in G02 on 2026-10-30 and extended in G05, G05b, G06, and G07.
 
 ## Upstream repository
 
@@ -31,7 +31,7 @@ There are no nested submodules.
 | Item | Value | Source |
 |---|---|---|
 | Rust (security monitor) | `nightly-2026-03-23`, target `riscv64gc-unknown-none-elf` | `rust-toolchain.toml` |
-| Rust (TAP tool) | `stable` (the host's stable toolchain; floating) | `tools/cove_tap_tool/rust-toolchain.toml` |
+| Rust (TAP tool) | declared `stable` (floating); built with `1.98.1` = `rustc 1.98.1 (48a229cea 2026-09-01)`, equal to the host's `stable` at G07 | `tools/cove_tap_tool/rust-toolchain.toml`; G07 |
 | Buildroot external toolchain | declared as GCC 12, kernel headers 5.10 | both Buildroot configurations |
 | CI runner | `ubuntu-24.04` | `.github/workflows/build.yml` |
 | CI build order | devtools, emulator, tools, hypervisor, firmware, confidential_vms, full rebuild, `ace test` | `.github/workflows/build.yml` |
@@ -40,14 +40,15 @@ There are no nested submodules.
 
 | Download | Declared in | Pinned by | Recorded in |
 |---|---|---|---|
-| RISC-V GNU toolchain `riscv64-glibc-ubuntu-22.04-gcc-nightly-2023.09.27-nightly.tar.gz` (github.com/riscv-collab release `2023.09.27`) | `Makefile:17,45` | release tag | G06 (SHA-256) |
+| RISC-V GNU toolchain `riscv64-glibc-ubuntu-22.04-gcc-nightly-2023.09.27-nightly.tar.gz` (github.com/riscv-collab release `2023.09.27`) | `Makefile:17,45` | release tag | G06: 635,643,262 bytes, SHA-256 `cf55e236f198054355bb9c6fd9ec6e599117a06927ae4e087d12cfbf8ad2e32c`; GCC 12.2.0, headers 5.10.5 |
 | QEMU 8.2.1 tarball (download.qemu.org) | `Makefile:13,82` | version | G08 (SHA-256) |
 | dtc (`git://git.kernel.org/pub/scm/utils/dtc/dtc.git`) | `hypervisor/Makefile:78` | not pinned (HEAD `c22868416b8d` at G05) | G09 (commit) |
 | kvmtool, branch `cove-integration-03072023` (github.com/wojciechozga/kvmtool) | `hypervisor/Makefile:86` | branch name (`177a4df3a0ff` at G05) | G09 (commit) |
 | Linux 6.3-rc4, hypervisor and confidential VM | `BR2_LINUX_KERNEL_CUSTOM_VERSION_VALUE` in both Buildroot configurations | version only; Buildroot has no hash for custom versions | G09 (SHA-256) |
 | QEMU for the nested confidential VM (Buildroot package) | `BR2_PACKAGE_QEMU` in the hypervisor configuration; patched by `hypervisor/patches/qemu/8.1.1/cove.patch` | Buildroot package hash | G09 (version, patch applied) |
 | Other Buildroot packages (busybox, bash, dropbear, openssh client, sshpass, ...) | Buildroot configurations | Buildroot package hashes | G09, G11 |
-| Rust crates | `security-monitor/Cargo.lock`, `tools/cove_tap_tool/Cargo.lock` | versions and checksums | G07, G10 |
+| Rust crates (TAP tool) | `tools/cove_tap_tool/Cargo.lock` | versions and checksums | G07: 57 crates |
+| Rust crates (security monitor) | `security-monitor/Cargo.lock` | versions and checksums | G10 |
 
 ## Deviations from the upstream CI
 
@@ -55,6 +56,7 @@ There are no nested submodules.
 |---|---|---|---|
 | Submodule checkout | non-recursive | recursive | none (no nested submodules) |
 | Rust default toolchain | `rustup default nightly` | default unchanged | none inside the repository: `rust-toolchain.toml` selects `nightly-2026-03-23` |
+| Rust for the TAP tool | `stable` | `1.98.1` via `RUSTUP_TOOLCHAIN` | none: same release as `stable` at G07 |
 | Build parallelism | `-j8` | `-j2` | build time only |
 | Expat package name | `libexpat-dev` (virtual) | `libexpat1-dev` (the real package) | none |
 | Upstream sources | unmodified | patches 0001 and 0002 (`patches/`, `docs/SAFETY_AUDIT.md`) | job limit; run scripts safe on a shared host |
