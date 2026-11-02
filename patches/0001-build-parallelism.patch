@@ -1,0 +1,91 @@
+IBM-ACE-On-QEMU-Reproduction, patch 0001: build parallelism
+
+Applies to: IBM/ACE-RISCV 1ebdebf4cacc04fcb83191053b4e979cbcdcb2d6 (Apache-2.0)
+Audit:      docs/SAFETY_AUDIT.md, findings A1 and A2
+
+Why: the host is shared, and the project builds with 2 jobs (charter 4.7).
+ - hypervisor/Makefile and confidential-vms/linux_vm/Makefile pass BR2_JLEVEL=0 to Buildroot,
+   which means "number of CPUs + 1" jobs (21 on the reference host) and cannot be overridden.
+ - hypervisor/Makefile (kvmtool) and security-monitor/Makefile (OpenSBI) write -j$(nproc).
+   Inside a Makefile, $(nproc) is an undefined make variable, so the option becomes a bare -j,
+   which runs an unlimited number of jobs.
+
+What changes:
+ - BR2_JLEVEL becomes a make variable with the upstream default 0 ("BR2_JLEVEL ?= 0").
+ - -j$(nproc) becomes -j$(shell nproc), which is what the upstream code intends.
+
+Behaviour without new settings: as upstream, except that -j is bounded by nproc.
+This project builds with BR2_JLEVEL=2 and OMP_NUM_THREADS=2 (GNU nproc then reports 2).
+
+diff --git a/confidential-vms/linux_vm/Makefile b/confidential-vms/linux_vm/Makefile
+index b117d26..2897070 100644
+--- a/confidential-vms/linux_vm/Makefile
++++ b/confidential-vms/linux_vm/Makefile
+@@ -36,4 +36,6 @@ export PATH 						:= $(RISCV_GNU_TOOLCHAIN_WORK_DIR)/bin:$(PATH)
+ 
+ CROSS_COMPILE						?= riscv64-unknown-linux-gnu-
++# Buildroot parallelism. 0 = number of CPUs + 1 (upstream default); can be overridden.
++BR2_JLEVEL							?= 0
+ 
+ all: buildroot
+@@ -58,6 +60,6 @@ buildroot: setup
+ 			exit 1 ;\
+ 		fi ;\
+-		$(MAKE) -s -C $(LINUX_VM_BUILDROOT_SOURCE_DIR) RISCV=$(RISCV_GNU_TOOLCHAIN_WORK_DIR) PATH=$(PATH) O=$(LINUX_VM_BUILDROOT_WORK_DIR) CROSS_COMPILE=$(CROSS_COMPILE) BR2_JLEVEL=0 olddefconfig; \
+-		$(MAKE) -s -C $(LINUX_VM_BUILDROOT_SOURCE_DIR) RISCV=$(RISCV_GNU_TOOLCHAIN_WORK_DIR) PATH=$(PATH) O=$(LINUX_VM_BUILDROOT_WORK_DIR) BR2_JLEVEL=0; \
++		$(MAKE) -s -C $(LINUX_VM_BUILDROOT_SOURCE_DIR) RISCV=$(RISCV_GNU_TOOLCHAIN_WORK_DIR) PATH=$(PATH) O=$(LINUX_VM_BUILDROOT_WORK_DIR) CROSS_COMPILE=$(CROSS_COMPILE) BR2_JLEVEL=$(BR2_JLEVEL) olddefconfig; \
++		$(MAKE) -s -C $(LINUX_VM_BUILDROOT_SOURCE_DIR) RISCV=$(RISCV_GNU_TOOLCHAIN_WORK_DIR) PATH=$(PATH) O=$(LINUX_VM_BUILDROOT_WORK_DIR) BR2_JLEVEL=$(BR2_JLEVEL); \
+ 	fi
+ 
+@@ -68,5 +70,5 @@ dev:
+ 	sed "s@^BR2_LINUX_KERNEL_CUSTOM_CONFIG_FILE=.*@BR2_LINUX_KERNEL_CUSTOM_CONFIG_FILE=\"$(LINUX_VM_KERNEL_CONFIG)\"@g" -i $(LINUX_VM_BUILDROOT_WORK_DIR)/.config; \
+ 	sed "s@^BR2_TARGET_ROOTFS_EXT2_SIZE=.*@BR2_TARGET_ROOTFS_EXT2_SIZE=\"$(LINUX_VM_BUILDROOT_ROOTFS_SIZE)\"@g" -i $(LINUX_VM_BUILDROOT_WORK_DIR)/.config; \
+-	$(MAKE) -s -C $(LINUX_VM_BUILDROOT_SOURCE_DIR) RISCV=$(RISCV_GNU_TOOLCHAIN_WORK_DIR) PATH=$(PATH) O=$(LINUX_VM_BUILDROOT_WORK_DIR) CROSS_COMPILE=$(CROSS_COMPILE) BR2_JLEVEL=0 linux-rebuild all
++	$(MAKE) -s -C $(LINUX_VM_BUILDROOT_SOURCE_DIR) RISCV=$(RISCV_GNU_TOOLCHAIN_WORK_DIR) PATH=$(PATH) O=$(LINUX_VM_BUILDROOT_WORK_DIR) CROSS_COMPILE=$(CROSS_COMPILE) BR2_JLEVEL=$(BR2_JLEVEL) linux-rebuild all
+ 
+ overlay: setup
+diff --git a/hypervisor/Makefile b/hypervisor/Makefile
+index 2a5bb1e..59d52a1 100644
+--- a/hypervisor/Makefile
++++ b/hypervisor/Makefile
+@@ -28,4 +28,6 @@ export PATH 						:= $(RISCV_GNU_TOOLCHAIN_WORK_DIR)/bin:$(PATH)
+ 
+ CROSS_COMPILE						?= riscv64-unknown-linux-gnu-
++# Buildroot parallelism. 0 = number of CPUs + 1 (upstream default); can be overridden.
++BR2_JLEVEL							?= 0
+ 
+ all: setup buildroot
+@@ -51,6 +53,6 @@ buildroot: setup
+ 			exit 1 ;\
+ 		fi ;\
+-		$(MAKE) -s -C $(BUILDROOT_SOURCE_DIR) RISCV=$(RISCV_GNU_TOOLCHAIN_WORK_DIR) PATH=$(PATH) O=$(BUILDROOT_WORK_DIR) CROSS_COMPILE=$(CROSS_COMPILE) BR2_JLEVEL=0 olddefconfig ;\
+-		$(MAKE) -s -C $(BUILDROOT_SOURCE_DIR) RISCV=$(RISCV_GNU_TOOLCHAIN_WORK_DIR) PATH=$(PATH) O=$(BUILDROOT_WORK_DIR) BR2_JLEVEL=0 ;\
++		$(MAKE) -s -C $(BUILDROOT_SOURCE_DIR) RISCV=$(RISCV_GNU_TOOLCHAIN_WORK_DIR) PATH=$(PATH) O=$(BUILDROOT_WORK_DIR) CROSS_COMPILE=$(CROSS_COMPILE) BR2_JLEVEL=$(BR2_JLEVEL) olddefconfig ;\
++		$(MAKE) -s -C $(BUILDROOT_SOURCE_DIR) RISCV=$(RISCV_GNU_TOOLCHAIN_WORK_DIR) PATH=$(PATH) O=$(BUILDROOT_WORK_DIR) BR2_JLEVEL=$(BR2_JLEVEL) ;\
+ 	fi
+ 
+@@ -65,5 +67,5 @@ dev:
+ 	sed "s@^BR2_PACKAGE_OVERRIDE_FILE=.*@BR2_PACKAGE_OVERRIDE_FILE=\"$(HYPERVISOR_BUILDROOT_OVERRIDE_DIR)\"@g" -i $(BUILDROOT_WORK_DIR)/.config; \
+ 	sed "s@^BR2_LINUX_KERNEL_CUSTOM_CONFIG_FILE=.*@BR2_LINUX_KERNEL_CUSTOM_CONFIG_FILE=\"$(HYPERVISOR_LINUX_CONFIG)\"@g" -i $(BUILDROOT_WORK_DIR)/.config; \
+-	$(MAKE) -s -C $(BUILDROOT_SOURCE_DIR) RISCV=$(RISCV_GNU_TOOLCHAIN_WORK_DIR) PATH=$(PATH) O=$(BUILDROOT_WORK_DIR) BR2_JLEVEL=0 linux-rebuild all; \
++	$(MAKE) -s -C $(BUILDROOT_SOURCE_DIR) RISCV=$(RISCV_GNU_TOOLCHAIN_WORK_DIR) PATH=$(PATH) O=$(BUILDROOT_WORK_DIR) BR2_JLEVEL=$(BR2_JLEVEL) linux-rebuild all; \
+ 	#$(MAKE) -s -C $(BUILDROOT_SOURCE_DIR) RISCV=$(RISCV_GNU_TOOLCHAIN_WORK_DIR) PATH=$(PATH) O=$(BUILDROOT_WORK_DIR) BR2_JLEVEL=0 qemu-rebuild all
+ 
+@@ -87,5 +89,5 @@ kvmtool:
+ 		rm -f $(KVMTOOL_WORK_DIR)/kvmtool/lkvm-static ;\
+ 		cd $(KVMTOOL_WORK_DIR)/kvmtool ;\
+-		ARCH=riscv LIBFDT_DIR=${KVMTOOL_WORK_DIR}/dtc/build/ make lkvm-static -j$(nproc) ;\
++		ARCH=riscv LIBFDT_DIR=${KVMTOOL_WORK_DIR}/dtc/build/ make lkvm-static -j$(shell nproc) ;\
+ 		${CROSS_COMPILE}strip lkvm-static ;\
+ 		cd .. ;\
+diff --git a/security-monitor/Makefile b/security-monitor/Makefile
+index 60ce784..33bf90f 100644
+--- a/security-monitor/Makefile
++++ b/security-monitor/Makefile
+@@ -58,5 +58,5 @@ opensbi: build
+ 	if [ -f "$(SM_WORK_DIR)/$(CHAIN)/release/$(EXEC_NAME)" ]; then \
+ 		mkdir -p $(OPENSBI_WORK_DIR) ;\
+-		SM_WORK_DIR=$(SM_WORK_DIR) $(MAKE) -j$(nproc) -C $(OPENSBI_SOURCE_DIR) O=$(OPENSBI_WORK_DIR) PLATFORM_DIR="$(PLATFORM_SOURCE_DIR)" PLATFORM="generic" CROSS_COMPILE=$(CROSS_COMPILE) FW_PAYLOAD_PATH=$(LINUX_IMAGE) FW_PAYLOAD=y PLATFORM_RISCV_XLEN=$(PLATFORM_RISCV_XLEN) PLATFORM_RISCV_ISA=$(PLATFORM_RISCV_ISA) PLATFORM_RISCV_ABI=$(PLATFORM_RISCV_ABI); \
++		SM_WORK_DIR=$(SM_WORK_DIR) $(MAKE) -j$(shell nproc) -C $(OPENSBI_SOURCE_DIR) O=$(OPENSBI_WORK_DIR) PLATFORM_DIR="$(PLATFORM_SOURCE_DIR)" PLATFORM="generic" CROSS_COMPILE=$(CROSS_COMPILE) FW_PAYLOAD_PATH=$(LINUX_IMAGE) FW_PAYLOAD=y PLATFORM_RISCV_XLEN=$(PLATFORM_RISCV_XLEN) PLATFORM_RISCV_ISA=$(PLATFORM_RISCV_ISA) PLATFORM_RISCV_ABI=$(PLATFORM_RISCV_ABI); \
+ 	fi
+ 

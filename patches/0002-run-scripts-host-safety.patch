@@ -1,0 +1,61 @@
+IBM-ACE-On-QEMU-Reproduction, patch 0002: host safety of the run scripts
+
+Applies to: IBM/ACE-RISCV 1ebdebf4cacc04fcb83191053b4e979cbcdcb2d6 (Apache-2.0)
+Audit:      docs/SAFETY_AUDIT.md, findings A5, A7, A8, and A9
+
+Why: the run scripts are used on a host shared with other experiments.
+ - tools/ace_run_hypervisor.sh forwards the guest's SSH port on all host interfaces
+   (hostfwd=tcp::PORT-:22), and the guest accepts root with a fixed password.
+ - tools/common.sh kill_users_qemu() sends kill -9 to every process of the user whose
+   "ps aux" line contains "qemu", including QEMU instances of other projects.
+ - tools/common.sh kill_qemu PORT matches "qemu" and the port digits anywhere in the
+   "ps aux" line (PIDs, memory columns, file names), so it can kill unrelated processes.
+ - ssh with StrictHostKeyChecking=no still records the guest key in ~/.ssh/known_hosts;
+   a later boot with a new key on the same port then disables password login, and
+   wait_for_ssh() loops forever.
+
+Revision 2 (G06): the patch metadata now records the upstream file mode 100755 and object ID
+33b9a71 of tools/ace_run_hypervisor.sh. The changes are identical to revision 1, which was applied in G05b.
+
+What changes:
+ - The SSH port is forwarded on 127.0.0.1 only.
+ - kill_users_qemu() selects only processes running the ACE QEMU binary under ${ACE_DIR}.
+ - kill_qemu PORT selects only the process with the exact forwarding rule for that port.
+ - ssh uses UserKnownHostsFile=/dev/null (nothing written to ~/.ssh) and LogLevel=ERROR.
+
+diff --git a/tools/ace_run_hypervisor.sh b/tools/ace_run_hypervisor.sh
+index 33b9a71..06d41c9 100755
+--- a/tools/ace_run_hypervisor.sh
++++ b/tools/ace_run_hypervisor.sh
+@@ -64,5 +64,5 @@ ${QEMU_CMD} ${DEBUG_OPTIONS} \
+     -drive if=none,format=raw,file=${DRIVE},id=hd0 \
+     -device virtio-blk-device,scsi=off,drive=hd0 \
+-    -netdev user,id=net0,net=192.168.100.1/24,dhcpstart=192.168.100.128,hostfwd=tcp::${HOST_PORT}-:22 \
++    -netdev user,id=net0,net=192.168.100.1/24,dhcpstart=192.168.100.128,hostfwd=tcp:127.0.0.1:${HOST_PORT}-:22 \
+     -device virtio-net-device,netdev=net0 \
+     -device virtio-rng-pci \
+diff --git a/tools/common.sh b/tools/common.sh
+index 492a6f1..7093649 100644
+--- a/tools/common.sh
++++ b/tools/common.sh
+@@ -9,5 +9,5 @@ export HYPERVISOR_TEST_PASSWD="passwd"
+ export HYPERVISOR_TEST_HOSTNAME="localhost"
+ 
+-export SSH_PASSWD_PARAMS="-o PasswordAuthentication=yes -o PreferredAuthentications=keyboard-interactive,password -o PubkeyAuthentication=no -o StrictHostKeyChecking=no"
++export SSH_PASSWD_PARAMS="-o PasswordAuthentication=yes -o PreferredAuthentications=keyboard-interactive,password -o PubkeyAuthentication=no -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -o LogLevel=ERROR"
+ export SSH_CMD="sshpass -p ${HYPERVISOR_TEST_PASSWD} ssh ${SSH_PASSWD_PARAMS}"
+ 
+@@ -22,5 +22,5 @@ function wait_for_ssh () {
+ function kill_users_qemu () {
+     USER="$(whoami)"
+-    PID="$(ps aux | grep qemu | grep ${USER} | awk -F' ' '{ print $2  }')"
++    PID="$(pgrep -u "${USER}" -f "${ACE_DIR}/qemu/bin/qemu-system-riscv64")"
+     if [ "$PID" != "" ]; then
+         kill -9 $PID
+@@ -32,5 +32,5 @@ function kill_users_qemu () {
+ function kill_qemu () {
+     PORT=$1
+-    PID="$(ps aux | grep qemu | grep ${PORT} | awk -F' ' '{ print $2  }')"
++    PID="$(pgrep -u "$(whoami)" -f "hostfwd=tcp:127.0.0.1:${PORT}-:22")"
+     if [ "$PID" != "" ]; then
+         kill -9 $PID
