@@ -1,6 +1,6 @@
 # Source Provenance (success criterion E1)
 
-Recorded in G02 on 2026-10-30 and extended in G05 to G09.
+Recorded in G02 on 2026-10-30 and extended in G05 to G11.
 
 ## Upstream repository
 
@@ -42,12 +42,12 @@ There are no nested submodules.
 |---|---|---|---|
 | RISC-V GNU toolchain `riscv64-glibc-ubuntu-22.04-gcc-nightly-2023.09.27-nightly.tar.gz` (github.com/riscv-collab release `2023.09.27`) | `Makefile:17,45` | release tag | G06: 635,643,262 bytes, SHA-256 `cf55e236f198054355bb9c6fd9ec6e599117a06927ae4e087d12cfbf8ad2e32c`; GCC 12.2.0, headers 5.10.5 |
 | QEMU 8.2.1 tarball (download.qemu.org) | `Makefile:13,82` | version | G08: 129,848,448 bytes, SHA-256 `8562751158175f9d187c5f22b57555abe3c870f0325c8ced12c34c6d987729be`, equal to the hashes pinned by Chimera Linux and nixpkgs |
-| dtc (`git://git.kernel.org/pub/scm/utils/dtc/dtc.git`) | `hypervisor/Makefile:78` | not pinned (HEAD `c22868416b8d` at G05) | G09 (commit) |
-| kvmtool, branch `cove-integration-03072023` (github.com/wojciechozga/kvmtool) | `hypervisor/Makefile:86` | branch name (`177a4df3a0ff` at G05) | G09 (commit) |
+| dtc (`git://git.kernel.org/pub/scm/utils/dtc/dtc.git`) | `hypervisor/Makefile:78` | not pinned | G11: built `19f15dae64059b1a1e05a540a57930086c46a8c0` (2026-11-02, libfdt 1.8.1); at G05 the branch was at `c22868416b8d`, so it moves |
+| kvmtool, branch `cove-integration-03072023` (github.com/wojciechozga/kvmtool) | `hypervisor/Makefile:86` | branch name | G11: built `177a4df3a0ffed726d709e8bdeeec4bd4cc8239e` (2025-04-06), same as at G05 |
 | Linux 6.3-rc4, hypervisor and confidential VM | `BR2_LINUX_KERNEL_CUSTOM_VERSION_VALUE` in both Buildroot configurations | version only; Buildroot has no hash for custom versions | G09: see "Linux source" below |
 | QEMU for the nested confidential VM (Buildroot package) | `BR2_PACKAGE_QEMU` in the hypervisor configuration | Buildroot package hash | G09: QEMU 8.1.1, `qemu-8.1.1.tar.xz` SHA-256 `37ce2ef5e500fb752f681117c68b45118303ea49a7e26bd54080ced54fab7def`; `hypervisor/patches/qemu/8.1.1/cove.patch` applied |
 | Buildroot external toolchain | Buildroot's default for `BR2_TOOLCHAIN_EXTERNAL=y` (no custom toolchain selected) | Buildroot package hash | G09: Bootlin `riscv64-lp64d--glibc--bleeding-edge-2023.08-1.tar.bz2`, SHA-256 `9eda527aea5ce7da27957c3b8e4adb65430be046b713dca25432a09cb6675976` |
-| Other Buildroot packages (busybox 1.36.1, bash, dropbear 2022.83, sshpass 1.10, ...) | Buildroot configurations | Buildroot package hashes | G09: 46 source files in 45 package directories hashed (hypervisor); G11 (confidential VM) |
+| Other Buildroot packages (busybox 1.36.1, bash, dropbear 2022.83, sshpass 1.10, ...) | Buildroot configurations | Buildroot package hashes | G09: 46 source files in 45 package directories hashed (hypervisor); G11: the confidential VM added `nvme-1.12.tar.gz` (`a75270e6...`) and `opensbi-1.3.tar.gz` (`2c0501eb...`, built but not used) |
 | Rust crates (TAP tool) | `tools/cove_tap_tool/Cargo.lock` | versions and checksums | G07: 57 crates |
 | Rust crates (security monitor) | `security-monitor/Cargo.lock` | versions and checksums | G10 |
 
