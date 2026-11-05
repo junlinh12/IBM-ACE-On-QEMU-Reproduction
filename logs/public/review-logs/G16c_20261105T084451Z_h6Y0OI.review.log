@@ -1,0 +1,881 @@
+# G16c Port Masking | run=G16c_20261105T084451Z_h6Y0OI | input_sha256=d4bf32e18a2abe3a53e6ac169d685ad653102423b431d12385cb5f52295a3052
+# previous gate: G16b PASS (see logs/review/G16b_review.md); checkpoint 4 recorded
+$ section '1. Verify the downloaded files and all sealed evidence'
+
+===== 1. Verify the downloaded files and all sealed evidence =====
+$ cd ~/download
+$ sha256sum G16c_port_masking.sh G16c_port_masking.md
+d4bf32e18a2abe3a53e6ac169d685ad653102423b431d12385cb5f52295a3052  G16c_port_masking.sh
+9edbf4666d1510153e969e788a874816f1b743db69f745fb09751f916d3189e6  G16c_port_masking.md
+$ echo 'ec1db4f19d5251c49edc330520dc0a6b07ed33ac7bd7530c829106564b450ac1  G16b_review.md'
+$ sha256sum -c -
+G16b_review.md: OK
+$ echo 'e59f9938ab31eb01c9c2cea12a1ce0007b0fa3e4ceabe9c3a075ee0680557461  CHECKPOINT_4.md'
+$ sha256sum -c -
+CHECKPOINT_4.md: OK
+$ sha256sum -c -
+$ echo '0c9eee3c401f75ec5fcfb3b9cb745fda69c8bf91bd40db73d80713981086815f  sanitize_evidence.sh'
+sanitize_evidence.sh: OK
+$ cd ~/projects/IBM-ACE-On-QEMU-Reproduction/logs
+$ sha256sum -c ACE-G00-Host-Baseline-20261030T115047Z-a1SbSFY1.raw.log.sha256 G00_20261030T122505Z_7St35c.sha256 G01_20261030T125107Z_P3Dw1C.sha256 G02_20261030T130813Z_vP2nrT.sha256 G03_20261030T132027Z_gN9Ntr.sha256 G04_20261102T023215Z_DtsO6K.sha256 G05_20261102T025456Z_lCG0ac.sha256 G05b_20261102T035410Z_z0g7ji.sha256 G06_20261102T040430Z_BPbdDC.sha256 G07_20261102T041114Z_vzwQUZ.sha256 G07_20261102T084900Z_ZTrxqN.sha256 G08_20261102T091256Z_nnjq89.sha256 G08_20261102T112611Z_dl5kmx.sha256 G08_20261102T112702Z_6hnn8n.sha256 G09_20261102T114120Z_PLjTHu.sha256 G09_20261102T115757Z_b6e4Mk.sha256 G10_20261102T131021Z_RbQpnI.sha256 G11_20261102T132117Z_URiLe8.sha256 G12_20261104T091034Z_XoudcY.sha256 G13_20261104T111257Z_8tPBjL.sha256 G14_20261104T123248Z_16kjwp.sha256 G15_20261104T125134Z_jrn7fa.sha256 G15b_20261104T130510Z_X7qKqK.sha256 G16a_20261104T132430Z_uYpTAo.sha256 G16b_20261105T082221Z_2C36LY.sha256
+ACE-G00-Host-Baseline-20261030T115047Z-a1SbSFY1.raw.log: OK
+G00_20261030T122505Z_7St35c.raw.log: OK
+G00_20261030T122505Z_7St35c.input.sh: OK
+G01_20261030T125107Z_P3Dw1C.raw.log: OK
+G01_20261030T125107Z_P3Dw1C.input.sh: OK
+G02_20261030T130813Z_vP2nrT.raw.log: OK
+G02_20261030T130813Z_vP2nrT.input.sh: OK
+G03_20261030T132027Z_gN9Ntr.raw.log: OK
+G03_20261030T132027Z_gN9Ntr.input.sh: OK
+G04_20261102T023215Z_DtsO6K.raw.log: OK
+G04_20261102T023215Z_DtsO6K.input.sh: OK
+G05_20261102T025456Z_lCG0ac.raw.log: OK
+G05_20261102T025456Z_lCG0ac.input.sh: OK
+G05b_20261102T035410Z_z0g7ji.raw.log: OK
+G05b_20261102T035410Z_z0g7ji.input.sh: OK
+G06_20261102T040430Z_BPbdDC.raw.log: OK
+G06_20261102T040430Z_BPbdDC.input.sh: OK
+G07_20261102T041114Z_vzwQUZ.raw.log: OK
+G07_20261102T041114Z_vzwQUZ.input.sh: OK
+G07_20261102T084900Z_ZTrxqN.raw.log: OK
+G07_20261102T084900Z_ZTrxqN.input.sh: OK
+G08_20261102T091256Z_nnjq89.raw.log: OK
+G08_20261102T091256Z_nnjq89.input.sh: OK
+G08_20261102T112611Z_dl5kmx.raw.log: OK
+G08_20261102T112611Z_dl5kmx.input.sh: OK
+G08_20261102T112702Z_6hnn8n.raw.log: OK
+G08_20261102T112702Z_6hnn8n.input.sh: OK
+G09_20261102T114120Z_PLjTHu.raw.log: OK
+G09_20261102T114120Z_PLjTHu.input.sh: OK
+G09_20261102T115757Z_b6e4Mk.raw.log: OK
+G09_20261102T115757Z_b6e4Mk.input.sh: OK
+G10_20261102T131021Z_RbQpnI.raw.log: OK
+G10_20261102T131021Z_RbQpnI.input.sh: OK
+G11_20261102T132117Z_URiLe8.raw.log: OK
+G11_20261102T132117Z_URiLe8.input.sh: OK
+G12_20261104T091034Z_XoudcY.raw.log: OK
+G12_20261104T091034Z_XoudcY.input.sh: OK
+G13_20261104T111257Z_8tPBjL.raw.log: OK
+G13_20261104T111257Z_8tPBjL.input.sh: OK
+G14_20261104T123248Z_16kjwp.raw.log: OK
+G14_20261104T123248Z_16kjwp.input.sh: OK
+G15_20261104T125134Z_jrn7fa.raw.log: OK
+G15_20261104T125134Z_jrn7fa.input.sh: OK
+G15b_20261104T130510Z_X7qKqK.raw.log: OK
+G15b_20261104T130510Z_X7qKqK.input.sh: OK
+G16a_20261104T132430Z_uYpTAo.raw.log: OK
+G16a_20261104T132430Z_uYpTAo.input.sh: OK
+G16b_20261105T082221Z_2C36LY.raw.log: OK
+G16b_20261105T082221Z_2C36LY.input.sh: OK
+$ stop_if_failed 'step 1'
+$ section '2. Commit the reviewed G16b work (local only, UTC)'
+
+===== 2. Commit the reviewed G16b work (local only, UTC) =====
+$ cd ~/projects/IBM-ACE-On-QEMU-Reproduction
+$ cp ~/download/G16b_review.md logs/review/
+$ cp ~/download/CHECKPOINT_4.md logs/review/
+$$$ env -u TZ date +%:z
+$$$ env -u TZ date +%z
+$$$ timedatectl show -p Timezone --value
+$$ grep -F -e <local offset> -e <local offset> -e <local zone> scripts/G16b_publication_prep.sh docs/G16b_publication_prep.md
+$ test -z ''
+$$$ env -u TZ date +%Z
+$$ grep -w -F -e <local zone> scripts/G16b_publication_prep.sh docs/G16b_publication_prep.md
+$ test -z ''
+$ git add scripts/G16b_publication_prep.sh docs/G16b_publication_prep.md
+$ git status --short
+A  docs/G16b_publication_prep.md
+A  scripts/G16b_publication_prep.sh
+$ git diff --cached --quiet
+$ TZ=UTC0
+$ git commit -m 'G16b: publication preparation (gate script and document)'
+[main 35fbd8a] G16b: publication preparation (gate script and document)
+ 2 files changed, 448 insertions(+)
+ create mode 100644 docs/G16b_publication_prep.md
+ create mode 100644 scripts/G16b_publication_prep.sh
+$ git log -1 '--format=%h  %aI  %an <%ae>  %s'
+35fbd8a  2026-11-05T08:44:51+00:00  junlinh12 <238169016+junlinh12@users.noreply.github.com>  G16b: publication preparation (gate script and document)
+$ cp ~/download/G16c_port_masking.sh scripts/
+$ cp ~/download/G16c_port_masking.md docs/
+$ stop_if_failed 'step 2'
+$ section '3. Read the listening ports from the sealed G00 log into a private file'
+
+===== 3. Read the listening ports from the sealed G00 log into a private file =====
+$ PORTS=~/projects/IBM-ACE-On-QEMU-Reproduction/build/private/listening-ports.txt
+$ mkdir -p ~/projects/IBM-ACE-On-QEMU-Reproduction/build/private
+$ awk '/^\$ ss -ltnH$/ {f = 1; next} f && /^\$ / {next} f && /^[0-9]+$/ {print; next} f {exit}' logs/G00_20261030T122505Z_7St35c.raw.log
+$ awk '$1 >= 1024' ~/projects/IBM-ACE-On-QEMU-Reproduction/build/private/listening-ports.txt
+$ wc -l
+5
+$ wc -l
+2
+$$ wc -l
+$ test 5 -ge 1
+$ git check-ignore -q build/private/listening-ports.txt
+$ stop_if_failed 'step 3'
+$ section '4. Back up the history and record the commits before the rewrite'
+
+===== 4. Back up the history and record the commits before the rewrite =====
+$$ date -u +%Y%m%dT%H%M%SZ
+$ STAMP=20261105T084451Z
+$ BUNDLE=~/projects/IBM-ACE-On-QEMU-Reproduction/logs/G16c_pre_rewrite_20261105T084451Z.bundle
+$ git bundle create ~/projects/IBM-ACE-On-QEMU-Reproduction/logs/G16c_pre_rewrite_20261105T084451Z.bundle --all
+$ git bundle verify ~/projects/IBM-ACE-On-QEMU-Reproduction/logs/G16c_pre_rewrite_20261105T084451Z.bundle
+~/projects/IBM-ACE-On-QEMU-Reproduction/logs/G16c_pre_rewrite_20261105T084451Z.bundle is okay
+The bundle contains these 2 refs:
+35fbd8a2ee266b24430bd6b0d235097bbf78a761 refs/heads/main
+35fbd8a2ee266b24430bd6b0d235097bbf78a761 HEAD
+The bundle records a complete history.
+The bundle uses this hash algorithm: sha1
+$ chmod 400 ~/projects/IBM-ACE-On-QEMU-Reproduction/logs/G16c_pre_rewrite_20261105T084451Z.bundle
+$ sha256sum ~/projects/IBM-ACE-On-QEMU-Reproduction/logs/G16c_pre_rewrite_20261105T084451Z.bundle
+515502315e1418d344eb9d4e1e754281017f5a5750ac178e28088f665ff443c9  ~/projects/IBM-ACE-On-QEMU-Reproduction/logs/G16c_pre_rewrite_20261105T084451Z.bundle
+$ git log --reverse '--format=%h %s'
+$ wc -l
+20
+$ stop_if_failed 'step 4'
+$ section '5. Rewrite the history: the port mentions in two documents'
+
+===== 5. Rewrite the history: the port mentions in two documents =====
+$ export SANITIZER=~/download/sanitize_evidence.sh
+$ SANITIZER=~/download/sanitize_evidence.sh
+$ export PORTS_FILE=~/projects/IBM-ACE-On-QEMU-Reproduction/build/private/listening-ports.txt
+$ PORTS_FILE=~/projects/IBM-ACE-On-QEMU-Reproduction/build/private/listening-ports.txt
+$$ git rev-parse HEAD
+$ OLD_HEAD=35fbd8a2ee266b24430bd6b0d235097bbf78a761
+$ FILTER_BRANCH_SQUELCH_WARNING=1
+$ git filter-branch -f --tree-filter 'for f in docs/SAFETY_AUDIT.md docs/G15_regression_test.md logs/public/reviews/* logs/public/review-logs/*; do if [ -f "$f" ]; then bash "$SANITIZER" --ports "$PORTS_FILE" < "$f" > "$f.tmp" && mv "$f.tmp" "$f"; fi; done; if [ -d logs/public/reviews ]; then (cd logs/public && find reviews review-logs -type f | sort | xargs sha256sum) > logs/public/SHA256SUMS; fi' -- --all
+Rewrite 0b0bcf9077a77bf7ef1f59f9ef3621fb2494ab90 (1/20) (0 seconds passed, remaining 0 predicted)    Rewrite 313410a8027072921c0752d81976077bcecb28bf (2/20) (0 seconds passed, remaining 0 predicted)    Rewrite 50061dbfc191bb2a5f6e6f3845e8b0f90e0e5280 (3/20) (0 seconds passed, remaining 0 predicted)    Rewrite 68bd1f9e2c4317d71c0984e436aa63d2689a164a (4/20) (0 seconds passed, remaining 0 predicted)    Rewrite 105f31719fb3a82cbb124621a17d8bdf86613ab4 (5/20) (0 seconds passed, remaining 0 predicted)    Rewrite 57840a84127426292c1f839af036223564d28c77 (6/20) (0 seconds passed, remaining 0 predicted)    Rewrite f435f6f7676822eb66c0c04a477f68ed4f81eb79 (7/20) (1 seconds passed, remaining 1 predicted)    Rewrite e02260846b6327d2a2777720d9522eb0eecb448d (7/20) (1 seconds passed, remaining 1 predicted)    Rewrite 6d06ebc997547271666d34374fb774bf0af6273b (7/20) (1 seconds passed, remaining 1 predicted)    Rewrite 24cfe6a726a0e6fa77dafe3fe11e3ceb3eb4f7e5 (7/20) (1 seconds passed, remaining 1 predicted)    Rewrite 08e16ec71ba174000bf457ee222d164d3b18f930 (7/20) (1 seconds passed, remaining 1 predicted)    Rewrite 096fa302b46ec33195c293d8930010102604837c (7/20) (1 seconds passed, remaining 1 predicted)    Rewrite 2f45ea58d977a4cd36c1ff8bd92a3bbd3cf25ff8 (7/20) (1 seconds passed, remaining 1 predicted)    Rewrite 3fccab4b83c3c358398e9dd88bd7fcc6014b7b6f (7/20) (1 seconds passed, remaining 1 predicted)    Rewrite 56071b84ec5959d0c7056158fa1eb70d3ef35bb7 (15/20) (1 seconds passed, remaining 0 predicted)    Rewrite 3de21b049f0d97ce93509afc53617c798bd5d0e2 (15/20) (1 seconds passed, remaining 0 predicted)    Rewrite 8b70d96552c774832b9fdbe341e146abc73da34e (15/20) (1 seconds passed, remaining 0 predicted)    Rewrite 0652ec46c950805b1b0614bb5e59b0ac5800af51 (15/20) (1 seconds passed, remaining 0 predicted)    Rewrite 64e24277143316515fe12f0188cdc53f073af163 (15/20) (1 seconds passed, remaining 0 predicted)    Rewrite 35fbd8a2ee266b24430bd6b0d235097bbf78a761 (15/20) (1 seconds passed, remaining 0 predicted)    
+Ref 'refs/heads/main' was rewritten
+$ git diff --numstat 35fbd8a2ee266b24430bd6b0d235097bbf78a761 HEAD
+1	1	docs/G15_regression_test.md
+1	1	docs/SAFETY_AUDIT.md
+4	4	logs/public/SHA256SUMS
+5	5	logs/public/review-logs/G00_20261030T122505Z_7St35c.review.log
+1	1	logs/public/review-logs/G15_20261104T125134Z_jrn7fa.review.log
+1	1	logs/public/reviews/G00_review.md
+1	1	logs/public/reviews/G15_review.md
+$$ git diff --numstat 35fbd8a2ee266b24430bd6b0d235097bbf78a761 HEAD -- . ':(exclude)logs/public'
+$$ printf '1\t1\tdocs/G15_regression_test.md\n1\t1\tdocs/SAFETY_AUDIT.md'
+$ test '1	1	docs/G15_regression_test.md
+1	1	docs/SAFETY_AUDIT.md' = '1	1	docs/G15_regression_test.md
+1	1	docs/SAFETY_AUDIT.md'
+$$ git diff --numstat 35fbd8a2ee266b24430bd6b0d235097bbf78a761 HEAD -- logs/public
+$$ awk '$1 != $2'
+$ test -z ''
+$ git update-ref -d refs/original/refs/heads/main
+$ git reflog expire --expire=now --all
+$ git gc --prune=now --quiet
+$ git for-each-ref
+9f70217385516b37e6ca35afb912c05be3ab01ee commit	refs/heads/main
+$ git log --reverse '--format=%h %s'
+$$ cut '-d ' -f2- ~/projects/IBM-ACE-On-QEMU-Reproduction/build/g16c-commits-before.txt
+$$ sha256sum
+$$ cut '-d ' -f2- ~/projects/IBM-ACE-On-QEMU-Reproduction/build/g16c-commits-after.txt
+$$ sha256sum
+$ test '007b73e7aa6b3b637e989180d599e94fceea7c48f3e5c024cf14981f6912b5b2  -' = '007b73e7aa6b3b637e989180d599e94fceea7c48f3e5c024cf14981f6912b5b2  -'
+$$ git log --format=%aI%n%cI
+$$ grep -c -v '+00:00$'
+$ test 0 -eq 0
+$ git status --short
+?? docs/G16c_port_masking.md
+?? scripts/G16c_port_masking.sh
+$ stop_if_failed 'step 5'
+$ section '6. Re-create the sanitized evidence in logs/public with the port rules'
+
+===== 6. Re-create the sanitized evidence in logs/public with the port rules =====
+$ cp ~/download/sanitize_evidence.sh scripts/sanitize_evidence.sh
+$ chmod 755 scripts/sanitize_evidence.sh
+$ rm -rf logs/public/reviews logs/public/review-logs
+$ mkdir -p logs/public/reviews logs/public/review-logs
+$ for f in logs/review/*.md
+$ scripts/sanitize_evidence.sh --ports ~/projects/IBM-ACE-On-QEMU-Reproduction/build/private/listening-ports.txt
+$$ basename logs/review/CHECKPOINT_1.md
+$ for f in logs/review/*.md
+$ scripts/sanitize_evidence.sh --ports ~/projects/IBM-ACE-On-QEMU-Reproduction/build/private/listening-ports.txt
+$$ basename logs/review/CHECKPOINT_2.md
+$ for f in logs/review/*.md
+$ scripts/sanitize_evidence.sh --ports ~/projects/IBM-ACE-On-QEMU-Reproduction/build/private/listening-ports.txt
+$$ basename logs/review/CHECKPOINT_3.md
+$ for f in logs/review/*.md
+$ scripts/sanitize_evidence.sh --ports ~/projects/IBM-ACE-On-QEMU-Reproduction/build/private/listening-ports.txt
+$$ basename logs/review/CHECKPOINT_4.md
+$ for f in logs/review/*.md
+$ scripts/sanitize_evidence.sh --ports ~/projects/IBM-ACE-On-QEMU-Reproduction/build/private/listening-ports.txt
+$$ basename logs/review/G00_review.md
+$ for f in logs/review/*.md
+$ scripts/sanitize_evidence.sh --ports ~/projects/IBM-ACE-On-QEMU-Reproduction/build/private/listening-ports.txt
+$$ basename logs/review/G01_review.md
+$ for f in logs/review/*.md
+$ scripts/sanitize_evidence.sh --ports ~/projects/IBM-ACE-On-QEMU-Reproduction/build/private/listening-ports.txt
+$$ basename logs/review/G02_review.md
+$ for f in logs/review/*.md
+$ scripts/sanitize_evidence.sh --ports ~/projects/IBM-ACE-On-QEMU-Reproduction/build/private/listening-ports.txt
+$$ basename logs/review/G03_review.md
+$ for f in logs/review/*.md
+$ scripts/sanitize_evidence.sh --ports ~/projects/IBM-ACE-On-QEMU-Reproduction/build/private/listening-ports.txt
+$$ basename logs/review/G04_review.md
+$ for f in logs/review/*.md
+$ scripts/sanitize_evidence.sh --ports ~/projects/IBM-ACE-On-QEMU-Reproduction/build/private/listening-ports.txt
+$$ basename logs/review/G05_review.md
+$ for f in logs/review/*.md
+$ scripts/sanitize_evidence.sh --ports ~/projects/IBM-ACE-On-QEMU-Reproduction/build/private/listening-ports.txt
+$$ basename logs/review/G05b_review.md
+$ for f in logs/review/*.md
+$ scripts/sanitize_evidence.sh --ports ~/projects/IBM-ACE-On-QEMU-Reproduction/build/private/listening-ports.txt
+$$ basename logs/review/G06_review.md
+$ for f in logs/review/*.md
+$ scripts/sanitize_evidence.sh --ports ~/projects/IBM-ACE-On-QEMU-Reproduction/build/private/listening-ports.txt
+$$ basename logs/review/G07_review.md
+$ for f in logs/review/*.md
+$ scripts/sanitize_evidence.sh --ports ~/projects/IBM-ACE-On-QEMU-Reproduction/build/private/listening-ports.txt
+$$ basename logs/review/G07_run1_review.md
+$ for f in logs/review/*.md
+$ scripts/sanitize_evidence.sh --ports ~/projects/IBM-ACE-On-QEMU-Reproduction/build/private/listening-ports.txt
+$$ basename logs/review/G08_review.md
+$ for f in logs/review/*.md
+$ scripts/sanitize_evidence.sh --ports ~/projects/IBM-ACE-On-QEMU-Reproduction/build/private/listening-ports.txt
+$$ basename logs/review/G09_review.md
+$ for f in logs/review/*.md
+$ scripts/sanitize_evidence.sh --ports ~/projects/IBM-ACE-On-QEMU-Reproduction/build/private/listening-ports.txt
+$$ basename logs/review/G09_run1_review.md
+$ for f in logs/review/*.md
+$ scripts/sanitize_evidence.sh --ports ~/projects/IBM-ACE-On-QEMU-Reproduction/build/private/listening-ports.txt
+$$ basename logs/review/G10_review.md
+$ for f in logs/review/*.md
+$ scripts/sanitize_evidence.sh --ports ~/projects/IBM-ACE-On-QEMU-Reproduction/build/private/listening-ports.txt
+$$ basename logs/review/G11_review.md
+$ for f in logs/review/*.md
+$ scripts/sanitize_evidence.sh --ports ~/projects/IBM-ACE-On-QEMU-Reproduction/build/private/listening-ports.txt
+$$ basename logs/review/G12_review.md
+$ for f in logs/review/*.md
+$ scripts/sanitize_evidence.sh --ports ~/projects/IBM-ACE-On-QEMU-Reproduction/build/private/listening-ports.txt
+$$ basename logs/review/G13_review.md
+$ for f in logs/review/*.md
+$ scripts/sanitize_evidence.sh --ports ~/projects/IBM-ACE-On-QEMU-Reproduction/build/private/listening-ports.txt
+$$ basename logs/review/G14_review.md
+$ for f in logs/review/*.md
+$ scripts/sanitize_evidence.sh --ports ~/projects/IBM-ACE-On-QEMU-Reproduction/build/private/listening-ports.txt
+$$ basename logs/review/G15_review.md
+$ for f in logs/review/*.md
+$ scripts/sanitize_evidence.sh --ports ~/projects/IBM-ACE-On-QEMU-Reproduction/build/private/listening-ports.txt
+$$ basename logs/review/G15b_review.md
+$ for f in logs/review/*.md
+$ scripts/sanitize_evidence.sh --ports ~/projects/IBM-ACE-On-QEMU-Reproduction/build/private/listening-ports.txt
+$$ basename logs/review/G16a_review.md
+$ for f in logs/review/*.md
+$ scripts/sanitize_evidence.sh --ports ~/projects/IBM-ACE-On-QEMU-Reproduction/build/private/listening-ports.txt
+$$ basename logs/review/G16b_review.md
+$ for f in logs/review/G0[0-7]*.review.log
+$ scripts/sanitize_evidence.sh --pre-utc --ports ~/projects/IBM-ACE-On-QEMU-Reproduction/build/private/listening-ports.txt
+$$ basename logs/review/G00_20261030T122505Z_7St35c.review.log
+$ for f in logs/review/G0[0-7]*.review.log
+$ scripts/sanitize_evidence.sh --pre-utc --ports ~/projects/IBM-ACE-On-QEMU-Reproduction/build/private/listening-ports.txt
+$$ basename logs/review/G01_20261030T125107Z_P3Dw1C.review.log
+$ for f in logs/review/G0[0-7]*.review.log
+$ scripts/sanitize_evidence.sh --pre-utc --ports ~/projects/IBM-ACE-On-QEMU-Reproduction/build/private/listening-ports.txt
+$$ basename logs/review/G02_20261030T130813Z_vP2nrT.review.log
+$ for f in logs/review/G0[0-7]*.review.log
+$ scripts/sanitize_evidence.sh --pre-utc --ports ~/projects/IBM-ACE-On-QEMU-Reproduction/build/private/listening-ports.txt
+$$ basename logs/review/G03_20261030T132027Z_gN9Ntr.review.log
+$ for f in logs/review/G0[0-7]*.review.log
+$ scripts/sanitize_evidence.sh --pre-utc --ports ~/projects/IBM-ACE-On-QEMU-Reproduction/build/private/listening-ports.txt
+$$ basename logs/review/G04_20261102T023215Z_DtsO6K.review.log
+$ for f in logs/review/G0[0-7]*.review.log
+$ scripts/sanitize_evidence.sh --pre-utc --ports ~/projects/IBM-ACE-On-QEMU-Reproduction/build/private/listening-ports.txt
+$$ basename logs/review/G05_20261102T025456Z_lCG0ac.review.log
+$ for f in logs/review/G0[0-7]*.review.log
+$ scripts/sanitize_evidence.sh --pre-utc --ports ~/projects/IBM-ACE-On-QEMU-Reproduction/build/private/listening-ports.txt
+$$ basename logs/review/G05b_20261102T035410Z_z0g7ji.review.log
+$ for f in logs/review/G0[0-7]*.review.log
+$ scripts/sanitize_evidence.sh --pre-utc --ports ~/projects/IBM-ACE-On-QEMU-Reproduction/build/private/listening-ports.txt
+$$ basename logs/review/G06_20261102T040430Z_BPbdDC.review.log
+$ for f in logs/review/G0[0-7]*.review.log
+$ scripts/sanitize_evidence.sh --pre-utc --ports ~/projects/IBM-ACE-On-QEMU-Reproduction/build/private/listening-ports.txt
+$$ basename logs/review/G07_20261102T041114Z_vzwQUZ.review.log
+$ for f in logs/review/G0[0-7]*.review.log
+$ scripts/sanitize_evidence.sh --pre-utc --ports ~/projects/IBM-ACE-On-QEMU-Reproduction/build/private/listening-ports.txt
+$$ basename logs/review/G07_20261102T084900Z_ZTrxqN.review.log
+$ for f in logs/review/G0[89]*.review.log logs/review/G1*.review.log
+$ scripts/sanitize_evidence.sh --ports ~/projects/IBM-ACE-On-QEMU-Reproduction/build/private/listening-ports.txt
+$$ basename logs/review/G08_20261102T091256Z_nnjq89.review.log
+$ for f in logs/review/G0[89]*.review.log logs/review/G1*.review.log
+$ scripts/sanitize_evidence.sh --ports ~/projects/IBM-ACE-On-QEMU-Reproduction/build/private/listening-ports.txt
+$$ basename logs/review/G08_20261102T112611Z_dl5kmx.review.log
+$ for f in logs/review/G0[89]*.review.log logs/review/G1*.review.log
+$ scripts/sanitize_evidence.sh --ports ~/projects/IBM-ACE-On-QEMU-Reproduction/build/private/listening-ports.txt
+$$ basename logs/review/G08_20261102T112702Z_6hnn8n.review.log
+$ for f in logs/review/G0[89]*.review.log logs/review/G1*.review.log
+$ scripts/sanitize_evidence.sh --ports ~/projects/IBM-ACE-On-QEMU-Reproduction/build/private/listening-ports.txt
+$$ basename logs/review/G09_20261102T114120Z_PLjTHu.review.log
+$ for f in logs/review/G0[89]*.review.log logs/review/G1*.review.log
+$ scripts/sanitize_evidence.sh --ports ~/projects/IBM-ACE-On-QEMU-Reproduction/build/private/listening-ports.txt
+$$ basename logs/review/G09_20261102T115757Z_b6e4Mk.review.log
+$ for f in logs/review/G0[89]*.review.log logs/review/G1*.review.log
+$ scripts/sanitize_evidence.sh --ports ~/projects/IBM-ACE-On-QEMU-Reproduction/build/private/listening-ports.txt
+$$ basename logs/review/G10_20261102T131021Z_RbQpnI.review.log
+$ for f in logs/review/G0[89]*.review.log logs/review/G1*.review.log
+$ scripts/sanitize_evidence.sh --ports ~/projects/IBM-ACE-On-QEMU-Reproduction/build/private/listening-ports.txt
+$$ basename logs/review/G11_20261102T132117Z_URiLe8.review.log
+$ for f in logs/review/G0[89]*.review.log logs/review/G1*.review.log
+$ scripts/sanitize_evidence.sh --ports ~/projects/IBM-ACE-On-QEMU-Reproduction/build/private/listening-ports.txt
+$$ basename logs/review/G12_20261104T091034Z_XoudcY.review.log
+$ for f in logs/review/G0[89]*.review.log logs/review/G1*.review.log
+$ scripts/sanitize_evidence.sh --ports ~/projects/IBM-ACE-On-QEMU-Reproduction/build/private/listening-ports.txt
+$$ basename logs/review/G13_20261104T111257Z_8tPBjL.review.log
+$ for f in logs/review/G0[89]*.review.log logs/review/G1*.review.log
+$ scripts/sanitize_evidence.sh --ports ~/projects/IBM-ACE-On-QEMU-Reproduction/build/private/listening-ports.txt
+$$ basename logs/review/G14_20261104T123248Z_16kjwp.review.log
+$ for f in logs/review/G0[89]*.review.log logs/review/G1*.review.log
+$ scripts/sanitize_evidence.sh --ports ~/projects/IBM-ACE-On-QEMU-Reproduction/build/private/listening-ports.txt
+$$ basename logs/review/G15_20261104T125134Z_jrn7fa.review.log
+$ for f in logs/review/G0[89]*.review.log logs/review/G1*.review.log
+$ scripts/sanitize_evidence.sh --ports ~/projects/IBM-ACE-On-QEMU-Reproduction/build/private/listening-ports.txt
+$$ basename logs/review/G15b_20261104T130510Z_X7qKqK.review.log
+$ for f in logs/review/G0[89]*.review.log logs/review/G1*.review.log
+$ scripts/sanitize_evidence.sh --ports ~/projects/IBM-ACE-On-QEMU-Reproduction/build/private/listening-ports.txt
+$$ basename logs/review/G16a_20261104T132430Z_uYpTAo.review.log
+$ for f in logs/review/G0[89]*.review.log logs/review/G1*.review.log
+$ scripts/sanitize_evidence.sh --ports ~/projects/IBM-ACE-On-QEMU-Reproduction/build/private/listening-ports.txt
+$$ basename logs/review/G16b_20261105T082221Z_2C36LY.review.log
+$ cd logs/review
+$ sha256sum CHECKPOINT_1.md CHECKPOINT_2.md CHECKPOINT_3.md CHECKPOINT_4.md G00_review.md G01_review.md G02_review.md G03_review.md G04_review.md G05_review.md G05b_review.md G06_review.md G07_review.md G07_run1_review.md G08_review.md G09_review.md G09_run1_review.md G10_review.md G11_review.md G12_review.md G13_review.md G14_review.md G15_review.md G15b_review.md G16a_review.md G16b_review.md G00_20261030T122505Z_7St35c.review.log G01_20261030T125107Z_P3Dw1C.review.log G02_20261030T130813Z_vP2nrT.review.log G03_20261030T132027Z_gN9Ntr.review.log G04_20261102T023215Z_DtsO6K.review.log G05_20261102T025456Z_lCG0ac.review.log G05b_20261102T035410Z_z0g7ji.review.log G06_20261102T040430Z_BPbdDC.review.log G07_20261102T041114Z_vzwQUZ.review.log G07_20261102T084900Z_ZTrxqN.review.log G08_20261102T091256Z_nnjq89.review.log G08_20261102T112611Z_dl5kmx.review.log G08_20261102T112702Z_6hnn8n.review.log G09_20261102T114120Z_PLjTHu.review.log G09_20261102T115757Z_b6e4Mk.review.log G10_20261102T131021Z_RbQpnI.review.log G11_20261102T132117Z_URiLe8.review.log G12_20261104T091034Z_XoudcY.review.log G13_20261104T111257Z_8tPBjL.review.log G14_20261104T123248Z_16kjwp.review.log G15_20261104T125134Z_jrn7fa.review.log G15b_20261104T130510Z_X7qKqK.review.log G16a_20261104T132430Z_uYpTAo.review.log G16b_20261105T082221Z_2C36LY.review.log
+$ awk 'NR == FNR {orig[FNR] = $1; n = FNR; next} {print (FNR <= n ? orig[FNR] : "-"), $1}' ~/projects/IBM-ACE-On-QEMU-Reproduction/build/g16b-commits-before.txt ~/projects/IBM-ACE-On-QEMU-Reproduction/build/g16c-commits-before.txt
+$ echo '# reviewed-hash after-G16b published-hash subject'
+$$ cut '-d ' -f1 ~/projects/IBM-ACE-On-QEMU-Reproduction/build/g16c-commits-after.txt
+$ paste '-d ' ~/projects/IBM-ACE-On-QEMU-Reproduction/build/g16c-map-left.txt /dev/fd/63 /dev/fd/62
+$$ cut '-d ' -f2- ~/projects/IBM-ACE-On-QEMU-Reproduction/build/g16c-commits-after.txt
+$ cd logs/public
+$ find reviews review-logs -type f
+$ sort
+$ xargs sha256sum
+$ ls logs/public/reviews
+$ wc -l
+26
+$ ls logs/public/review-logs
+$ wc -l
+24
+$ awk '$1 > 0'
+$ for f in logs/public/reviews/* logs/public/review-logs/*
+$$$ basename logs/public/reviews/CHECKPOINT_1.md
+$$ grep -c '^>'
+$$ diff logs/review/CHECKPOINT_1.md logs/public/reviews/CHECKPOINT_1.md
+$ echo '1 logs/public/reviews/CHECKPOINT_1.md'
+$ for f in logs/public/reviews/* logs/public/review-logs/*
+$$ grep -c '^>'
+$$$ basename logs/public/reviews/CHECKPOINT_2.md
+$$ diff logs/review/CHECKPOINT_2.md logs/public/reviews/CHECKPOINT_2.md
+$ echo '1 logs/public/reviews/CHECKPOINT_2.md'
+$ for f in logs/public/reviews/* logs/public/review-logs/*
+$$ grep -c '^>'
+$$$ basename logs/public/reviews/CHECKPOINT_3.md
+$$ diff logs/review/CHECKPOINT_3.md logs/public/reviews/CHECKPOINT_3.md
+$ echo '1 logs/public/reviews/CHECKPOINT_3.md'
+$ for f in logs/public/reviews/* logs/public/review-logs/*
+$$ grep -c '^>'
+$$$ basename logs/public/reviews/CHECKPOINT_4.md
+$$ diff logs/review/CHECKPOINT_4.md logs/public/reviews/CHECKPOINT_4.md
+$ echo '0 logs/public/reviews/CHECKPOINT_4.md'
+$ for f in logs/public/reviews/* logs/public/review-logs/*
+$$ grep -c '^>'
+$$$ basename logs/public/reviews/G00_review.md
+$$ diff logs/review/G00_review.md logs/public/reviews/G00_review.md
+$ echo '1 logs/public/reviews/G00_review.md'
+$ for f in logs/public/reviews/* logs/public/review-logs/*
+$$$ basename logs/public/reviews/G01_review.md
+$$ grep -c '^>'
+$$ diff logs/review/G01_review.md logs/public/reviews/G01_review.md
+$ echo '0 logs/public/reviews/G01_review.md'
+$ for f in logs/public/reviews/* logs/public/review-logs/*
+$$ grep -c '^>'
+$$$ basename logs/public/reviews/G02_review.md
+$$ diff logs/review/G02_review.md logs/public/reviews/G02_review.md
+$ echo '1 logs/public/reviews/G02_review.md'
+$ for f in logs/public/reviews/* logs/public/review-logs/*
+$$ grep -c '^>'
+$$$ basename logs/public/reviews/G03_review.md
+$$ diff logs/review/G03_review.md logs/public/reviews/G03_review.md
+$ echo '0 logs/public/reviews/G03_review.md'
+$ for f in logs/public/reviews/* logs/public/review-logs/*
+$$ grep -c '^>'
+$$$ basename logs/public/reviews/G04_review.md
+$$ diff logs/review/G04_review.md logs/public/reviews/G04_review.md
+$ echo '0 logs/public/reviews/G04_review.md'
+$ for f in logs/public/reviews/* logs/public/review-logs/*
+$$ grep -c '^>'
+$$$ basename logs/public/reviews/G05_review.md
+$$ diff logs/review/G05_review.md logs/public/reviews/G05_review.md
+$ echo '0 logs/public/reviews/G05_review.md'
+$ for f in logs/public/reviews/* logs/public/review-logs/*
+$$ grep -c '^>'
+$$$ basename logs/public/reviews/G05b_review.md
+$$ diff logs/review/G05b_review.md logs/public/reviews/G05b_review.md
+$ echo '0 logs/public/reviews/G05b_review.md'
+$ for f in logs/public/reviews/* logs/public/review-logs/*
+$$ grep -c '^>'
+$$$ basename logs/public/reviews/G06_review.md
+$$ diff logs/review/G06_review.md logs/public/reviews/G06_review.md
+$ echo '0 logs/public/reviews/G06_review.md'
+$ for f in logs/public/reviews/* logs/public/review-logs/*
+$$ grep -c '^>'
+$$$ basename logs/public/reviews/G07_review.md
+$$ diff logs/review/G07_review.md logs/public/reviews/G07_review.md
+$ echo '0 logs/public/reviews/G07_review.md'
+$ for f in logs/public/reviews/* logs/public/review-logs/*
+$$ grep -c '^>'
+$$$ basename logs/public/reviews/G07_run1_review.md
+$$ diff logs/review/G07_run1_review.md logs/public/reviews/G07_run1_review.md
+$ echo '0 logs/public/reviews/G07_run1_review.md'
+$ for f in logs/public/reviews/* logs/public/review-logs/*
+$$ grep -c '^>'
+$$$ basename logs/public/reviews/G08_review.md
+$$ diff logs/review/G08_review.md logs/public/reviews/G08_review.md
+$ echo '0 logs/public/reviews/G08_review.md'
+$ for f in logs/public/reviews/* logs/public/review-logs/*
+$$ grep -c '^>'
+$$$ basename logs/public/reviews/G09_review.md
+$$ diff logs/review/G09_review.md logs/public/reviews/G09_review.md
+$ echo '0 logs/public/reviews/G09_review.md'
+$ for f in logs/public/reviews/* logs/public/review-logs/*
+$$ grep -c '^>'
+$$$ basename logs/public/reviews/G09_run1_review.md
+$$ diff logs/review/G09_run1_review.md logs/public/reviews/G09_run1_review.md
+$ echo '0 logs/public/reviews/G09_run1_review.md'
+$ for f in logs/public/reviews/* logs/public/review-logs/*
+$$ grep -c '^>'
+$$$ basename logs/public/reviews/G10_review.md
+$$ diff logs/review/G10_review.md logs/public/reviews/G10_review.md
+$ echo '0 logs/public/reviews/G10_review.md'
+$ for f in logs/public/reviews/* logs/public/review-logs/*
+$$ grep -c '^>'
+$$$ basename logs/public/reviews/G11_review.md
+$$ diff logs/review/G11_review.md logs/public/reviews/G11_review.md
+$ echo '0 logs/public/reviews/G11_review.md'
+$ for f in logs/public/reviews/* logs/public/review-logs/*
+$$ grep -c '^>'
+$$$ basename logs/public/reviews/G12_review.md
+$$ diff logs/review/G12_review.md logs/public/reviews/G12_review.md
+$ echo '0 logs/public/reviews/G12_review.md'
+$ for f in logs/public/reviews/* logs/public/review-logs/*
+$$ grep -c '^>'
+$$$ basename logs/public/reviews/G13_review.md
+$$ diff logs/review/G13_review.md logs/public/reviews/G13_review.md
+$ echo '0 logs/public/reviews/G13_review.md'
+$ for f in logs/public/reviews/* logs/public/review-logs/*
+$$ grep -c '^>'
+$$$ basename logs/public/reviews/G14_review.md
+$$ diff logs/review/G14_review.md logs/public/reviews/G14_review.md
+$ echo '0 logs/public/reviews/G14_review.md'
+$ for f in logs/public/reviews/* logs/public/review-logs/*
+$$ grep -c '^>'
+$$$ basename logs/public/reviews/G15_review.md
+$$ diff logs/review/G15_review.md logs/public/reviews/G15_review.md
+$ echo '1 logs/public/reviews/G15_review.md'
+$ for f in logs/public/reviews/* logs/public/review-logs/*
+$$ grep -c '^>'
+$$$ basename logs/public/reviews/G15b_review.md
+$$ diff logs/review/G15b_review.md logs/public/reviews/G15b_review.md
+$ echo '0 logs/public/reviews/G15b_review.md'
+$ for f in logs/public/reviews/* logs/public/review-logs/*
+$$ grep -c '^>'
+$$$ basename logs/public/reviews/G16a_review.md
+$$ diff logs/review/G16a_review.md logs/public/reviews/G16a_review.md
+$ echo '0 logs/public/reviews/G16a_review.md'
+$ for f in logs/public/reviews/* logs/public/review-logs/*
+$$ grep -c '^>'
+$$$ basename logs/public/reviews/G16b_review.md
+$$ diff logs/review/G16b_review.md logs/public/reviews/G16b_review.md
+$ echo '0 logs/public/reviews/G16b_review.md'
+$ for f in logs/public/reviews/* logs/public/review-logs/*
+$$ grep -c '^>'
+$$$ basename logs/public/review-logs/G00_20261030T122505Z_7St35c.review.log
+$$ diff logs/review/G00_20261030T122505Z_7St35c.review.log logs/public/review-logs/G00_20261030T122505Z_7St35c.review.log
+$ echo '6 logs/public/review-logs/G00_20261030T122505Z_7St35c.review.log'
+$ for f in logs/public/reviews/* logs/public/review-logs/*
+$$ grep -c '^>'
+$$$ basename logs/public/review-logs/G01_20261030T125107Z_P3Dw1C.review.log
+$$ diff logs/review/G01_20261030T125107Z_P3Dw1C.review.log logs/public/review-logs/G01_20261030T125107Z_P3Dw1C.review.log
+$ echo '0 logs/public/review-logs/G01_20261030T125107Z_P3Dw1C.review.log'
+$ for f in logs/public/reviews/* logs/public/review-logs/*
+$$ grep -c '^>'
+$$$ basename logs/public/review-logs/G02_20261030T130813Z_vP2nrT.review.log
+$$ diff logs/review/G02_20261030T130813Z_vP2nrT.review.log logs/public/review-logs/G02_20261030T130813Z_vP2nrT.review.log
+$ echo '1 logs/public/review-logs/G02_20261030T130813Z_vP2nrT.review.log'
+$ for f in logs/public/reviews/* logs/public/review-logs/*
+$$ grep -c '^>'
+$$$ basename logs/public/review-logs/G03_20261030T132027Z_gN9Ntr.review.log
+$$ diff logs/review/G03_20261030T132027Z_gN9Ntr.review.log logs/public/review-logs/G03_20261030T132027Z_gN9Ntr.review.log
+$ echo '9 logs/public/review-logs/G03_20261030T132027Z_gN9Ntr.review.log'
+$ for f in logs/public/reviews/* logs/public/review-logs/*
+$$ grep -c '^>'
+$$$ basename logs/public/review-logs/G04_20261102T023215Z_DtsO6K.review.log
+$$ diff logs/review/G04_20261102T023215Z_DtsO6K.review.log logs/public/review-logs/G04_20261102T023215Z_DtsO6K.review.log
+$ echo '1 logs/public/review-logs/G04_20261102T023215Z_DtsO6K.review.log'
+$ for f in logs/public/reviews/* logs/public/review-logs/*
+$$ grep -c '^>'
+$$$ basename logs/public/review-logs/G05_20261102T025456Z_lCG0ac.review.log
+$$ diff logs/review/G05_20261102T025456Z_lCG0ac.review.log logs/public/review-logs/G05_20261102T025456Z_lCG0ac.review.log
+$ echo '0 logs/public/review-logs/G05_20261102T025456Z_lCG0ac.review.log'
+$ for f in logs/public/reviews/* logs/public/review-logs/*
+$$ grep -c '^>'
+$$$ basename logs/public/review-logs/G05b_20261102T035410Z_z0g7ji.review.log
+$$ diff logs/review/G05b_20261102T035410Z_z0g7ji.review.log logs/public/review-logs/G05b_20261102T035410Z_z0g7ji.review.log
+$ echo '0 logs/public/review-logs/G05b_20261102T035410Z_z0g7ji.review.log'
+$ for f in logs/public/reviews/* logs/public/review-logs/*
+$$ grep -c '^>'
+$$$ basename logs/public/review-logs/G06_20261102T040430Z_BPbdDC.review.log
+$$ diff logs/review/G06_20261102T040430Z_BPbdDC.review.log logs/public/review-logs/G06_20261102T040430Z_BPbdDC.review.log
+$ echo '0 logs/public/review-logs/G06_20261102T040430Z_BPbdDC.review.log'
+$ for f in logs/public/reviews/* logs/public/review-logs/*
+$$ grep -c '^>'
+$$$ basename logs/public/review-logs/G07_20261102T041114Z_vzwQUZ.review.log
+$$ diff logs/review/G07_20261102T041114Z_vzwQUZ.review.log logs/public/review-logs/G07_20261102T041114Z_vzwQUZ.review.log
+$ echo '0 logs/public/review-logs/G07_20261102T041114Z_vzwQUZ.review.log'
+$ for f in logs/public/reviews/* logs/public/review-logs/*
+$$ grep -c '^>'
+$$$ basename logs/public/review-logs/G07_20261102T084900Z_ZTrxqN.review.log
+$$ diff logs/review/G07_20261102T084900Z_ZTrxqN.review.log logs/public/review-logs/G07_20261102T084900Z_ZTrxqN.review.log
+$ echo '9 logs/public/review-logs/G07_20261102T084900Z_ZTrxqN.review.log'
+$ for f in logs/public/reviews/* logs/public/review-logs/*
+$$ grep -c '^>'
+$$$ basename logs/public/review-logs/G08_20261102T091256Z_nnjq89.review.log
+$$ diff logs/review/G08_20261102T091256Z_nnjq89.review.log logs/public/review-logs/G08_20261102T091256Z_nnjq89.review.log
+$ echo '0 logs/public/review-logs/G08_20261102T091256Z_nnjq89.review.log'
+$ for f in logs/public/reviews/* logs/public/review-logs/*
+$$ grep -c '^>'
+$$$ basename logs/public/review-logs/G08_20261102T112611Z_dl5kmx.review.log
+$$ diff logs/review/G08_20261102T112611Z_dl5kmx.review.log logs/public/review-logs/G08_20261102T112611Z_dl5kmx.review.log
+$ echo '0 logs/public/review-logs/G08_20261102T112611Z_dl5kmx.review.log'
+$ for f in logs/public/reviews/* logs/public/review-logs/*
+$$ grep -c '^>'
+$$$ basename logs/public/review-logs/G08_20261102T112702Z_6hnn8n.review.log
+$$ diff logs/review/G08_20261102T112702Z_6hnn8n.review.log logs/public/review-logs/G08_20261102T112702Z_6hnn8n.review.log
+$ echo '0 logs/public/review-logs/G08_20261102T112702Z_6hnn8n.review.log'
+$ for f in logs/public/reviews/* logs/public/review-logs/*
+$$ grep -c '^>'
+$$$ basename logs/public/review-logs/G09_20261102T114120Z_PLjTHu.review.log
+$$ diff logs/review/G09_20261102T114120Z_PLjTHu.review.log logs/public/review-logs/G09_20261102T114120Z_PLjTHu.review.log
+$ echo '0 logs/public/review-logs/G09_20261102T114120Z_PLjTHu.review.log'
+$ for f in logs/public/reviews/* logs/public/review-logs/*
+$$ grep -c '^>'
+$$$ basename logs/public/review-logs/G09_20261102T115757Z_b6e4Mk.review.log
+$$ diff logs/review/G09_20261102T115757Z_b6e4Mk.review.log logs/public/review-logs/G09_20261102T115757Z_b6e4Mk.review.log
+$ echo '0 logs/public/review-logs/G09_20261102T115757Z_b6e4Mk.review.log'
+$ for f in logs/public/reviews/* logs/public/review-logs/*
+$$ grep -c '^>'
+$$$ basename logs/public/review-logs/G10_20261102T131021Z_RbQpnI.review.log
+$$ diff logs/review/G10_20261102T131021Z_RbQpnI.review.log logs/public/review-logs/G10_20261102T131021Z_RbQpnI.review.log
+$ echo '0 logs/public/review-logs/G10_20261102T131021Z_RbQpnI.review.log'
+$ for f in logs/public/reviews/* logs/public/review-logs/*
+$$ grep -c '^>'
+$$$ basename logs/public/review-logs/G11_20261102T132117Z_URiLe8.review.log
+$$ diff logs/review/G11_20261102T132117Z_URiLe8.review.log logs/public/review-logs/G11_20261102T132117Z_URiLe8.review.log
+$ echo '0 logs/public/review-logs/G11_20261102T132117Z_URiLe8.review.log'
+$ for f in logs/public/reviews/* logs/public/review-logs/*
+$$ grep -c '^>'
+$$$ basename logs/public/review-logs/G12_20261104T091034Z_XoudcY.review.log
+$$ diff logs/review/G12_20261104T091034Z_XoudcY.review.log logs/public/review-logs/G12_20261104T091034Z_XoudcY.review.log
+$ echo '0 logs/public/review-logs/G12_20261104T091034Z_XoudcY.review.log'
+$ for f in logs/public/reviews/* logs/public/review-logs/*
+$$ grep -c '^>'
+$$$ basename logs/public/review-logs/G13_20261104T111257Z_8tPBjL.review.log
+$$ diff logs/review/G13_20261104T111257Z_8tPBjL.review.log logs/public/review-logs/G13_20261104T111257Z_8tPBjL.review.log
+$ echo '0 logs/public/review-logs/G13_20261104T111257Z_8tPBjL.review.log'
+$ for f in logs/public/reviews/* logs/public/review-logs/*
+$$ grep -c '^>'
+$$$ basename logs/public/review-logs/G14_20261104T123248Z_16kjwp.review.log
+$$ diff logs/review/G14_20261104T123248Z_16kjwp.review.log logs/public/review-logs/G14_20261104T123248Z_16kjwp.review.log
+$ echo '0 logs/public/review-logs/G14_20261104T123248Z_16kjwp.review.log'
+$ for f in logs/public/reviews/* logs/public/review-logs/*
+$$ grep -c '^>'
+$$$ basename logs/public/review-logs/G15_20261104T125134Z_jrn7fa.review.log
+$$ diff logs/review/G15_20261104T125134Z_jrn7fa.review.log logs/public/review-logs/G15_20261104T125134Z_jrn7fa.review.log
+$ echo '1 logs/public/review-logs/G15_20261104T125134Z_jrn7fa.review.log'
+$ for f in logs/public/reviews/* logs/public/review-logs/*
+$$ grep -c '^>'
+$$$ basename logs/public/review-logs/G15b_20261104T130510Z_X7qKqK.review.log
+$$ diff logs/review/G15b_20261104T130510Z_X7qKqK.review.log logs/public/review-logs/G15b_20261104T130510Z_X7qKqK.review.log
+$ echo '0 logs/public/review-logs/G15b_20261104T130510Z_X7qKqK.review.log'
+$ for f in logs/public/reviews/* logs/public/review-logs/*
+$$ grep -c '^>'
+$$$ basename logs/public/review-logs/G16a_20261104T132430Z_uYpTAo.review.log
+$$ diff logs/review/G16a_20261104T132430Z_uYpTAo.review.log logs/public/review-logs/G16a_20261104T132430Z_uYpTAo.review.log
+$ echo '11 logs/public/review-logs/G16a_20261104T132430Z_uYpTAo.review.log'
+$ for f in logs/public/reviews/* logs/public/review-logs/*
+$$ grep -c '^>'
+$$$ basename logs/public/review-logs/G16b_20261105T082221Z_2C36LY.review.log
+$$ diff logs/review/G16b_20261105T082221Z_2C36LY.review.log logs/public/review-logs/G16b_20261105T082221Z_2C36LY.review.log
+$ echo '13 logs/public/review-logs/G16b_20261105T082221Z_2C36LY.review.log'
+1 logs/public/reviews/CHECKPOINT_1.md
+1 logs/public/reviews/CHECKPOINT_2.md
+1 logs/public/reviews/CHECKPOINT_3.md
+1 logs/public/reviews/G00_review.md
+1 logs/public/reviews/G02_review.md
+1 logs/public/reviews/G15_review.md
+6 logs/public/review-logs/G00_20261030T122505Z_7St35c.review.log
+1 logs/public/review-logs/G02_20261030T130813Z_vP2nrT.review.log
+9 logs/public/review-logs/G03_20261030T132027Z_gN9Ntr.review.log
+1 logs/public/review-logs/G04_20261102T023215Z_DtsO6K.review.log
+9 logs/public/review-logs/G07_20261102T084900Z_ZTrxqN.review.log
+1 logs/public/review-logs/G15_20261104T125134Z_jrn7fa.review.log
+11 logs/public/review-logs/G16a_20261104T132430Z_uYpTAo.review.log
+13 logs/public/review-logs/G16b_20261105T082221Z_2C36LY.review.log
+$ cat logs/public/COMMIT_MAP.txt
+# reviewed-hash after-G16b published-hash subject
+a30129d 0b0bcf9 0b0bcf9 G00-G01: host baseline and project skeleton
+3ee5ab0 313410a 313410a G02: pin IBM ACE-RISCV 1ebdebf and record source provenance
+5cbf58c 50061db 50061db G03: install llvm-dev required by the upstream CI
+6f2e410 68bd1f9 68bd1f9 G04: install Rust nightly-2026-03-23; checkpoint 1
+22bbf68 105f317 105f317 G05: audit upstream build and run scripts (read-only)
+75ed2b3 57840a8 28b6b01 G05b: safety patches for build parallelism and run scripts
+1e7d46d f435f6f 7ebe234 G06: RISC-V GNU toolchain (make devtools)
+968706f e022608 226beae G07: ACE tools and TAP tool (make tools)
+f949474 6d06ebc ccee6e0 G08: QEMU 8.2.1 for the emulated platform (make emulator)
+08fca23 24cfe6a 8a91c41 G09: hypervisor image (make hypervisor); checkpoint 2
+5617893 08e16ec f5cac5e G10: OpenSBI with the ACE security monitor (make firmware)
+e1eb63a 096fa30 439af5b G11: confidential VM, TAPs, kvmtool (make confidential_vms)
+fd349d8 2f45ea5 46335d9 G12: integrated rebuild and end-to-end artifact audit
+4faa6fe 3fccab4 c7786aa G13: boot OpenSBI, the ACE security monitor, and the Linux hypervisor
+03ddfa0 56071b8 b02575c G14: confidential VM, local attestation, and the demo secret; checkpoint 3
+829f07a 3de21b0 92889ef G15: upstream regression test (ace test), unchanged
+52d2c67 8b70d96 c9b9c10 G15b: negative control of the local attestation
+8200344 0652ec4 2ffb206 G16a: publication audit (read-only)
+- 64e2427 9b288a7 G16b: license, notice, README, and sanitized evidence for publication
+- 35fbd8a 9f70217 G16b: publication preparation (gate script and document)
+$ stop_if_failed 'step 6'
+$ section '7. Commit the updated publication material (local only, UTC)'
+
+===== 7. Commit the updated publication material (local only, UTC) =====
+$ git add scripts/sanitize_evidence.sh logs/public
+$ git status --short
+M  logs/public/COMMIT_MAP.txt
+M  logs/public/ORIGINALS.sha256
+M  logs/public/SHA256SUMS
+A  logs/public/review-logs/G16b_20261105T082221Z_2C36LY.review.log
+A  logs/public/reviews/CHECKPOINT_4.md
+A  logs/public/reviews/G16b_review.md
+M  scripts/sanitize_evidence.sh
+?? docs/G16c_port_masking.md
+?? scripts/G16c_port_masking.sh
+$ TZ=UTC0
+$ git commit -q -m 'G16c: listening ports replaced in the published material'
+$ git log -1 '--format=%h  %aI  %an <%ae>  %s'
+cc96cec  2026-11-05T08:44:54+00:00  junlinh12 <238169016+junlinh12@users.noreply.github.com>  G16c: listening ports replaced in the published material
+$ stop_if_failed 'step 7'
+$ section '8. Audit everything that will be pushed, in the whole history'
+
+===== 8. Audit everything that will be pushed, in the whole history =====
+$$ env -u TZ date +%:z
+$ LOCAL_OFFSET=<local offset>
+$$ env -u TZ date +%z
+$ LOCAL_OFFSET_COMPACT=<local offset>
+$$ env -u TZ date +%Z
+$ LOCAL_ZONE=<local zone>
+$$ timedatectl show -p Timezone --value
+$ LOCAL_TZNAME=<local zone>
+$ test -n <local offset> -a -n <local offset> -a -n <local zone> -a -n <local zone>
+$$ git rev-list --all
+$ git grep -l -I -w -F -f ~/projects/IBM-ACE-On-QEMU-Reproduction/build/private/listening-ports-high.txt cc96cec9bec1183b10a6779d9506a193c08e9c2a 9f70217385516b37e6ca35afb912c05be3ab01ee 9b288a7d08f01ba6c13917236ed89c429580d033 2ffb2069c83914c4bf8ba24331ce7fc05b4c0ead c9b9c107b5033b1fc5f6956514a359c97112f3f1 92889ef9087d13a314c6ef902a503a24c7fd9e1e b02575c8dab59a2eea7653234d2444f1b475644b c7786aa398f4e361c2ecfe7d52399bb4e4140cd2 46335d9ca81066b396857a0569c7b1b173dee99e 439af5b7826d2f92abf11f35b90905ff94b82bd1 f5cac5e9b06de5da6722853966b4fa0acd671d3b 8a91c41d9a90c3cc0081310d23465c7fcf15016b ccee6e07a6806d09784bb1afaba0e22ac56ac101 226beaed6b037527b3e50b80661888849c6a93ce 7ebe2346d70c6b296775c66d9ec2bfac6e43ff4b 28b6b01317dda294e9a11556967f584b397ccbc4 105f31719fb3a82cbb124621a17d8bdf86613ab4 68bd1f9e2c4317d71c0984e436aa63d2689a164a 50061dbfc191bb2a5f6e6f3845e8b0f90e0e5280 313410a8027072921c0752d81976077bcecb28bf 0b0bcf9077a77bf7ef1f59f9ef3621fb2494ab90
+$ echo '(listening ports from 1024: not found)'
+(listening ports from 1024: not found)
+$$ git rev-list --all
+$ git grep -n -I -E 'Listening TCP ports: [0-9]|already in use: [0-9]|listens on [0-9]+ \(G00\)|for example [0-9]+, G00' cc96cec9bec1183b10a6779d9506a193c08e9c2a 9f70217385516b37e6ca35afb912c05be3ab01ee 9b288a7d08f01ba6c13917236ed89c429580d033 2ffb2069c83914c4bf8ba24331ce7fc05b4c0ead c9b9c107b5033b1fc5f6956514a359c97112f3f1 92889ef9087d13a314c6ef902a503a24c7fd9e1e b02575c8dab59a2eea7653234d2444f1b475644b c7786aa398f4e361c2ecfe7d52399bb4e4140cd2 46335d9ca81066b396857a0569c7b1b173dee99e 439af5b7826d2f92abf11f35b90905ff94b82bd1 f5cac5e9b06de5da6722853966b4fa0acd671d3b 8a91c41d9a90c3cc0081310d23465c7fcf15016b ccee6e07a6806d09784bb1afaba0e22ac56ac101 226beaed6b037527b3e50b80661888849c6a93ce 7ebe2346d70c6b296775c66d9ec2bfac6e43ff4b 28b6b01317dda294e9a11556967f584b397ccbc4 105f31719fb3a82cbb124621a17d8bdf86613ab4 68bd1f9e2c4317d71c0984e436aa63d2689a164a 50061dbfc191bb2a5f6e6f3845e8b0f90e0e5280 313410a8027072921c0752d81976077bcecb28bf 0b0bcf9077a77bf7ef1f59f9ef3621fb2494ab90
+$ echo '(sentences naming a listening port: not found)'
+(sentences naming a listening port: not found)
+$ awk '/^\$ ss -ltnH$/ {f = 1; next} f && /^\$ / {next} f && /^[0-9]+$/ {print FILENAME ": " FNR; next} {f = 0}' logs/public/review-logs/G00_20261030T122505Z_7St35c.review.log logs/public/review-logs/G01_20261030T125107Z_P3Dw1C.review.log logs/public/review-logs/G02_20261030T130813Z_vP2nrT.review.log logs/public/review-logs/G03_20261030T132027Z_gN9Ntr.review.log logs/public/review-logs/G04_20261102T023215Z_DtsO6K.review.log logs/public/review-logs/G05_20261102T025456Z_lCG0ac.review.log logs/public/review-logs/G05b_20261102T035410Z_z0g7ji.review.log logs/public/review-logs/G06_20261102T040430Z_BPbdDC.review.log logs/public/review-logs/G07_20261102T041114Z_vzwQUZ.review.log logs/public/review-logs/G07_20261102T084900Z_ZTrxqN.review.log logs/public/review-logs/G08_20261102T091256Z_nnjq89.review.log logs/public/review-logs/G08_20261102T112611Z_dl5kmx.review.log logs/public/review-logs/G08_20261102T112702Z_6hnn8n.review.log logs/public/review-logs/G09_20261102T114120Z_PLjTHu.review.log logs/public/review-logs/G09_20261102T115757Z_b6e4Mk.review.log logs/public/review-logs/G10_20261102T131021Z_RbQpnI.review.log logs/public/review-logs/G11_20261102T132117Z_URiLe8.review.log logs/public/review-logs/G12_20261104T091034Z_XoudcY.review.log logs/public/review-logs/G13_20261104T111257Z_8tPBjL.review.log logs/public/review-logs/G14_20261104T123248Z_16kjwp.review.log logs/public/review-logs/G15_20261104T125134Z_jrn7fa.review.log logs/public/review-logs/G15b_20261104T130510Z_X7qKqK.review.log logs/public/review-logs/G16a_20261104T132430Z_uYpTAo.review.log logs/public/review-logs/G16b_20261105T082221Z_2C36LY.review.log
+$$$ git rev-list --all
+$$ git grep -l -I -w -F -f ~/projects/IBM-ACE-On-QEMU-Reproduction/build/private/listening-ports-high.txt cc96cec9bec1183b10a6779d9506a193c08e9c2a 9f70217385516b37e6ca35afb912c05be3ab01ee 9b288a7d08f01ba6c13917236ed89c429580d033 2ffb2069c83914c4bf8ba24331ce7fc05b4c0ead c9b9c107b5033b1fc5f6956514a359c97112f3f1 92889ef9087d13a314c6ef902a503a24c7fd9e1e b02575c8dab59a2eea7653234d2444f1b475644b c7786aa398f4e361c2ecfe7d52399bb4e4140cd2 46335d9ca81066b396857a0569c7b1b173dee99e 439af5b7826d2f92abf11f35b90905ff94b82bd1 f5cac5e9b06de5da6722853966b4fa0acd671d3b 8a91c41d9a90c3cc0081310d23465c7fcf15016b ccee6e07a6806d09784bb1afaba0e22ac56ac101 226beaed6b037527b3e50b80661888849c6a93ce 7ebe2346d70c6b296775c66d9ec2bfac6e43ff4b 28b6b01317dda294e9a11556967f584b397ccbc4 105f31719fb3a82cbb124621a17d8bdf86613ab4 68bd1f9e2c4317d71c0984e436aa63d2689a164a 50061dbfc191bb2a5f6e6f3845e8b0f90e0e5280 313410a8027072921c0752d81976077bcecb28bf 0b0bcf9077a77bf7ef1f59f9ef3621fb2494ab90
+$ test -z ''
+$$$ git rev-list --all
+$$ git grep -l -I -E 'Listening TCP ports: [0-9]|already in use: [0-9]|listens on [0-9]+ \(G00\)|for example [0-9]+, G00' cc96cec9bec1183b10a6779d9506a193c08e9c2a 9f70217385516b37e6ca35afb912c05be3ab01ee 9b288a7d08f01ba6c13917236ed89c429580d033 2ffb2069c83914c4bf8ba24331ce7fc05b4c0ead c9b9c107b5033b1fc5f6956514a359c97112f3f1 92889ef9087d13a314c6ef902a503a24c7fd9e1e b02575c8dab59a2eea7653234d2444f1b475644b c7786aa398f4e361c2ecfe7d52399bb4e4140cd2 46335d9ca81066b396857a0569c7b1b173dee99e 439af5b7826d2f92abf11f35b90905ff94b82bd1 f5cac5e9b06de5da6722853966b4fa0acd671d3b 8a91c41d9a90c3cc0081310d23465c7fcf15016b ccee6e07a6806d09784bb1afaba0e22ac56ac101 226beaed6b037527b3e50b80661888849c6a93ce 7ebe2346d70c6b296775c66d9ec2bfac6e43ff4b 28b6b01317dda294e9a11556967f584b397ccbc4 105f31719fb3a82cbb124621a17d8bdf86613ab4 68bd1f9e2c4317d71c0984e436aa63d2689a164a 50061dbfc191bb2a5f6e6f3845e8b0f90e0e5280 313410a8027072921c0752d81976077bcecb28bf 0b0bcf9077a77bf7ef1f59f9ef3621fb2494ab90
+$ test -z ''
+$$ awk '/^\$ ss -ltnH$/ {f = 1; next} f && /^\$ / {next} f && /^[0-9]+$/ {print FILENAME; next} {f = 0}' logs/public/review-logs/G00_20261030T122505Z_7St35c.review.log logs/public/review-logs/G01_20261030T125107Z_P3Dw1C.review.log logs/public/review-logs/G02_20261030T130813Z_vP2nrT.review.log logs/public/review-logs/G03_20261030T132027Z_gN9Ntr.review.log logs/public/review-logs/G04_20261102T023215Z_DtsO6K.review.log logs/public/review-logs/G05_20261102T025456Z_lCG0ac.review.log logs/public/review-logs/G05b_20261102T035410Z_z0g7ji.review.log logs/public/review-logs/G06_20261102T040430Z_BPbdDC.review.log logs/public/review-logs/G07_20261102T041114Z_vzwQUZ.review.log logs/public/review-logs/G07_20261102T084900Z_ZTrxqN.review.log logs/public/review-logs/G08_20261102T091256Z_nnjq89.review.log logs/public/review-logs/G08_20261102T112611Z_dl5kmx.review.log logs/public/review-logs/G08_20261102T112702Z_6hnn8n.review.log logs/public/review-logs/G09_20261102T114120Z_PLjTHu.review.log logs/public/review-logs/G09_20261102T115757Z_b6e4Mk.review.log logs/public/review-logs/G10_20261102T131021Z_RbQpnI.review.log logs/public/review-logs/G11_20261102T132117Z_URiLe8.review.log logs/public/review-logs/G12_20261104T091034Z_XoudcY.review.log logs/public/review-logs/G13_20261104T111257Z_8tPBjL.review.log logs/public/review-logs/G14_20261104T123248Z_16kjwp.review.log logs/public/review-logs/G15_20261104T125134Z_jrn7fa.review.log logs/public/review-logs/G15b_20261104T130510Z_X7qKqK.review.log logs/public/review-logs/G16a_20261104T132430Z_uYpTAo.review.log logs/public/review-logs/G16b_20261105T082221Z_2C36LY.review.log
+$ test -z ''
+$$$ id -un
+$$$ hostname
+$$$ git rev-list --all
+$$ git grep -l -I -w -F -e <user> -e <host> cc96cec9bec1183b10a6779d9506a193c08e9c2a 9f70217385516b37e6ca35afb912c05be3ab01ee 9b288a7d08f01ba6c13917236ed89c429580d033 2ffb2069c83914c4bf8ba24331ce7fc05b4c0ead c9b9c107b5033b1fc5f6956514a359c97112f3f1 92889ef9087d13a314c6ef902a503a24c7fd9e1e b02575c8dab59a2eea7653234d2444f1b475644b c7786aa398f4e361c2ecfe7d52399bb4e4140cd2 46335d9ca81066b396857a0569c7b1b173dee99e 439af5b7826d2f92abf11f35b90905ff94b82bd1 f5cac5e9b06de5da6722853966b4fa0acd671d3b 8a91c41d9a90c3cc0081310d23465c7fcf15016b ccee6e07a6806d09784bb1afaba0e22ac56ac101 226beaed6b037527b3e50b80661888849c6a93ce 7ebe2346d70c6b296775c66d9ec2bfac6e43ff4b 28b6b01317dda294e9a11556967f584b397ccbc4 105f31719fb3a82cbb124621a17d8bdf86613ab4 68bd1f9e2c4317d71c0984e436aa63d2689a164a 50061dbfc191bb2a5f6e6f3845e8b0f90e0e5280 313410a8027072921c0752d81976077bcecb28bf 0b0bcf9077a77bf7ef1f59f9ef3621fb2494ab90
+$ test -z ''
+$$$ git rev-list --all
+$$ git grep -l -I -F -e ~ cc96cec9bec1183b10a6779d9506a193c08e9c2a 9f70217385516b37e6ca35afb912c05be3ab01ee 9b288a7d08f01ba6c13917236ed89c429580d033 2ffb2069c83914c4bf8ba24331ce7fc05b4c0ead c9b9c107b5033b1fc5f6956514a359c97112f3f1 92889ef9087d13a314c6ef902a503a24c7fd9e1e b02575c8dab59a2eea7653234d2444f1b475644b c7786aa398f4e361c2ecfe7d52399bb4e4140cd2 46335d9ca81066b396857a0569c7b1b173dee99e 439af5b7826d2f92abf11f35b90905ff94b82bd1 f5cac5e9b06de5da6722853966b4fa0acd671d3b 8a91c41d9a90c3cc0081310d23465c7fcf15016b ccee6e07a6806d09784bb1afaba0e22ac56ac101 226beaed6b037527b3e50b80661888849c6a93ce 7ebe2346d70c6b296775c66d9ec2bfac6e43ff4b 28b6b01317dda294e9a11556967f584b397ccbc4 105f31719fb3a82cbb124621a17d8bdf86613ab4 68bd1f9e2c4317d71c0984e436aa63d2689a164a 50061dbfc191bb2a5f6e6f3845e8b0f90e0e5280 313410a8027072921c0752d81976077bcecb28bf 0b0bcf9077a77bf7ef1f59f9ef3621fb2494ab90
+$ test -z ''
+$$$ git rev-list --all
+$$ git grep -l -I -E '/home/[A-Za-z0-9_]' cc96cec9bec1183b10a6779d9506a193c08e9c2a 9f70217385516b37e6ca35afb912c05be3ab01ee 9b288a7d08f01ba6c13917236ed89c429580d033 2ffb2069c83914c4bf8ba24331ce7fc05b4c0ead c9b9c107b5033b1fc5f6956514a359c97112f3f1 92889ef9087d13a314c6ef902a503a24c7fd9e1e b02575c8dab59a2eea7653234d2444f1b475644b c7786aa398f4e361c2ecfe7d52399bb4e4140cd2 46335d9ca81066b396857a0569c7b1b173dee99e 439af5b7826d2f92abf11f35b90905ff94b82bd1 f5cac5e9b06de5da6722853966b4fa0acd671d3b 8a91c41d9a90c3cc0081310d23465c7fcf15016b ccee6e07a6806d09784bb1afaba0e22ac56ac101 226beaed6b037527b3e50b80661888849c6a93ce 7ebe2346d70c6b296775c66d9ec2bfac6e43ff4b 28b6b01317dda294e9a11556967f584b397ccbc4 105f31719fb3a82cbb124621a17d8bdf86613ab4 68bd1f9e2c4317d71c0984e436aa63d2689a164a 50061dbfc191bb2a5f6e6f3845e8b0f90e0e5280 313410a8027072921c0752d81976077bcecb28bf 0b0bcf9077a77bf7ef1f59f9ef3621fb2494ab90
+$ test -z ''
+$$$ git rev-list --all
+$$ git grep -l -I -F -e <local offset> -e <local offset> -e <local zone> cc96cec9bec1183b10a6779d9506a193c08e9c2a 9f70217385516b37e6ca35afb912c05be3ab01ee 9b288a7d08f01ba6c13917236ed89c429580d033 2ffb2069c83914c4bf8ba24331ce7fc05b4c0ead c9b9c107b5033b1fc5f6956514a359c97112f3f1 92889ef9087d13a314c6ef902a503a24c7fd9e1e b02575c8dab59a2eea7653234d2444f1b475644b c7786aa398f4e361c2ecfe7d52399bb4e4140cd2 46335d9ca81066b396857a0569c7b1b173dee99e 439af5b7826d2f92abf11f35b90905ff94b82bd1 f5cac5e9b06de5da6722853966b4fa0acd671d3b 8a91c41d9a90c3cc0081310d23465c7fcf15016b ccee6e07a6806d09784bb1afaba0e22ac56ac101 226beaed6b037527b3e50b80661888849c6a93ce 7ebe2346d70c6b296775c66d9ec2bfac6e43ff4b 28b6b01317dda294e9a11556967f584b397ccbc4 105f31719fb3a82cbb124621a17d8bdf86613ab4 68bd1f9e2c4317d71c0984e436aa63d2689a164a 50061dbfc191bb2a5f6e6f3845e8b0f90e0e5280 313410a8027072921c0752d81976077bcecb28bf 0b0bcf9077a77bf7ef1f59f9ef3621fb2494ab90
+$ test -z ''
+$$$ git rev-list --all
+$$ git grep -l -I -w -F -e <local zone> cc96cec9bec1183b10a6779d9506a193c08e9c2a 9f70217385516b37e6ca35afb912c05be3ab01ee 9b288a7d08f01ba6c13917236ed89c429580d033 2ffb2069c83914c4bf8ba24331ce7fc05b4c0ead c9b9c107b5033b1fc5f6956514a359c97112f3f1 92889ef9087d13a314c6ef902a503a24c7fd9e1e b02575c8dab59a2eea7653234d2444f1b475644b c7786aa398f4e361c2ecfe7d52399bb4e4140cd2 46335d9ca81066b396857a0569c7b1b173dee99e 439af5b7826d2f92abf11f35b90905ff94b82bd1 f5cac5e9b06de5da6722853966b4fa0acd671d3b 8a91c41d9a90c3cc0081310d23465c7fcf15016b ccee6e07a6806d09784bb1afaba0e22ac56ac101 226beaed6b037527b3e50b80661888849c6a93ce 7ebe2346d70c6b296775c66d9ec2bfac6e43ff4b 28b6b01317dda294e9a11556967f584b397ccbc4 105f31719fb3a82cbb124621a17d8bdf86613ab4 68bd1f9e2c4317d71c0984e436aa63d2689a164a 50061dbfc191bb2a5f6e6f3845e8b0f90e0e5280 313410a8027072921c0752d81976077bcecb28bf 0b0bcf9077a77bf7ef1f59f9ef3621fb2494ab90
+$ test -z ''
+$$$ git rev-list --all
+$$ git grep -l -I -E 'Requested-By: <removed>
+$ test -z ''
+$$$ git rev-list --all
+$$ git grep -l -I -E 'BEGIN [A-Z ]*PRIVATE KEY|ghp_[A-Za-z0-9]{20,}|github_pat_[A-Za-z0-9_]{20,}|AKIA[0-9A-Z]{16}|xox[baprs]-[A-Za-z0-9-]{10,}' cc96cec9bec1183b10a6779d9506a193c08e9c2a 9f70217385516b37e6ca35afb912c05be3ab01ee 9b288a7d08f01ba6c13917236ed89c429580d033 2ffb2069c83914c4bf8ba24331ce7fc05b4c0ead c9b9c107b5033b1fc5f6956514a359c97112f3f1 92889ef9087d13a314c6ef902a503a24c7fd9e1e b02575c8dab59a2eea7653234d2444f1b475644b c7786aa398f4e361c2ecfe7d52399bb4e4140cd2 46335d9ca81066b396857a0569c7b1b173dee99e 439af5b7826d2f92abf11f35b90905ff94b82bd1 f5cac5e9b06de5da6722853966b4fa0acd671d3b 8a91c41d9a90c3cc0081310d23465c7fcf15016b ccee6e07a6806d09784bb1afaba0e22ac56ac101 226beaed6b037527b3e50b80661888849c6a93ce 7ebe2346d70c6b296775c66d9ec2bfac6e43ff4b 28b6b01317dda294e9a11556967f584b397ccbc4 105f31719fb3a82cbb124621a17d8bdf86613ab4 68bd1f9e2c4317d71c0984e436aa63d2689a164a 50061dbfc191bb2a5f6e6f3845e8b0f90e0e5280 313410a8027072921c0752d81976077bcecb28bf 0b0bcf9077a77bf7ef1f59f9ef3621fb2494ab90
+$ test -z ''
+$$ git log --format=%aI%n%cI
+$$ grep -c -v '+00:00$'
+$ test 0 -eq 0
+$ cd logs/public
+$ sha256sum -c --quiet SHA256SUMS
+$ git log --format=%ae%n%ce
+$ sort
+$ uniq -c
+     42 238169016+junlinh12@users.noreply.github.com
+$ section '9. Record the manifest of what will be pushed'
+
+===== 9. Record the manifest of what will be pushed =====
+$ git ls-files
+$ wc -l
+108
+$ git ls-files -z
+$ xargs -0 du -ch
+$ tail -n 1
+4.2M	total
+$ git ls-files -z
+$ xargs -0 sha256sum
+ef7267d77254a4f03c699a78ad8459fd0bcc26216f70d67482929be5f8e5fdd1  .gitignore
+c71d239df91726fc519c6eb72d318ec65820627232b2f796219e87dcf35d0ab4  LICENSE
+4471545534053cbb255144d75fc76683695ba390c33d048f12c93216a185aa13  NOTICE
+8bcf3e3afb1c34524803e47ef9015c64e52139cb9e6ec70efa69185cf13da045  PROJECT_CHARTER.md
+51b7bd444daa95decdd7104ad0a21d36bc31a37aef48cb788e2a855e1127968c  README.md
+c542d734b4eabd0a4f94a8284f7f8522138f32512f0c6668a85f471321f98666  docs/G00_host_baseline.md
+753a5f6a1fa1b6a46f62255c4a2321f22c2cc0b466b8849b2df1f483442a7a43  docs/G01_project_skeleton.md
+7bc63cf21df5ebb99e249d328b75e08bd42fe278b1d549b2ca5b5fc895a00ef2  docs/G02_fetch_upstream.md
+da550142d3a122c52386246b3fd0c81a1b2aa7c98d93ad7fecb483d754f382ca  docs/G03_apt_packages.md
+21fa441e72b66a4ba79d7d78b093614bf6e8a36b6481d7ed93d168f6d6a101b4  docs/G04_rust_toolchain.md
+5a6abf58568e6bbf0456f7f058f7314001c3850d234055752b983bd9c73578fa  docs/G05_audit_build_scripts.md
+61d201bd74e3bc15ade9acae359697fcff1d1055b561e482b90869fc4501e8ad  docs/G05b_apply_safety_patches.md
+9982b09b5040cddc58d26f08964f3db62d10b3b0909ea900c09065a38b7d7455  docs/G06_devtools.md
+a4b5f034792b2729f1eddf0e1b78c990bc4983910458c9d2f5cad1d3dd383214  docs/G07_tools.md
+3d06c1d028abc05960e17c867f3ee947924dc825efaa170d02905dd10ee0eb2c  docs/G08_emulator.md
+e1b757cf1d767395e0e91c57428e6bbe632c9c08ff052a05ab8695a71d15116c  docs/G09_hypervisor.md
+5c20ff45c178d236a16908ac258472e9c96d53c83e5105b6e957a96cb2ed4274  docs/G10_firmware.md
+eddfc9b50c7f3682ebbe154b52caad1458486276e08a8e4f995f0a2b155df778  docs/G11_confidential_vms.md
+f16fbda417ffd243034ec1480566534dc8d917e7431e7e7054d7a113b55e9252  docs/G12_rebuild_all.md
+198a420cbe10f9ac98cfcaa0e1478a12cb9e27a119b840d69a59c5d6c4c5d584  docs/G13_boot_hypervisor.md
+6211dd43edd8567961a5053a75e9f1fb1caeb934cbafa4d8b04c03488437ca0d  docs/G14_attestation.md
+c8709e07acc5cd7eab817d662242c53f63a64e52ddaeeb7ec6dcfab30b648e60  docs/G15_regression_test.md
+74d44e357545d48b7bcad5fbeca33593576e3ce23be8cd195b891f4ec328e19a  docs/G15b_negative_control.md
+e6dbe88541943698610f6981ace9f2a8ba816f54690180e3536a2533715b123f  docs/G16a_publication_audit.md
+cf1d1a565ceed569286ed59f7678a949531988cbb4154e5c88a05896cb64ac8e  docs/G16b_publication_prep.md
+a590b98e43d18de93f4ef71792d78126d5c10eadc131dacde12841ae38ac7533  docs/PUBLICATION.md
+79f738afe456dcd2233743798cc8ac67e7b274a0634f72ff48e0d75087e1b999  docs/SAFETY_AUDIT.md
+e3639f17752b4e0452d53b3d9f67298b0315ed36fa93d375cb037f068723199f  docs/SOURCE_PROVENANCE.md
+e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855  logs/public/.keep
+df4a37aa7d3f6c1e95d1f71e74a25796c4e4971c7be2c29d60d1d169fdb7b6ce  logs/public/COMMIT_MAP.txt
+4f7214b32874a8016f5e9d88112df3ec7c1290df867cca5fdb24ca315142115c  logs/public/ORIGINALS.sha256
+ac0e603fea38af21cfb0fc5b2b27c100a0f733ab35d17cdd342ebe2e8a70b405  logs/public/SHA256SUMS
+29ab5a34f542c8f4a9fe4006ab0350fb6a09015012b82e17240912db66185ab6  logs/public/review-logs/G00_20261030T122505Z_7St35c.review.log
+490d384f4c3ff2203d728c8cc78f2c5a96f774c90f4c773b7e478e3518eeea3e  logs/public/review-logs/G01_20261030T125107Z_P3Dw1C.review.log
+54046b941e2e2c769d94a4139b28fe7fb033564465957b38087b1231ae1831be  logs/public/review-logs/G02_20261030T130813Z_vP2nrT.review.log
+74bedf8b244812a2d598d2eca9f6524c912c15e3bbfb3c7f5114206147e99457  logs/public/review-logs/G03_20261030T132027Z_gN9Ntr.review.log
+44e7ac1dc81e501559147a9ea761971dd4a15421222c2dcb206d86cfe6ce3b19  logs/public/review-logs/G04_20261102T023215Z_DtsO6K.review.log
+780adfc9b61846075f8c4066a673985dcd71c684fe1290aa3b2e2454873f0620  logs/public/review-logs/G05_20261102T025456Z_lCG0ac.review.log
+6b31175a38e65f991e6961e0107115e2addc39ead364fcc6eca1509355cc196c  logs/public/review-logs/G05b_20261102T035410Z_z0g7ji.review.log
+d09e43627ed06b2886f0d0f4312e9cd9ff0dc5e42dd501b2669c59e263ba01c5  logs/public/review-logs/G06_20261102T040430Z_BPbdDC.review.log
+305fa3261708bc53615e1a0fa7a46324ff81c16354c8b2736ac4f468609b42ed  logs/public/review-logs/G07_20261102T041114Z_vzwQUZ.review.log
+0d7885429862db7ff28080f0ee272a4869c538227e17ce2e6be590304b502276  logs/public/review-logs/G07_20261102T084900Z_ZTrxqN.review.log
+e5ae8c1ebe3e3a734ef97f74ed64825aa2f99d3a7d7ca03aa4d5454d7d161f30  logs/public/review-logs/G08_20261102T091256Z_nnjq89.review.log
+1ffd2a9f660ff7acc2176843904a9f11295368e6d845e7e4d7d588065e38ba55  logs/public/review-logs/G08_20261102T112611Z_dl5kmx.review.log
+4fbedd5bc9fb5c492f6a4e2800dab4b0a62f5ffca0b649b3af34d584a512e796  logs/public/review-logs/G08_20261102T112702Z_6hnn8n.review.log
+e199b8d5f50bf9c2c4e2f3cfcc3735dd98c74f0e4c777971c028b228bb0530d5  logs/public/review-logs/G09_20261102T114120Z_PLjTHu.review.log
+c613dd12a10146d36ab837d994cb5bb75c1f4ffe1cdb64fbf61258c0b179cc6e  logs/public/review-logs/G09_20261102T115757Z_b6e4Mk.review.log
+5134930d22baae97039c8417e22cfb7a612fe62544ef34553b1ed5c2b09b5b9b  logs/public/review-logs/G10_20261102T131021Z_RbQpnI.review.log
+fdf85f62626b23f768f720cad9c41f8dcab7f95d4bfd22b338ab941f1d21b717  logs/public/review-logs/G11_20261102T132117Z_URiLe8.review.log
+29c249277aa9c1ec74a098613971bcd2ae830d5ef0a563662b07b85b436eb214  logs/public/review-logs/G12_20261104T091034Z_XoudcY.review.log
+ac2e977f1d417bfa10bf1da7cb705a7295ee3053c3f3742da2ab56644a52e225  logs/public/review-logs/G13_20261104T111257Z_8tPBjL.review.log
+8acbd0e4bc53117cd635f3e8c18c6a6412ec8fd6d0822a9b06d2763575dd2282  logs/public/review-logs/G14_20261104T123248Z_16kjwp.review.log
+e159b157c0f8b32ec7a25e9f8653fa04040e0186ea5c3516d5bbfeb01107b51e  logs/public/review-logs/G15_20261104T125134Z_jrn7fa.review.log
+254e324b8baeba2ccf1fd5c2ab8718fd32a012a40a872f86a13b339c811e6fb3  logs/public/review-logs/G15b_20261104T130510Z_X7qKqK.review.log
+eb60a19e4b43aaabda87add0375bf3cfb3134ba836d9ad3a8e12260e02fbbc22  logs/public/review-logs/G16a_20261104T132430Z_uYpTAo.review.log
+3ddb5a61b6d9f6bfe5884c3d4db2ae7d40806df3d004997778fd65caf96746c6  logs/public/review-logs/G16b_20261105T082221Z_2C36LY.review.log
+2b0761dbdf05348f1a1ffdda26bc7828a061fe8f4aa33249534486ffbe11eecb  logs/public/reviews/CHECKPOINT_1.md
+38937935cde7650c2e1cc2f276cf6d84ffed686da6e118c21b1d73207d93e6b0  logs/public/reviews/CHECKPOINT_2.md
+fa461aa866543eb59d8e64f1f32931794759d04d1ecff27f3d05c6c02c9193ca  logs/public/reviews/CHECKPOINT_3.md
+e59f9938ab31eb01c9c2cea12a1ce0007b0fa3e4ceabe9c3a075ee0680557461  logs/public/reviews/CHECKPOINT_4.md
+c4a1ef340a3a7ff6dbbbaae9d85b8c0f68e455da6c71cd5fd86d9913d09f1f7b  logs/public/reviews/G00_review.md
+101ee05e9d1cd8490033a483381a55089a29974653ecbe1641858ef6b5ff79b1  logs/public/reviews/G01_review.md
+d09c79a7aa99bc6b6a5c543ef7012b83dc69a22c00b26b1552c7f5401546218d  logs/public/reviews/G02_review.md
+fafb35fa2c704138d2c2354eb6b6cdfcc01f5fd3647261d209852ad4aa7b31eb  logs/public/reviews/G03_review.md
+16da5430a362ffa750fba019786c44d8bd5a286d99eb5169c891f254fea264f0  logs/public/reviews/G04_review.md
+770d636225cc42ba9954513dfcb426db343131c49b68761db2b9ebb562db8956  logs/public/reviews/G05_review.md
+71806155032f5c9dc97e6838df1453950cc1c4c9a87c7a80cd0d0357c5ae1c2e  logs/public/reviews/G05b_review.md
+dfbfc14deddc132b5b93cb1abab9da05f92b9dcf289cdb0a193016db7fff87cc  logs/public/reviews/G06_review.md
+1c4b151f9e3512fe3a437ebd061d2d18d2e1b5e21da759c5a69c5bc77e70df63  logs/public/reviews/G07_review.md
+9525f71a312ad4d2e94bc80a5ce55089b9389d57e4f497a842b5bfddcf895b57  logs/public/reviews/G07_run1_review.md
+031f6025b0755cf1705af33934f5fe1bf886c51808d8545aef82191a2aed4a4d  logs/public/reviews/G08_review.md
+8179cb84db36612bf18abb04bfc8c15a8f22f39c64795f2da1511eaca0cf6460  logs/public/reviews/G09_review.md
+e192c293a98ef41d3476579bb03e9be1a250c348aecf31641236fa741e1e39c7  logs/public/reviews/G09_run1_review.md
+6f56d0f0247bf57bf9275cd5ded32487a0718f25989d2af56eb4b73263e222db  logs/public/reviews/G10_review.md
+1e3c0a3459d845666ca01f97f5f8be5b4284cae50ff66b12d6cf2659f56285b8  logs/public/reviews/G11_review.md
+934d0f0eeee4be33e2c53de2026dac9d334bc36d8a9f77d62e7406d3cebe033d  logs/public/reviews/G12_review.md
+5f5c5e4ace09cab0399d9d21d317dc412116510710d3f946ff09e864a220f932  logs/public/reviews/G13_review.md
+fc40d84ce26ff4c7478dd32df22c7ea9c64d7c64adcfbb1f43bbe8f00b86ed34  logs/public/reviews/G14_review.md
+c88921fd5de6310d5e9a61b083d8ccb617e718123a4a55267d2a683636dd418a  logs/public/reviews/G15_review.md
+7ccc20622641a34be2ebb251d498bd8b6dbab03d86b40e1bdae76d9a9ff24417  logs/public/reviews/G15b_review.md
+2b71a7502777785bb1af4952c0cd3785cda8484621a511b6992bd8ff9d109f1b  logs/public/reviews/G16a_review.md
+ec1db4f19d5251c49edc330520dc0a6b07ed33ac7bd7530c829106564b450ac1  logs/public/reviews/G16b_review.md
+cf83fb0b058c47958b9767be45673780ecd34de044bc89cf723fe4dcbe68f69a  patches/0001-build-parallelism.patch
+3064e443ade7f24b46d5a85179afc94bf8fce1e0046a4581ea9e9549f8ed869b  patches/0002-run-scripts-host-safety.patch
+8ce96558b74c5019087e8cc79f166d534dbb40fa67cfe88426c8fdef063cf7e5  patches/README.md
+d88c31af440a9a8d820a46e3df4855c130a004db19602c00e5ec2aeb38e48fb4  scripts/G00_host_baseline.sh
+92c97c3dcca2ad329d2610b41114ee99373450a8d2b8889b4b5948e23b777a5c  scripts/G01_project_skeleton.sh
+b926ff1077874f0699b99454a0cd00560693700f01c6753a934438b257d2bd95  scripts/G02_fetch_upstream.sh
+0760b8dd09cf499b0e86698527a09c1cafb70a2b034b0a664a69b21780ad6e64  scripts/G03_apt_packages.sh
+48e3362b5575ea72013f7a88d8fe6e5c48fb8e8590ee1d5f3b66cdb17d81c8ea  scripts/G04_rust_toolchain.sh
+a0abc9fe33f6e77d56bf39a1bb62b60a9e3224b23c3f79ea0733d0a66830e7fd  scripts/G05_audit_build_scripts.sh
+d89ee9f91ec60153fc13815269fabbae062d6ae97c39fa0937ee4857cb8d1fee  scripts/G05b_apply_safety_patches.sh
+0fb65977682f3d9b2deafdb2c3b73bf07f1b150f05a5f4c495298718e4bf3321  scripts/G06_devtools.sh
+e42ccfec0dd998e7407af1a9600e1cf8c719a0f50fbd04e78d0be45ff74cff95  scripts/G07_tools.sh
+d93a60b04dfdf92ae489167d4a4aeb7a3cc2655eb792612568a4ae125c6285bf  scripts/G08_emulator.sh
+cbdca51e5aafc00480951fb5edd54df11304a002615ff4f4dc2749484f61f6b7  scripts/G09_hypervisor.sh
+fe39133881948eb8da176bd957d1c83b334aa2c28a2a394d69b12b4f6a2d2e70  scripts/G10_firmware.sh
+823ee81068c2065fafe15e4bfd34a30eb21eadc79112340f5e4e332ba0457851  scripts/G11_confidential_vms.sh
+0e274dc9e9feaed7400bddd8b9ce9346ecdacb37ba8433f7a36219d3d270312d  scripts/G12_rebuild_all.sh
+331fb4ab55deb6ab5ac9fcfbde08341f1716d6d1e2e3c02b70e780728e4f6820  scripts/G13_boot_hypervisor.sh
+c3ab16b4c91c8afbd4155e63e5102697c55e99fa052cfcc06aa73c5e8199067a  scripts/G14_attestation.sh
+af2ce6aa1e0adddb9e55c80407450a13fc3544ad0d70d1104d4331d09313f6d2  scripts/G15_regression_test.sh
+c34d7e0a39d0af267aad403dd9d5c4e393e358fc3cf03091dc01e896e058fe7c  scripts/G15b_negative_control.sh
+80a321b96fe6822a2ad78d45177e4b6096da24254a971b4459a7d8d738b10dc2  scripts/G16a_publication_audit.sh
+a892d95f7e45c9a3d429df3c348f93477192b652ff46b4b24dfcdaf8d51dc2d0  scripts/G16b_publication_prep.sh
+dd8de984968d097bc882ab5f3dd47286c9fb71652864e0ec0db00a5260f90de8  scripts/build_env.sh
+0c9eee3c401f75ec5fcfb3b9cb745fda69c8bf91bd40db73d80713981086815f  scripts/sanitize_evidence.sh
+ce1fecda74befd6a4c8d5bdcd3738434099975aa4ff8bc25a6cfeb577315e96f  scripts/wgetrc
+$ section '10. Check the project'
+
+===== 10. Check the project =====
+$ git status --short
+?? docs/G16c_port_masking.md
+?? scripts/G16c_port_masking.sh
+$ wc -l
+$ git log --oneline
+21
+$ git log --reverse '--format=%h  %aI  %s'
+0b0bcf9  2026-10-30T13:08:13+00:00  G00-G01: host baseline and project skeleton
+313410a  2026-10-30T13:20:27+00:00  G02: pin IBM ACE-RISCV 1ebdebf and record source provenance
+50061db  2026-11-02T02:32:15+00:00  G03: install llvm-dev required by the upstream CI
+68bd1f9  2026-11-02T02:54:56+00:00  G04: install Rust nightly-2026-03-23; checkpoint 1
+105f317  2026-11-02T03:54:10+00:00  G05: audit upstream build and run scripts (read-only)
+28b6b01  2026-11-02T04:04:30+00:00  G05b: safety patches for build parallelism and run scripts
+7ebe234  2026-11-02T04:11:14+00:00  G06: RISC-V GNU toolchain (make devtools)
+226beae  2026-11-02T11:27:02+00:00  G07: ACE tools and TAP tool (make tools)
+ccee6e0  2026-11-02T11:41:20+00:00  G08: QEMU 8.2.1 for the emulated platform (make emulator)
+8a91c41  2026-11-02T13:10:21+00:00  G09: hypervisor image (make hypervisor); checkpoint 2
+f5cac5e  2026-11-02T13:21:17+00:00  G10: OpenSBI with the ACE security monitor (make firmware)
+439af5b  2026-11-04T09:10:34+00:00  G11: confidential VM, TAPs, kvmtool (make confidential_vms)
+46335d9  2026-11-04T11:12:57+00:00  G12: integrated rebuild and end-to-end artifact audit
+c7786aa  2026-11-04T12:32:48+00:00  G13: boot OpenSBI, the ACE security monitor, and the Linux hypervisor
+b02575c  2026-11-04T12:51:34+00:00  G14: confidential VM, local attestation, and the demo secret; checkpoint 3
+92889ef  2026-11-04T13:05:10+00:00  G15: upstream regression test (ace test), unchanged
+c9b9c10  2026-11-04T13:24:30+00:00  G15b: negative control of the local attestation
+2ffb206  2026-11-05T08:22:21+00:00  G16a: publication audit (read-only)
+9b288a7  2026-11-05T08:22:22+00:00  G16b: license, notice, README, and sanitized evidence for publication
+9f70217  2026-11-05T08:44:51+00:00  G16b: publication preparation (gate script and document)
+cc96cec  2026-11-05T08:44:54+00:00  G16c: listening ports replaced in the published material
+$ finish completed
+
+===== SUMMARY =====
+failed_commands=0  completed
+# masked_from_raw_sha256=cadf2debe9792dd5f8d4cd44d05367e283a053c14becfdc53746af2cdf0b9aaa
