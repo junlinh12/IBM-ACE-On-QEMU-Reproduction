@@ -1,0 +1,222 @@
+# G02 Fetch Upstream | run=G02_20261030T130813Z_vP2nrT | input_sha256=b926ff1077874f0699b99454a0cd00560693700f01c6753a934438b257d2bd95
+# previous gate: G01 PASS (see logs/review/G01_review.md)
+$ section '1. Verify the downloaded files and all sealed evidence'
+
+===== 1. Verify the downloaded files and all sealed evidence =====
+$ cd ~/download
+$ sha256sum G02_fetch_upstream.sh G02_fetch_upstream.md
+b926ff1077874f0699b99454a0cd00560693700f01c6753a934438b257d2bd95  G02_fetch_upstream.sh
+7bc63cf21df5ebb99e249d328b75e08bd42fe278b1d549b2ca5b5fc895a00ef2  G02_fetch_upstream.md
+$ sha256sum -c -
+$ echo '101ee05e9d1cd8490033a483381a55089a29974653ecbe1641858ef6b5ff79b1  G01_review.md'
+G01_review.md: OK
+$ cd ~/projects/IBM-ACE-On-QEMU-Reproduction/logs
+$ sha256sum -c ACE-G00-Host-Baseline-20261030T115047Z-a1SbSFY1.raw.log.sha256 G00_20261030T122505Z_7St35c.sha256 G01_20261030T125107Z_P3Dw1C.sha256
+ACE-G00-Host-Baseline-20261030T115047Z-a1SbSFY1.raw.log: OK
+G00_20261030T122505Z_7St35c.raw.log: OK
+G00_20261030T122505Z_7St35c.input.sh: OK
+G01_20261030T125107Z_P3Dw1C.raw.log: OK
+G01_20261030T125107Z_P3Dw1C.input.sh: OK
+$ sha256sum ACE-G00-Host-Baseline-20261030T115047Z-a1SbSFY1.input.sh G00_20261030T122505Z_7St35c.input.sh G01_20261030T125107Z_P3Dw1C.input.sh G02_20261030T130813Z_vP2nrT.input.sh
+a96ca97bb568cd78ea3972b7e0d181c19743e0720d77822446305c9744c82aa7  ACE-G00-Host-Baseline-20261030T115047Z-a1SbSFY1.input.sh
+d5c9647bf76ed3562d3225cc0cb29110d51494fe28e9af3f3d4257da89e6791b  G00_20261030T122505Z_7St35c.input.sh
+92c97c3dcca2ad329d2610b41114ee99373450a8d2b8889b4b5948e23b777a5c  G01_20261030T125107Z_P3Dw1C.input.sh
+b926ff1077874f0699b99454a0cd00560693700f01c6753a934438b257d2bd95  G02_20261030T130813Z_vP2nrT.input.sh
+$ stop_if_failed 'step 1'
+$ section '2. Commit the reviewed G00-G01 work (local only)'
+
+===== 2. Commit the reviewed G00-G01 work (local only) =====
+$ cd ~/projects/IBM-ACE-On-QEMU-Reproduction
+$ cp ~/download/G01_review.md logs/review/
+$ git add .gitignore PROJECT_CHARTER.md logs/public/.keep scripts/G00_host_baseline.sh scripts/G01_project_skeleton.sh docs/G00_host_baseline.md docs/G01_project_skeleton.md
+$ git status --short
+A  .gitignore
+A  PROJECT_CHARTER.md
+A  docs/G00_host_baseline.md
+A  docs/G01_project_skeleton.md
+A  logs/public/.keep
+A  scripts/G00_host_baseline.sh
+A  scripts/G01_project_skeleton.sh
+$ git diff --cached --quiet
+$ git commit -m 'G00-G01: host baseline and project skeleton'
+[main (root-commit) a30129d] G00-G01: host baseline and project skeleton
+ 7 files changed, 754 insertions(+)
+ create mode 100644 .gitignore
+ create mode 100644 PROJECT_CHARTER.md
+ create mode 100644 docs/G00_host_baseline.md
+ create mode 100644 docs/G01_project_skeleton.md
+ create mode 100644 logs/public/.keep
+ create mode 100644 scripts/G00_host_baseline.sh
+ create mode 100644 scripts/G01_project_skeleton.sh
+$ git log -1 '--format=commit %H%nauthor %an <%ae>%ndate   %aI%n%n    %s'
+commit a30129dfe539848fd13abd56b0b404b6a48f16bb
+author junlinh12 <238169016+junlinh12@users.noreply.github.com>
+date   <local time>
+
+    G00-G01: host baseline and project skeleton
+$ git show --stat --format= HEAD
+ .gitignore                      |  15 ++++
+ PROJECT_CHARTER.md              | 112 +++++++++++++++++++++++++
+ docs/G00_host_baseline.md       | 166 +++++++++++++++++++++++++++++++++++++
+ docs/G01_project_skeleton.md    | 140 +++++++++++++++++++++++++++++++
+ logs/public/.keep               |   0
+ scripts/G00_host_baseline.sh    | 143 ++++++++++++++++++++++++++++++++
+ scripts/G01_project_skeleton.sh | 178 ++++++++++++++++++++++++++++++++++++++++
+ 7 files changed, 754 insertions(+)
+$ cp ~/download/G02_fetch_upstream.sh scripts/
+$ cp ~/download/G02_fetch_upstream.md docs/
+$ stop_if_failed 'step 2'
+$ section '3. Clone the upstream repository'
+
+===== 3. Clone the upstream repository =====
+$ cd ~/projects/IBM-ACE-On-QEMU-Reproduction/upstream
+$ date -u
+Fri Oct 30 13:08:13 UTC 2026
+$ '[' -d ACE-RISCV/.git ']'
+$ GIT_TERMINAL_PROMPT=0
+$ git clone https://github.com/IBM/ACE-RISCV.git ACE-RISCV
+Cloning into 'ACE-RISCV'...
+$ date -u
+Fri Oct 30 13:08:14 UTC 2026
+$ stop_if_failed 'step 3'
+$ section '4. Check out the pinned commit'
+
+===== 4. Check out the pinned commit =====
+$ cd ~/projects/IBM-ACE-On-QEMU-Reproduction/upstream/ACE-RISCV
+$ git checkout --detach 1ebdebf4cacc04fcb83191053b4e979cbcdcb2d6
+HEAD is now at 1ebdebf Fix attestation secret release, key naming, and tests (#144)
+$ git rev-parse HEAD
+1ebdebf4cacc04fcb83191053b4e979cbcdcb2d6
+$ git log -1 '--format=commit  %H%ndate    %cI%nsubject %s'
+commit  1ebdebf4cacc04fcb83191053b4e979cbcdcb2d6
+date    2026-10-25T11:58:16+01:00
+subject Fix attestation secret release, key naming, and tests (#144)
+$ git rev-parse origin/main
+1ebdebf4cacc04fcb83191053b4e979cbcdcb2d6
+$ git status --short
+$ stop_if_failed 'step 4'
+$ section '5. Record the submodule pins before fetching'
+
+===== 5. Record the submodule pins before fetching =====
+$ cat .gitmodules
+[submodule "hypervisor/buildroot"]
+	path = hypervisor/buildroot
+	url = https://github.com/buildroot/buildroot.git
+[submodule "security-monitor/opensbi"]
+	path = security-monitor/opensbi
+	url = https://github.com/riscv-software-src/opensbi.git
+[submodule "verification/refinedrust"]
+	path = verification/refinedrust
+	url = https://gitlab.mpi-sws.org/lgaeher/refinedrust-dev.git
+$ git submodule status
+-954aeb7c721bf7edd56832650e8ebfb3b5c6fbd3 hypervisor/buildroot
+-92e8affb31b21ddc5d1193cf754ce644db7b460a security-monitor/opensbi
+-6741571f64d78223f35a62656f78cde899c7e208 verification/refinedrust
+$ section '6. Fetch the submodules'
+
+===== 6. Fetch the submodules =====
+$ date -u
+Fri Oct 30 13:08:14 UTC 2026
+$ GIT_TERMINAL_PROMPT=0
+$ git -c url.https://github.com/.insteadOf=git@github.com: submodule update --init --recursive
+Submodule 'hypervisor/buildroot' (https://github.com/buildroot/buildroot.git) registered for path 'hypervisor/buildroot'
+Submodule 'security-monitor/opensbi' (https://github.com/riscv-software-src/opensbi.git) registered for path 'security-monitor/opensbi'
+Submodule 'verification/refinedrust' (https://gitlab.mpi-sws.org/lgaeher/refinedrust-dev.git) registered for path 'verification/refinedrust'
+Cloning into '~/projects/IBM-ACE-On-QEMU-Reproduction/upstream/ACE-RISCV/hypervisor/buildroot'...
+Cloning into '~/projects/IBM-ACE-On-QEMU-Reproduction/upstream/ACE-RISCV/security-monitor/opensbi'...
+Cloning into '~/projects/IBM-ACE-On-QEMU-Reproduction/upstream/ACE-RISCV/verification/refinedrust'...
+Submodule path 'hypervisor/buildroot': checked out '954aeb7c721bf7edd56832650e8ebfb3b5c6fbd3'
+Submodule path 'security-monitor/opensbi': checked out '92e8affb31b21ddc5d1193cf754ce644db7b460a'
+Submodule path 'verification/refinedrust': checked out '6741571f64d78223f35a62656f78cde899c7e208'
+$ date -u
+Fri Oct 30 13:08:35 UTC 2026
+$ git submodule status --recursive
+ 954aeb7c721bf7edd56832650e8ebfb3b5c6fbd3 hypervisor/buildroot (2023.11)
+ 92e8affb31b21ddc5d1193cf754ce644db7b460a security-monitor/opensbi (v1.4-13-g92e8affb)
+ 6741571f64d78223f35a62656f78cde899c7e208 verification/refinedrust (6741571f)
+$ stop_if_failed 'step 6'
+$ section '7. Record the build inputs declared by upstream'
+
+===== 7. Record the build inputs declared by upstream =====
+$ cat rust-toolchain.toml
+[toolchain]
+channel = "nightly-2026-03-23"
+targets = [ "riscv64gc-unknown-none-elf" ]
+$ cat .github/workflows/build.yml
+name: Functional tests
+
+on:
+  push:
+    branches: [ "main", "staging", "ci" ]
+  pull_request:
+    branches: [ "main" ]
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    runs-on: ubuntu-24.04
+    steps:
+    - uses: actions/checkout@v7
+      with:
+        submodules: 'true'
+    - name: install build dependencies
+      run: sudo apt-get update -y && sudo apt-get -qq -y install autoconf automake autotools-dev curl python3 libmpc-dev libmpfr-dev libgmp-dev gawk build-essential bison flex texinfo gperf libtool patchutils bc zlib1g-dev libexpat-dev
+    - name: install OpenSBI dependencies
+      run: sudo apt-get update -y && sudo apt-get -qq -y install clang libclang-dev llvm-dev
+    - name: install Qemu dependencies
+      run: sudo apt-get update -y && sudo apt-get -qq -y install git libglib2.0-dev libfdt-dev libpixman-1-dev zlib1g-dev ninja-build python3-venv libslirp-dev xz-utils
+    - name: install Buildroot dependencies
+      run: sudo apt-get update -y && sudo apt-get -qq -y install unzip sed binutils diffutils build-essential bash patch gzip bzip2 perl tar cpio unzip rsync file bc findutils
+    - name: install utilities
+      run: sudo apt-get update -y && sudo apt-get -qq install -y sshpass
+    - name: install rust
+      run: curl https://sh.rustup.rs -sSf | sh -s -- -y
+    - name: install rust nightly
+      run: rustup default nightly
+    - name: install rust nightly
+      run: rustup target add riscv64gc-unknown-none-elf
+    - name: install rust nightly
+      run: rustup component add rustfmt
+    - name: build riscv toolchain
+      run: ACE_DIR=$(pwd)/build/ make --silent -j8 devtools
+    - name: build emulator
+      run: ACE_DIR=$(pwd)/build/ make --silent -j8 emulator
+    - name: build tools
+      run: ACE_DIR=$(pwd)/build/ make --silent -j8 tools
+    - name: build hypervisor
+      run: ACE_DIR=$(pwd)/build/ make --silent -j8 hypervisor
+    - name: build firmware
+      run: ACE_DIR=$(pwd)/build/ make --silent -j8 firmware
+    - name: build confidential vms
+      run: ACE_DIR=$(pwd)/build/ make --silent -j8 confidential_vms
+    - name: rebuild all to include changes to cvm disk
+      run: ACE_DIR=$(pwd)/build/ make --silent -j8
+    - name: run tests on confidential vms
+      run: ACE_DIR=$(pwd)/build/ PATH=$PATH:$(pwd)/build/tools ace test
+$ git grep -nE 'https?://|git://' -- '*Makefile*' '*.mk'
+Makefile:45:		wget -q https://github.com/riscv-collab/riscv-gnu-toolchain/releases/download/2023.09.27/$(RISCV_GNU_TOOLCHAIN_VERSION).tar.gz ; \
+Makefile:82:		wget https://download.qemu.org/qemu-$(QEMU_VERSION).tar.xz; \
+hypervisor/Makefile:78:        git clone git://git.kernel.org/pub/scm/utils/dtc/dtc.git ;\
+hypervisor/Makefile:86:		git clone -b cove-integration-03072023 https://github.com/wojciechozga/kvmtool.git ;\
+$ section '8. Check the result'
+
+===== 8. Check the result =====
+$ git status --short
+$ du -sh ~/projects/IBM-ACE-On-QEMU-Reproduction/upstream/ACE-RISCV
+299M	~/projects/IBM-ACE-On-QEMU-Reproduction/upstream/ACE-RISCV
+$ df -h ~/projects/IBM-ACE-On-QEMU-Reproduction
+Filesystem      Size  Used Avail Use% Mounted on
+/dev/nvme0n1p2  915G  390G  480G  45% /
+$ cd ~/projects/IBM-ACE-On-QEMU-Reproduction
+$ git check-ignore -v upstream/ACE-RISCV
+.gitignore:2:/upstream/	upstream/ACE-RISCV
+$ git status --short
+?? docs/G02_fetch_upstream.md
+?? scripts/G02_fetch_upstream.sh
+$ finish completed
+
+===== SUMMARY =====
+failed_commands=0  completed
+# masked_from_raw_sha256=82e1212569e91308dc7699a1cbf0050a9ef2b8ebd3bbbd5bdb4017666372c0bd

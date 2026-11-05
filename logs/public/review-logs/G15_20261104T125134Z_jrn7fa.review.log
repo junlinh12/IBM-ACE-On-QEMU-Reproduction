@@ -1,0 +1,298 @@
+# G15 Regression Test | run=G15_20261104T125134Z_jrn7fa | input_sha256=af2ce6aa1e0adddb9e55c80407450a13fc3544ad0d70d1104d4331d09313f6d2
+# previous gate: G14 PASS (see logs/review/G14_review.md); checkpoint 3 recorded
+$ section '1. Verify the downloaded files and all sealed evidence'
+
+===== 1. Verify the downloaded files and all sealed evidence =====
+$ cd ~/download
+$ sha256sum G15_regression_test.sh G15_regression_test.md
+af2ce6aa1e0adddb9e55c80407450a13fc3544ad0d70d1104d4331d09313f6d2  G15_regression_test.sh
+e82485041c5a82172db14f8fb58d5c841940c4d88e985cc994bc72558e48bfe5  G15_regression_test.md
+$ echo 'fc40d84ce26ff4c7478dd32df22c7ea9c64d7c64adcfbb1f43bbe8f00b86ed34  G14_review.md'
+$ sha256sum -c -
+G14_review.md: OK
+$ echo '9cf6ea2c64924a6a2484e3d1afa2412e0cce140b9e591639762f939a970ea950  CHECKPOINT_3.md'
+$ sha256sum -c -
+CHECKPOINT_3.md: OK
+$ cd ~/projects/IBM-ACE-On-QEMU-Reproduction/logs
+$ sha256sum -c ACE-G00-Host-Baseline-20261030T115047Z-a1SbSFY1.raw.log.sha256 G00_20261030T122505Z_7St35c.sha256 G01_20261030T125107Z_P3Dw1C.sha256 G02_20261030T130813Z_vP2nrT.sha256 G03_20261030T132027Z_gN9Ntr.sha256 G04_20261102T023215Z_DtsO6K.sha256 G05_20261102T025456Z_lCG0ac.sha256 G05b_20261102T035410Z_z0g7ji.sha256 G06_20261102T040430Z_BPbdDC.sha256 G07_20261102T041114Z_vzwQUZ.sha256 G07_20261102T084900Z_ZTrxqN.sha256 G08_20261102T091256Z_nnjq89.sha256 G08_20261102T112611Z_dl5kmx.sha256 G08_20261102T112702Z_6hnn8n.sha256 G09_20261102T114120Z_PLjTHu.sha256 G09_20261102T115757Z_b6e4Mk.sha256 G10_20261102T131021Z_RbQpnI.sha256 G11_20261102T132117Z_URiLe8.sha256 G12_20261104T091034Z_XoudcY.sha256 G13_20261104T111257Z_8tPBjL.sha256 G14_20261104T123248Z_16kjwp.sha256
+ACE-G00-Host-Baseline-20261030T115047Z-a1SbSFY1.raw.log: OK
+G00_20261030T122505Z_7St35c.raw.log: OK
+G00_20261030T122505Z_7St35c.input.sh: OK
+G01_20261030T125107Z_P3Dw1C.raw.log: OK
+G01_20261030T125107Z_P3Dw1C.input.sh: OK
+G02_20261030T130813Z_vP2nrT.raw.log: OK
+G02_20261030T130813Z_vP2nrT.input.sh: OK
+G03_20261030T132027Z_gN9Ntr.raw.log: OK
+G03_20261030T132027Z_gN9Ntr.input.sh: OK
+G04_20261102T023215Z_DtsO6K.raw.log: OK
+G04_20261102T023215Z_DtsO6K.input.sh: OK
+G05_20261102T025456Z_lCG0ac.raw.log: OK
+G05_20261102T025456Z_lCG0ac.input.sh: OK
+G05b_20261102T035410Z_z0g7ji.raw.log: OK
+G05b_20261102T035410Z_z0g7ji.input.sh: OK
+G06_20261102T040430Z_BPbdDC.raw.log: OK
+G06_20261102T040430Z_BPbdDC.input.sh: OK
+G07_20261102T041114Z_vzwQUZ.raw.log: OK
+G07_20261102T041114Z_vzwQUZ.input.sh: OK
+G07_20261102T084900Z_ZTrxqN.raw.log: OK
+G07_20261102T084900Z_ZTrxqN.input.sh: OK
+G08_20261102T091256Z_nnjq89.raw.log: OK
+G08_20261102T091256Z_nnjq89.input.sh: OK
+G08_20261102T112611Z_dl5kmx.raw.log: OK
+G08_20261102T112611Z_dl5kmx.input.sh: OK
+G08_20261102T112702Z_6hnn8n.raw.log: OK
+G08_20261102T112702Z_6hnn8n.input.sh: OK
+G09_20261102T114120Z_PLjTHu.raw.log: OK
+G09_20261102T114120Z_PLjTHu.input.sh: OK
+G09_20261102T115757Z_b6e4Mk.raw.log: OK
+G09_20261102T115757Z_b6e4Mk.input.sh: OK
+G10_20261102T131021Z_RbQpnI.raw.log: OK
+G10_20261102T131021Z_RbQpnI.input.sh: OK
+G11_20261102T132117Z_URiLe8.raw.log: OK
+G11_20261102T132117Z_URiLe8.input.sh: OK
+G12_20261104T091034Z_XoudcY.raw.log: OK
+G12_20261104T091034Z_XoudcY.input.sh: OK
+G13_20261104T111257Z_8tPBjL.raw.log: OK
+G13_20261104T111257Z_8tPBjL.input.sh: OK
+G14_20261104T123248Z_16kjwp.raw.log: OK
+G14_20261104T123248Z_16kjwp.input.sh: OK
+$ stop_if_failed 'step 1'
+$ section '2. Commit the reviewed G14 work (local only, UTC)'
+
+===== 2. Commit the reviewed G14 work (local only, UTC) =====
+$ cd ~/projects/IBM-ACE-On-QEMU-Reproduction
+$ cp ~/download/G14_review.md logs/review/
+$ cp ~/download/CHECKPOINT_3.md logs/review/
+$ git add scripts/G14_attestation.sh docs/G14_attestation.md
+$ git status --short
+A  docs/G14_attestation.md
+A  scripts/G14_attestation.sh
+$ git diff --cached --quiet
+$ TZ=UTC0
+$ git commit -m 'G14: confidential VM, local attestation, and the demo secret; checkpoint 3'
+[main 03ddfa0] G14: confidential VM, local attestation, and the demo secret; checkpoint 3
+ 2 files changed, 452 insertions(+)
+ create mode 100644 docs/G14_attestation.md
+ create mode 100644 scripts/G14_attestation.sh
+$ git log -1 '--format=%h  %aI  %an <%ae>  %s'
+03ddfa0  2026-11-04T12:51:34+00:00  junlinh12 <238169016+junlinh12@users.noreply.github.com>  G14: confidential VM, local attestation, and the demo secret; checkpoint 3
+$ git show --stat --format= HEAD
+ docs/G14_attestation.md    | 230 +++++++++++++++++++++++++++++++++++++++++++++
+ scripts/G14_attestation.sh | 222 +++++++++++++++++++++++++++++++++++++++++++
+ 2 files changed, 452 insertions(+)
+$ cp ~/download/G15_regression_test.sh scripts/
+$ cp ~/download/G15_regression_test.md docs/
+$ stop_if_failed 'step 2'
+$ section '3. Check the host before the test: memory, other ACE QEMU, ports in the test'\''s range'
+
+===== 3. Check the host before the test: memory, other ACE QEMU, ports in the test's range =====
+$ source ~/projects/IBM-ACE-On-QEMU-Reproduction/scripts/build_env.sh
+$$ export ACE_DIR=~/projects/IBM-ACE-On-QEMU-Reproduction/build/ace/
+$$ ACE_DIR=~/projects/IBM-ACE-On-QEMU-Reproduction/build/ace/
+$$ export QEMU_SOURCE_DIR=~/projects/IBM-ACE-On-QEMU-Reproduction/build/qemu-source/
+$$ QEMU_SOURCE_DIR=~/projects/IBM-ACE-On-QEMU-Reproduction/build/qemu-source/
+$$ export BR2_DL_DIR=~/projects/IBM-ACE-On-QEMU-Reproduction/build/dl
+$$ BR2_DL_DIR=~/projects/IBM-ACE-On-QEMU-Reproduction/build/dl
+$$ export CARGO_HOME=~/projects/IBM-ACE-On-QEMU-Reproduction/build/cargo-home
+$$ CARGO_HOME=~/projects/IBM-ACE-On-QEMU-Reproduction/build/cargo-home
+$$ export BR2_JLEVEL=2
+$$ BR2_JLEVEL=2
+$$ export OMP_NUM_THREADS=2
+$$ OMP_NUM_THREADS=2
+$$ export CARGO_BUILD_JOBS=2
+$$ CARGO_BUILD_JOBS=2
+$$ export WGETRC=~/projects/IBM-ACE-On-QEMU-Reproduction/scripts/wgetrc
+$$ WGETRC=~/projects/IBM-ACE-On-QEMU-Reproduction/scripts/wgetrc
+$ uname -r
+7.0.0-38-generic
+$ free -h
+               total        used        free      shared  buff/cache   available
+Mem:            30Gi        17Gi       4.1Gi       3.2Gi        12Gi        12Gi
+Swap:          8.0Gi       5.8Gi       2.2Gi
+$$ awk '/^MemAvailable:/ {print $2}' /proc/meminfo
+$ test 13608548 -ge 6291456
+$$$ id -un
+$$ pgrep -u <user> -f ~/projects/IBM-ACE-On-QEMU-Reproduction/build/ace//qemu/bin/qemu-system-riscv64
+$ test -z ''
+$ ss -ltnH
+$ awk '{print $4}'
+$ sed 's/.*://'
+$ sort -un
+$ awk '$1 >= 3000 && $1 <= 5999'
+<port>
+$ stop_if_failed 'step 3'
+$ section '4. Check that the images are the ones reviewed in G12'
+
+===== 4. Check that the images are the ones reviewed in G12 =====
+$ FW=~/projects/IBM-ACE-On-QEMU-Reproduction/build/ace//security-monitor/opensbi/platform/generic/firmware/fw_payload.elf
+$ HV=~/projects/IBM-ACE-On-QEMU-Reproduction/build/ace//hypervisor/buildroot/images/rootfs.ext2
+$ PRISTINE=~/projects/IBM-ACE-On-QEMU-Reproduction/build/pristine/hypervisor-rootfs.ext2
+$$ sha256sum
+$$ cut '-d ' -f1
+$ test 6a41b58184c3f25db92b036635abf9738df2a4b375e63c58100e313473b8c286 = 6a41b58184c3f25db92b036635abf9738df2a4b375e63c58100e313473b8c286
+$$ sha256sum
+$$ cut '-d ' -f1
+$ test cc07c2dc1d60a3c38bbacfa2a7d7e5f64cccf41d55e625027875b0242a2ceeed = cc07c2dc1d60a3c38bbacfa2a7d7e5f64cccf41d55e625027875b0242a2ceeed
+$$ sha256sum
+$$ cut '-d ' -f1
+$ test cc07c2dc1d60a3c38bbacfa2a7d7e5f64cccf41d55e625027875b0242a2ceeed = cc07c2dc1d60a3c38bbacfa2a7d7e5f64cccf41d55e625027875b0242a2ceeed
+$ stop_if_failed 'step 4'
+$ section '5. Run the upstream regression test, unchanged'
+
+===== 5. Run the upstream regression test, unchanged =====
+$$ date -u +%Y%m%dT%H%M%SZ
+$ STAMP=20261104T125135Z
+$ TEST_DIR=~/projects/IBM-ACE-On-QEMU-Reproduction/build/g15-test
+$ rm -rf ~/projects/IBM-ACE-On-QEMU-Reproduction/build/g15-test
+$ mkdir -p ~/projects/IBM-ACE-On-QEMU-Reproduction/build/g15-test
+$ cd ~/projects/IBM-ACE-On-QEMU-Reproduction/build/g15-test
+$ date -u
+Wed Nov  4 12:51:35 UTC 2026
+$ timeout 900 ~/projects/IBM-ACE-On-QEMU-Reproduction/build/ace//tools/ace test
+VNC server running on 127.0.0.1:5900
+Hypervisor's SSH is listening on port: 4005
+ssh: 
+Host 'localhost' key accepted unconditionally.
+(ssh-ed25519 fingerprint SHA256:zvsnloC3CfFp5pMRGc7CX8sowFAJyQW4Sealeig76K4)
+
+ssh: 
+Host 'localhost' key accepted unconditionally.
+(ssh-ed25519 fingerprint SHA256:zvsnloC3CfFp5pMRGc7CX8sowFAJyQW4Sealeig76K4)
+
+ssh: 
+Host 'localhost' key accepted unconditionally.
+(ssh-ed25519 fingerprint SHA256:zvsnloC3CfFp5pMRGc7CX8sowFAJyQW4Sealeig76K4)
+
+test_attestation: success
+ssh: 
+Host 'localhost' key accepted unconditionally.
+(ssh-ed25519 fingerprint SHA256:zvsnloC3CfFp5pMRGc7CX8sowFAJyQW4Sealeig76K4)
+
+ssh: 
+Host 'localhost' key accepted unconditionally.
+(ssh-ed25519 fingerprint SHA256:zvsnloC3CfFp5pMRGc7CX8sowFAJyQW4Sealeig76K4)
+
+test_smp: success
+$ echo 'ace test exit status: 0'
+ace test exit status: 0
+$ date -u
+Wed Nov  4 12:52:17 UTC 2026
+$ section '6. Judge the results by their lines (E8)'
+
+===== 6. Judge the results by their lines (E8) =====
+$ cat ~/projects/IBM-ACE-On-QEMU-Reproduction/build/g15-test/.run_tests.log
+SSH port: 4005
+Number of cores assigned to the guest: 4
+$ cat ~/projects/IBM-ACE-On-QEMU-Reproduction/build/g15-test/ace_test_results
+ssh: 
+Host 'localhost' key accepted unconditionally.
+(ssh-ed25519 fingerprint SHA256:zvsnloC3CfFp5pMRGc7CX8sowFAJyQW4Sealeig76K4)
+
+ssh: 
+Host 'localhost' key accepted unconditionally.
+(ssh-ed25519 fingerprint SHA256:zvsnloC3CfFp5pMRGc7CX8sowFAJyQW4Sealeig76K4)
+
+ssh: 
+Host 'localhost' key accepted unconditionally.
+(ssh-ed25519 fingerprint SHA256:zvsnloC3CfFp5pMRGc7CX8sowFAJyQW4Sealeig76K4)
+
+test_attestation: success
+ssh: 
+Host 'localhost' key accepted unconditionally.
+(ssh-ed25519 fingerprint SHA256:zvsnloC3CfFp5pMRGc7CX8sowFAJyQW4Sealeig76K4)
+
+ssh: 
+Host 'localhost' key accepted unconditionally.
+(ssh-ed25519 fingerprint SHA256:zvsnloC3CfFp5pMRGc7CX8sowFAJyQW4Sealeig76K4)
+
+test_smp: success
+$$ grep -c '^test_attestation: success' ~/projects/IBM-ACE-On-QEMU-Reproduction/build/g15-test/ace_test_results
+$ test 1 = 1
+$$ grep -c '^test_smp: success' ~/projects/IBM-ACE-On-QEMU-Reproduction/build/g15-test/ace_test_results
+$ test 1 = 1
+$$ grep -c ': failed' ~/projects/IBM-ACE-On-QEMU-Reproduction/build/g15-test/ace_test_results
+$ test 0 = 0
+$ section '7. Check that no QEMU of this project is left'
+
+===== 7. Check that no QEMU of this project is left =====
+$ cut -c1-300
+$$ id -un
+$ pgrep -a -u <user> -f ~/projects/IBM-ACE-On-QEMU-Reproduction/build/ace//qemu/bin/qemu-system-riscv64
+$ echo '(no QEMU of this project running)'
+(no QEMU of this project running)
+$$ id -un
+$ pkill -u <user> -f ~/projects/IBM-ACE-On-QEMU-Reproduction/build/ace//qemu/bin/qemu-system-riscv64
+$ echo '(nothing to stop)'
+(nothing to stop)
+$ sleep 2
+$$$ id -un
+$$ pgrep -u <user> -f ~/projects/IBM-ACE-On-QEMU-Reproduction/build/ace//qemu/bin/qemu-system-riscv64
+$ test -z ''
+$ section '8. Read the test logs left on the hypervisor'\''s disk'
+
+===== 8. Read the test logs left on the hypervisor's disk =====
+$ debugfs -R 'ls -l /root' ~/projects/IBM-ACE-On-QEMU-Reproduction/build/ace//hypervisor/buildroot/images/rootfs.ext2
+debugfs 1.47.0 (5-Feb-2023)
+    381   40700 (2)      0      0    4096  4-Nov-2026 12:51 .
+      2   40755 (2)      0      0    4096  4-Nov-2026 09:10 ..
+    382  100755 (1)      0      0     620  4-Nov-2026 09:10 common.sh
+    383   40755 (2)      0      0    4096  4-Nov-2026 12:51 linux_vm
+    388  100755 (1)      0      0   1345984  4-Nov-2026 09:10 lkvm-static
+    389  100755 (1)      0      0     435  4-Nov-2026 09:10 run_linux_vm_kvmtool.sh
+    390  100755 (1)      0      0    1926  4-Nov-2026 09:10 run_linux_vm_qemu.sh
+    391  100755 (1)      0      0     523  4-Nov-2026 09:10 selftest.sh
+    392  100755 (1)      0      0     923  4-Nov-2026 09:10 test_attestation.sh
+    393  100755 (1)      0      0     841  4-Nov-2026 09:10 test_smp.sh
+    876  100600 (1)      0      0       0  4-Nov-2026 12:51 test_attestation.log
+    877  100600 (1)      0      0       0  4-Nov-2026 12:51 tmp_run_vm.log
+
+$ debugfs -R 'cat /root/test_attestation.log' ~/projects/IBM-ACE-On-QEMU-Reproduction/build/ace//hypervisor/buildroot/images/rootfs.ext2
+debugfs 1.47.0 (5-Feb-2023)
+$ debugfs -R 'cat /root/test_smp.log' ~/projects/IBM-ACE-On-QEMU-Reproduction/build/ace//hypervisor/buildroot/images/rootfs.ext2
+debugfs 1.47.0 (5-Feb-2023)
+/root/test_smp.log: File not found by ext2_lookup 
+$ debugfs -R 'cat /root/tmp_dmesg.log' ~/projects/IBM-ACE-On-QEMU-Reproduction/build/ace//hypervisor/buildroot/images/rootfs.ext2
+debugfs 1.47.0 (5-Feb-2023)
+/root/tmp_dmesg.log: File not found by ext2_lookup 
+$ debugfs -R 'cat /root/tmp_smp_dmesg.log' ~/projects/IBM-ACE-On-QEMU-Reproduction/build/ace//hypervisor/buildroot/images/rootfs.ext2
+debugfs 1.47.0 (5-Feb-2023)
+/root/tmp_smp_dmesg.log: File not found by ext2_lookup 
+$ section '9. Keep the results in logs/ and restore the disk image'
+
+===== 9. Keep the results in logs/ and restore the disk image =====
+$ cp ~/projects/IBM-ACE-On-QEMU-Reproduction/build/g15-test/ace_test_results ~/projects/IBM-ACE-On-QEMU-Reproduction/logs/G15_ace_test_results_20261104T125135Z.log
+$ cp ~/projects/IBM-ACE-On-QEMU-Reproduction/build/g15-test/.run_tests.log ~/projects/IBM-ACE-On-QEMU-Reproduction/logs/G15_run_tests_20261104T125135Z.log
+$ chmod 400 ~/projects/IBM-ACE-On-QEMU-Reproduction/logs/G15_ace_test_results_20261104T125135Z.log ~/projects/IBM-ACE-On-QEMU-Reproduction/logs/G15_run_tests_20261104T125135Z.log
+$ sha256sum ~/projects/IBM-ACE-On-QEMU-Reproduction/logs/G15_ace_test_results_20261104T125135Z.log ~/projects/IBM-ACE-On-QEMU-Reproduction/logs/G15_run_tests_20261104T125135Z.log
+dbe66e4e751ecb80adbf7b5a08abd7288125e9b93637798e64d3d6fc82d11e2c  ~/projects/IBM-ACE-On-QEMU-Reproduction/logs/G15_ace_test_results_20261104T125135Z.log
+436f1131f4ca5af9e51d8cd05091314ca8fe23bd38c75f89510f831ef915dae4  ~/projects/IBM-ACE-On-QEMU-Reproduction/logs/G15_run_tests_20261104T125135Z.log
+$ sha256sum ~/projects/IBM-ACE-On-QEMU-Reproduction/build/ace//hypervisor/buildroot/images/rootfs.ext2
+fff9636180beb7795f938f212935431caf2a547480c8620cd5c6b481554bada6  ~/projects/IBM-ACE-On-QEMU-Reproduction/build/ace//hypervisor/buildroot/images/rootfs.ext2
+$ cp ~/projects/IBM-ACE-On-QEMU-Reproduction/build/pristine/hypervisor-rootfs.ext2 ~/projects/IBM-ACE-On-QEMU-Reproduction/build/ace//hypervisor/buildroot/images/rootfs.ext2
+$$ sha256sum
+$$ cut '-d ' -f1
+$ test cc07c2dc1d60a3c38bbacfa2a7d7e5f64cccf41d55e625027875b0242a2ceeed = cc07c2dc1d60a3c38bbacfa2a7d7e5f64cccf41d55e625027875b0242a2ceeed
+$ section '10. Check the upstream tree and the project'
+
+===== 10. Check the upstream tree and the project =====
+$ cd ~/projects/IBM-ACE-On-QEMU-Reproduction/upstream/ACE-RISCV
+$ git status --short
+ M confidential-vms/linux_vm/Makefile
+ M hypervisor/Makefile
+ M security-monitor/Makefile
+ m security-monitor/opensbi
+ M tools/ace_run_hypervisor.sh
+ M tools/common.sh
+$ cd ~/projects/IBM-ACE-On-QEMU-Reproduction
+$ git status --short
+?? docs/G15_regression_test.md
+?? scripts/G15_regression_test.sh
+$ free -h
+               total        used        free      shared  buff/cache   available
+Mem:            30Gi        17Gi       5.3Gi       3.2Gi        11Gi        13Gi
+Swap:          8.0Gi       6.0Gi       2.0Gi
+$ finish completed
+
+===== SUMMARY =====
+failed_commands=0  completed
+# masked_from_raw_sha256=c0f52019505a19ad183bd2eeb0ef1dc687f8a8c781e9b12c510fec1f0ce2e959

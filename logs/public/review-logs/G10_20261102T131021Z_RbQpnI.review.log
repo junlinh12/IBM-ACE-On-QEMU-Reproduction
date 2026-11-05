@@ -1,0 +1,1509 @@
+# G10 Firmware | run=G10_20261102T131021Z_RbQpnI | input_sha256=fe39133881948eb8da176bd957d1c83b334aa2c28a2a394d69b12b4f6a2d2e70
+# previous gate: G09 PASS (see logs/review/G09_review.md); checkpoint 2 recorded
+$ section '1. Verify the downloaded files and all sealed evidence'
+
+===== 1. Verify the downloaded files and all sealed evidence =====
+$ cd ~/download
+$ sha256sum G10_firmware.sh G10_firmware.md
+fe39133881948eb8da176bd957d1c83b334aa2c28a2a394d69b12b4f6a2d2e70  G10_firmware.sh
+5c20ff45c178d236a16908ac258472e9c96d53c83e5105b6e957a96cb2ed4274  G10_firmware.md
+$ echo '8179cb84db36612bf18abb04bfc8c15a8f22f39c64795f2da1511eaca0cf6460  G09_review.md'
+$ sha256sum -c -
+G09_review.md: OK
+$ sha256sum -c -
+$ echo 'bf27d43b93345614ef33377434112e8be654b445cd89f64ba708fe6107cb48e6  CHECKPOINT_2.md'
+CHECKPOINT_2.md: OK
+$ echo '8221db40fb40e93f7539dd4234b0cc5b2cb7c45338c8576de3ec0da21f11293c  SOURCE_PROVENANCE.md'
+$ sha256sum -c -
+SOURCE_PROVENANCE.md: OK
+$ cd ~/projects/IBM-ACE-On-QEMU-Reproduction/logs
+$ sha256sum -c ACE-G00-Host-Baseline-20261030T115047Z-a1SbSFY1.raw.log.sha256 G00_20261030T122505Z_7St35c.sha256 G01_20261030T125107Z_P3Dw1C.sha256 G02_20261030T130813Z_vP2nrT.sha256 G03_20261030T132027Z_gN9Ntr.sha256 G04_20261102T023215Z_DtsO6K.sha256 G05_20261102T025456Z_lCG0ac.sha256 G05b_20261102T035410Z_z0g7ji.sha256 G06_20261102T040430Z_BPbdDC.sha256 G07_20261102T041114Z_vzwQUZ.sha256 G07_20261102T084900Z_ZTrxqN.sha256 G08_20261102T091256Z_nnjq89.sha256 G08_20261102T112611Z_dl5kmx.sha256 G08_20261102T112702Z_6hnn8n.sha256 G09_20261102T114120Z_PLjTHu.sha256 G09_20261102T115757Z_b6e4Mk.sha256
+ACE-G00-Host-Baseline-20261030T115047Z-a1SbSFY1.raw.log: OK
+G00_20261030T122505Z_7St35c.raw.log: OK
+G00_20261030T122505Z_7St35c.input.sh: OK
+G01_20261030T125107Z_P3Dw1C.raw.log: OK
+G01_20261030T125107Z_P3Dw1C.input.sh: OK
+G02_20261030T130813Z_vP2nrT.raw.log: OK
+G02_20261030T130813Z_vP2nrT.input.sh: OK
+G03_20261030T132027Z_gN9Ntr.raw.log: OK
+G03_20261030T132027Z_gN9Ntr.input.sh: OK
+G04_20261102T023215Z_DtsO6K.raw.log: OK
+G04_20261102T023215Z_DtsO6K.input.sh: OK
+G05_20261102T025456Z_lCG0ac.raw.log: OK
+G05_20261102T025456Z_lCG0ac.input.sh: OK
+G05b_20261102T035410Z_z0g7ji.raw.log: OK
+G05b_20261102T035410Z_z0g7ji.input.sh: OK
+G06_20261102T040430Z_BPbdDC.raw.log: OK
+G06_20261102T040430Z_BPbdDC.input.sh: OK
+G07_20261102T041114Z_vzwQUZ.raw.log: OK
+G07_20261102T041114Z_vzwQUZ.input.sh: OK
+G07_20261102T084900Z_ZTrxqN.raw.log: OK
+G07_20261102T084900Z_ZTrxqN.input.sh: OK
+G08_20261102T091256Z_nnjq89.raw.log: OK
+G08_20261102T091256Z_nnjq89.input.sh: OK
+G08_20261102T112611Z_dl5kmx.raw.log: OK
+G08_20261102T112611Z_dl5kmx.input.sh: OK
+G08_20261102T112702Z_6hnn8n.raw.log: OK
+G08_20261102T112702Z_6hnn8n.input.sh: OK
+G09_20261102T114120Z_PLjTHu.raw.log: OK
+G09_20261102T114120Z_PLjTHu.input.sh: OK
+G09_20261102T115757Z_b6e4Mk.raw.log: OK
+G09_20261102T115757Z_b6e4Mk.input.sh: OK
+$ stop_if_failed 'step 1'
+$ section '2. Commit the reviewed G09 work (local only, UTC)'
+
+===== 2. Commit the reviewed G09 work (local only, UTC) =====
+$ cd ~/projects/IBM-ACE-On-QEMU-Reproduction
+$ cp ~/download/G09_review.md logs/review/
+$ cp ~/download/CHECKPOINT_2.md logs/review/
+$ cp ~/download/SOURCE_PROVENANCE.md docs/
+$ git add scripts/G09_hypervisor.sh docs/G09_hypervisor.md docs/SOURCE_PROVENANCE.md
+$ git status --short
+A  docs/G09_hypervisor.md
+M  docs/SOURCE_PROVENANCE.md
+A  scripts/G09_hypervisor.sh
+$ git diff --cached --quiet
+$ TZ=UTC0
+$ git commit -m 'G09: hypervisor image (make hypervisor); checkpoint 2'
+[main 08fca23] G09: hypervisor image (make hypervisor); checkpoint 2
+ 3 files changed, 459 insertions(+), 6 deletions(-)
+ create mode 100644 docs/G09_hypervisor.md
+ create mode 100644 scripts/G09_hypervisor.sh
+$ git log -1 '--format=%h  %aI  %an <%ae>  %s'
+08fca23  2026-11-02T13:10:21+00:00  junlinh12 <238169016+junlinh12@users.noreply.github.com>  G09: hypervisor image (make hypervisor); checkpoint 2
+$ git show --stat --format= HEAD
+ docs/G09_hypervisor.md    | 223 ++++++++++++++++++++++++++++++++++++++++++++++
+ docs/SOURCE_PROVENANCE.md |  31 +++++--
+ scripts/G09_hypervisor.sh | 211 +++++++++++++++++++++++++++++++++++++++++++
+ 3 files changed, 459 insertions(+), 6 deletions(-)
+$ cp ~/download/G10_firmware.sh scripts/
+$ cp ~/download/G10_firmware.md docs/
+$ stop_if_failed 'step 2'
+$ section '3. Record the host and source state, and check memory and disk'
+
+===== 3. Record the host and source state, and check memory and disk =====
+$ uname -r
+7.0.0-38-generic
+$ free -h
+               total        used        free      shared  buff/cache   available
+Mem:            30Gi        22Gi       2.2Gi       3.8Gi        10Gi       8.6Gi
+Swap:          8.0Gi       2.5Gi       5.5Gi
+$ df -h ~/projects/IBM-ACE-On-QEMU-Reproduction
+Filesystem      Size  Used Avail Use% Mounted on
+/dev/nvme0n1p2  915G  403G  466G  47% /
+$ cd ~/projects/IBM-ACE-On-QEMU-Reproduction/upstream/ACE-RISCV
+$ git status --short
+ M confidential-vms/linux_vm/Makefile
+ M hypervisor/Makefile
+ M security-monitor/Makefile
+ M tools/ace_run_hypervisor.sh
+ M tools/common.sh
+$$ awk '/^MemAvailable:/ {print $2}' /proc/meminfo
+$ test 8995800 -ge 4194304
+$$ df -BG --output=avail ~/projects/IBM-ACE-On-QEMU-Reproduction
+$$ tail -n 1
+$$ tr -dc 0-9
+$ test 466 -ge 10
+$ stop_if_failed 'step 3'
+$ section '4. Set the build environment'
+
+===== 4. Set the build environment =====
+$ source ~/projects/IBM-ACE-On-QEMU-Reproduction/scripts/build_env.sh
+$$ export ACE_DIR=~/projects/IBM-ACE-On-QEMU-Reproduction/build/ace/
+$$ ACE_DIR=~/projects/IBM-ACE-On-QEMU-Reproduction/build/ace/
+$$ export QEMU_SOURCE_DIR=~/projects/IBM-ACE-On-QEMU-Reproduction/build/qemu-source/
+$$ QEMU_SOURCE_DIR=~/projects/IBM-ACE-On-QEMU-Reproduction/build/qemu-source/
+$$ export BR2_DL_DIR=~/projects/IBM-ACE-On-QEMU-Reproduction/build/dl
+$$ BR2_DL_DIR=~/projects/IBM-ACE-On-QEMU-Reproduction/build/dl
+$$ export CARGO_HOME=~/projects/IBM-ACE-On-QEMU-Reproduction/build/cargo-home
+$$ CARGO_HOME=~/projects/IBM-ACE-On-QEMU-Reproduction/build/cargo-home
+$$ export BR2_JLEVEL=2
+$$ BR2_JLEVEL=2
+$$ export OMP_NUM_THREADS=2
+$$ OMP_NUM_THREADS=2
+$$ export CARGO_BUILD_JOBS=2
+$$ CARGO_BUILD_JOBS=2
+$$ export WGETRC=~/projects/IBM-ACE-On-QEMU-Reproduction/scripts/wgetrc
+$$ WGETRC=~/projects/IBM-ACE-On-QEMU-Reproduction/scripts/wgetrc
+$ env
+$ grep -E '^(ACE_DIR|QEMU_SOURCE_DIR|BR2_DL_DIR|CARGO_HOME|BR2_JLEVEL|OMP_NUM_THREADS|CARGO_BUILD_JOBS|WGETRC)='
+$ sort
+ACE_DIR=~/projects/IBM-ACE-On-QEMU-Reproduction/build/ace/
+BR2_DL_DIR=~/projects/IBM-ACE-On-QEMU-Reproduction/build/dl
+BR2_JLEVEL=2
+CARGO_BUILD_JOBS=2
+CARGO_HOME=~/projects/IBM-ACE-On-QEMU-Reproduction/build/cargo-home
+OMP_NUM_THREADS=2
+QEMU_SOURCE_DIR=~/projects/IBM-ACE-On-QEMU-Reproduction/build/qemu-source/
+WGETRC=~/projects/IBM-ACE-On-QEMU-Reproduction/scripts/wgetrc
+$ stop_if_failed 'step 4'
+$ section '5. Record the compiler Buildroot used for the hypervisor (G09 follow-up)'
+
+===== 5. Record the compiler Buildroot used for the hypervisor (G09 follow-up) =====
+$$ find ~/projects/IBM-ACE-On-QEMU-Reproduction/build/ace//hypervisor/buildroot -maxdepth 7 -path '*/bin/*-linux-gnu-gcc' -print -quit
+$ GCC_BR=~/projects/IBM-ACE-On-QEMU-Reproduction/build/ace//hypervisor/buildroot/per-package/toolchain/host/opt/ext-toolchain/bin/riscv64-buildroot-linux-gnu-gcc
+$ echo ~/projects/IBM-ACE-On-QEMU-Reproduction/build/ace//hypervisor/buildroot/per-package/toolchain/host/opt/ext-toolchain/bin/riscv64-buildroot-linux-gnu-gcc
+~/projects/IBM-ACE-On-QEMU-Reproduction/build/ace//hypervisor/buildroot/per-package/toolchain/host/opt/ext-toolchain/bin/riscv64-buildroot-linux-gnu-gcc
+$ ~/projects/IBM-ACE-On-QEMU-Reproduction/build/ace//hypervisor/buildroot/per-package/toolchain/host/opt/ext-toolchain/bin/riscv64-buildroot-linux-gnu-gcc --version
+riscv64-buildroot-linux-gnu-gcc.br_real (Buildroot 2021.11-8547-g7e65a1a) 13.2.0
+Copyright (C) 2023 Free Software Foundation, Inc.
+This is free software; see the source for copying conditions.  There is NO
+warranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+
+$ grep -a -o -m 1 'Linux version [[:print:]]*' ~/projects/IBM-ACE-On-QEMU-Reproduction/build/ace//hypervisor/buildroot/images/Image
+Linux version 6.3.0-rc4 (<user>@<host>) (riscv64-linux-gcc.br_real (Buildroot 2021.11-8547-g7e65a1a) 13.2.0, GNU ld (GNU Binutils) 2.41) # SMP 
+$ section '6. Check the Rust toolchain and the payload before the build'
+
+===== 6. Check the Rust toolchain and the payload before the build =====
+$ cd ~/projects/IBM-ACE-On-QEMU-Reproduction/upstream/ACE-RISCV/security-monitor
+$ echo 'RUSTUP_TOOLCHAIN=<not set>'
+RUSTUP_TOOLCHAIN=<not set>
+$ rustup show active-toolchain
+nightly-2026-03-23-x86_64-unknown-linux-gnu (overridden by '~/projects/IBM-ACE-On-QEMU-Reproduction/upstream/ACE-RISCV/rust-toolchain.toml')
+$ rustc --version
+rustc 1.96.0-nightly (562dee482 2026-03-21)
+$ cargo fmt --version
+rustfmt 1.9.0-nightly (562dee4820 2026-03-21)
+$ rustup target list --installed
+riscv64gc-unknown-none-elf
+x86_64-unknown-linux-gnu
+$ git -C opensbi status --short
+$ grep -c ace_setup_this_hart opensbi/lib/sbi/sbi_hsm.c
+0
+$ echo '(OpenSBI not patched)'
+(OpenSBI not patched)
+$$ sha256sum
+$$ cut '-d ' -f1
+$ test 75a0db25e8f28f415d93b490bbaf4f1bf4b31b6c22685556bfe32adf056308d7 = 75a0db25e8f28f415d93b490bbaf4f1bf4b31b6c22685556bfe32adf056308d7
+$ stop_if_failed 'step 6'
+$ section '7. Build the firmware with the upstream Makefile'
+
+===== 7. Build the firmware with the upstream Makefile =====
+$ cd ~/projects/IBM-ACE-On-QEMU-Reproduction/upstream/ACE-RISCV
+$ date -u
+Mon Nov  2 13:10:21 UTC 2026
+$ make -j2 firmware
+echo ~/projects/IBM-ACE-On-QEMU-Reproduction/build/ace/
+~/projects/IBM-ACE-On-QEMU-Reproduction/build/ace/
+if [ ! -f "~/projects/IBM-ACE-On-QEMU-Reproduction/build/ace//riscv-gnu-toolchain//bin/riscv64-unknown-linux-gnu-gcc" ]; then \
+	rm -rf ~/projects/IBM-ACE-On-QEMU-Reproduction/build/ace//riscv-gnu-toolchain/; \
+	mkdir -p ~/projects/IBM-ACE-On-QEMU-Reproduction/build/ace//riscv-gnu-toolchain/; \
+	wget -q https://github.com/riscv-collab/riscv-gnu-toolchain/releases/download/2023.09.27/riscv64-glibc-ubuntu-22.04-gcc-nightly-2023.09.27-nightly.tar.gz ; \
+	tar -zxf riscv64-glibc-ubuntu-22.04-gcc-nightly-2023.09.27-nightly.tar.gz --directory ~/projects/IBM-ACE-On-QEMU-Reproduction/build/ace//riscv-gnu-toolchain// ; \
+	mv ~/projects/IBM-ACE-On-QEMU-Reproduction/build/ace//riscv-gnu-toolchain//riscv/* ~/projects/IBM-ACE-On-QEMU-Reproduction/build/ace//riscv-gnu-toolchain// ; \
+	rm -f riscv64-glibc-ubuntu-22.04-gcc-nightly-2023.09.27-nightly.tar.gz ; \
+fi
+PATH="~/projects/IBM-ACE-On-QEMU-Reproduction/build/ace//riscv-gnu-toolchain//bin:~/projects/IBM-ACE-On-QEMU-Reproduction/build/ace//riscv-gnu-toolchain//bin:~/bin:~/.cargo/bin:~/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin:/snap/bin" ACE_DIR=~/projects/IBM-ACE-On-QEMU-Reproduction/build/ace/ make -C hypervisor
+make[1]: Entering directory '~/projects/IBM-ACE-On-QEMU-Reproduction/upstream/ACE-RISCV/hypervisor'
+if [ ! -f "~/projects/IBM-ACE-On-QEMU-Reproduction/build/ace//hypervisor//buildroot/images/rootfs.ext2" ]; then \
+	echo "Building the hypervisor with buildroot"; \
+	rm -rf ~/projects/IBM-ACE-On-QEMU-Reproduction/build/ace//hypervisor//buildroot; \
+	mkdir -p ~/projects/IBM-ACE-On-QEMU-Reproduction/build/ace//hypervisor//buildroot; \
+	mkdir -p ~/projects/IBM-ACE-On-QEMU-Reproduction/build/ace//hypervisor//overlay/root; \
+	mkdir -p ~/projects/IBM-ACE-On-QEMU-Reproduction/build/ace//hypervisor//overlay; \
+	cp ~/projects/IBM-ACE-On-QEMU-Reproduction/upstream/ACE-RISCV/hypervisor//configurations/qemu_riscv64_virt_defconfig ~/projects/IBM-ACE-On-QEMU-Reproduction/build/ace//hypervisor//buildroot/.config; \
+	echo ~/projects/IBM-ACE-On-QEMU-Reproduction/build/ace//hypervisor//buildroot/.config; \
+	sed "s@^BR2_ROOTFS_OVERLAY=.*@BR2_ROOTFS_OVERLAY=\"~/projects/IBM-ACE-On-QEMU-Reproduction/build/ace//hypervisor//overlay\"@g" -i ~/projects/IBM-ACE-On-QEMU-Reproduction/build/ace//hypervisor//buildroot/.config; \
+	sed "s@^BR2_TARGET_ROOTFS_EXT2_SIZE=.*@BR2_TARGET_ROOTFS_EXT2_SIZE=\""512M"\"@g" -i ~/projects/IBM-ACE-On-QEMU-Reproduction/build/ace//hypervisor//buildroot/.config; \
+	sed "s@^BR2_LINUX_KERNEL_CUSTOM_CONFIG_FILE=.*@BR2_LINUX_KERNEL_CUSTOM_CONFIG_FILE=\"~/projects/IBM-ACE-On-QEMU-Reproduction/upstream/ACE-RISCV/hypervisor//configurations/linux64-defconfig\"@g" -i ~/projects/IBM-ACE-On-QEMU-Reproduction/build/ace//hypervisor//buildroot/.config; \
+	sed "s@^BR2_GLOBAL_PATCH_DIR=.*@BR2_GLOBAL_PATCH_DIR=\"~/projects/IBM-ACE-On-QEMU-Reproduction/upstream/ACE-RISCV/hypervisor//patches\"@g" -i ~/projects/IBM-ACE-On-QEMU-Reproduction/build/ace//hypervisor//buildroot/.config; \
+	if [ ! -f "~/projects/IBM-ACE-On-QEMU-Reproduction/upstream/ACE-RISCV/hypervisor//buildroot/Makefile" ]; then \
+		echo "Buildroot repository not initialized. Did you forget to run: git submodule update --init --recursive?" ;\
+		exit 1 ;\
+	fi ;\
+	make -s -C ~/projects/IBM-ACE-On-QEMU-Reproduction/upstream/ACE-RISCV/hypervisor//buildroot RISCV=~/projects/IBM-ACE-On-QEMU-Reproduction/build/ace//riscv-gnu-toolchain/ PATH=~/projects/IBM-ACE-On-QEMU-Reproduction/build/ace//riscv-gnu-toolchain//bin:~/projects/IBM-ACE-On-QEMU-Reproduction/build/ace//riscv-gnu-toolchain//bin:~/projects/IBM-ACE-On-QEMU-Reproduction/build/ace//riscv-gnu-toolchain//bin:~/bin:~/.cargo/bin:~/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin:/snap/bin O=~/projects/IBM-ACE-On-QEMU-Reproduction/build/ace//hypervisor//buildroot CROSS_COMPILE=riscv64-unknown-linux-gnu- BR2_JLEVEL=2 olddefconfig ;\
+	make -s -C ~/projects/IBM-ACE-On-QEMU-Reproduction/upstream/ACE-RISCV/hypervisor//buildroot RISCV=~/projects/IBM-ACE-On-QEMU-Reproduction/build/ace//riscv-gnu-toolchain/ PATH=~/projects/IBM-ACE-On-QEMU-Reproduction/build/ace//riscv-gnu-toolchain//bin:~/projects/IBM-ACE-On-QEMU-Reproduction/build/ace//riscv-gnu-toolchain//bin:~/projects/IBM-ACE-On-QEMU-Reproduction/build/ace//riscv-gnu-toolchain//bin:~/bin:~/.cargo/bin:~/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin:/snap/bin O=~/projects/IBM-ACE-On-QEMU-Reproduction/build/ace//hypervisor//buildroot BR2_JLEVEL=2 ;\
+fi
+make[1]: Leaving directory '~/projects/IBM-ACE-On-QEMU-Reproduction/upstream/ACE-RISCV/hypervisor'
+PATH="~/projects/IBM-ACE-On-QEMU-Reproduction/build/ace//riscv-gnu-toolchain//bin:~/projects/IBM-ACE-On-QEMU-Reproduction/build/ace//riscv-gnu-toolchain//bin:~/bin:~/.cargo/bin:~/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin:/snap/bin" ACE_DIR=~/projects/IBM-ACE-On-QEMU-Reproduction/build/ace/ LINUX_IMAGE=~/projects/IBM-ACE-On-QEMU-Reproduction/build/ace//hypervisor//buildroot/images/Image CROSS_COMPILE=riscv64-unknown-linux-gnu- PLATFORM_RISCV_XLEN=64 PLATFORM_RISCV_ISA=rv64gc PLATFORM_RISCV_ABI=lp64d make -C security-monitor opensbi
+make[1]: Entering directory '~/projects/IBM-ACE-On-QEMU-Reproduction/upstream/ACE-RISCV/security-monitor'
+echo "Compiling OpenSBI bindings" ;\
+if grep -q ace_setup_this_hart "~/projects/IBM-ACE-On-QEMU-Reproduction/upstream/ACE-RISCV/security-monitor//opensbi/lib/sbi/sbi_hsm.c"; then \
+	echo "Applying patches to OpenSBI bindings" ;\
+	cd ~/projects/IBM-ACE-On-QEMU-Reproduction/upstream/ACE-RISCV/security-monitor//opensbi; git apply -R --whitespace=fix ~/projects/IBM-ACE-On-QEMU-Reproduction/upstream/ACE-RISCV/security-monitor//platform/opensbi_v1.4.patch; cd ~/projects/IBM-ACE-On-QEMU-Reproduction/upstream/ACE-RISCV/security-monitor/; \
+fi; \
+INSTALL_DIR=~/projects/IBM-ACE-On-QEMU-Reproduction/build/ace/ OPENSBI_SOURCE_DIR=~/projects/IBM-ACE-On-QEMU-Reproduction/upstream/ACE-RISCV/security-monitor//opensbi CROSS_COMPILE=riscv64-unknown-linux-gnu- ./rust-crates/opensbi.sh
+Compiling OpenSBI bindings
+make[2]: Entering directory '~/projects/IBM-ACE-On-QEMU-Reproduction/upstream/ACE-RISCV/security-monitor/opensbi'
+make[2]: warning: -j2 forced in submake: resetting jobserver mode.
+Loaded configuration '~/projects/IBM-ACE-On-QEMU-Reproduction/upstream/ACE-RISCV/security-monitor/opensbi/platform/generic/configs/defconfig'
+Configuration saved to '~/projects/IBM-ACE-On-QEMU-Reproduction/build/ace/opensbi-rust-bindings/platform/generic/kconfig/.config'
+ CPP-DEP   platform/generic/firmware/fw_payload.elf.dep
+ CPP-DEP   platform/generic/firmware/fw_jump.elf.dep
+ CPP-DEP   platform/generic/firmware/fw_dynamic.elf.dep
+ CPP-DEP   platform/generic/firmware/payloads/test.elf.dep
+ AS-DEP    platform/generic/firmware/fw_payload.dep
+ AS-DEP    platform/generic/firmware/fw_jump.dep
+ AS-DEP    platform/generic/firmware/fw_dynamic.dep
+ AS-DEP    platform/generic/firmware/payloads/test_head.dep
+ CC-DEP    platform/generic/firmware/payloads/test_main.dep
+ CC-DEP    lib/sbi/sbi_cppc.dep
+ AS-DEP    lib/sbi/sbi_expected_trap.dep
+ CC-DEP    lib/sbi/sbi_unpriv.dep
+ CC-DEP    lib/sbi/sbi_trap.dep
+ CC-DEP    lib/sbi/sbi_tlb.dep
+ CC-DEP    lib/sbi/sbi_timer.dep
+ CC-DEP    lib/sbi/sbi_system.dep
+ CC-DEP    lib/sbi/sbi_string.dep
+ CC-DEP    lib/sbi/sbi_scratch.dep
+ CC-DEP    lib/sbi/sbi_dbtr.dep
+ CC-DEP    lib/sbi/sbi_pmu.dep
+ CC-DEP    lib/sbi/sbi_platform.dep
+ CC-DEP    lib/sbi/sbi_misaligned_ldst.dep
+ CC-DEP    lib/sbi/sbi_irqchip.dep
+ CC-DEP    lib/sbi/sbi_ipi.dep
+ CC-DEP    lib/sbi/sbi_init.dep
+ CC-DEP    lib/sbi/sbi_illegal_insn.dep
+ CC-DEP    lib/sbi/sbi_hsm.dep
+ AS-DEP    lib/sbi/sbi_hfence.dep
+ CC-DEP    lib/sbi/sbi_math.dep
+ CC-DEP    lib/sbi/sbi_heap.dep
+ CC-DEP    lib/sbi/sbi_hart.dep
+ CC-DEP    lib/sbi/sbi_fifo.dep
+ CC-DEP    lib/sbi/sbi_emulate_csr.dep
+ CC-DEP    lib/sbi/sbi_domain.dep
+ CC-DEP    lib/sbi/sbi_console.dep
+ CC-DEP    lib/sbi/sbi_bitops.dep
+ CC-DEP    lib/sbi/sbi_bitmap.dep
+ CC-DEP    lib/sbi/sbi_ecall_base.dep
+ GEN-DEP   lib/sbi/sbi_ecall_exts.dep
+ GEN-DEP   lib/sbi/sbi_ecall_exts.dep
+ CC-DEP    lib/sbi/sbi_ecall.dep
+ CC-DEP    lib/sbi/riscv_locks.dep
+ AS-DEP    lib/sbi/riscv_hardfp.dep
+ CC-DEP    lib/sbi/riscv_atomic.dep
+ CC-DEP    lib/sbi/riscv_asm.dep
+ GEN-DEP   platform/generic/platform_override_modules.dep
+ GEN-DEP   platform/generic/platform_override_modules.dep
+ CC-DEP    platform/generic/platform.dep
+ MERGE-DEP platform/generic/firmware/payloads/test.dep
+ CC-DEP    platform/generic/lib/utils/fdt/fdt_fixup.dep
+ CC-DEP    platform/generic/lib/utils/fdt/fdt_helper.dep
+ CC-DEP    platform/generic/lib/utils/fdt/fdt_pmu.dep
+ CC-DEP    platform/generic/lib/utils/fdt/fdt_domain.dep
+ CC-DEP    platform/generic/lib/utils/gpio/gpio.dep
+ CC-DEP    platform/generic/lib/utils/gpio/fdt_gpio_starfive.dep
+ CC-DEP    platform/generic/lib/utils/gpio/fdt_gpio_sifive.dep
+ CC-DEP    platform/generic/lib/utils/gpio/fdt_gpio_designware.dep
+ GEN-DEP   platform/generic/lib/utils/gpio/fdt_gpio_drivers.dep
+ GEN-DEP   platform/generic/lib/utils/gpio/fdt_gpio_drivers.dep
+ CC-DEP    platform/generic/lib/utils/gpio/fdt_gpio.dep
+ CC-DEP    platform/generic/lib/utils/i2c/dw_i2c.dep
+ CC-DEP    platform/generic/lib/utils/i2c/fdt_i2c_dw.dep
+ CC-DEP    platform/generic/lib/utils/i2c/fdt_i2c_sifive.dep
+ GEN-DEP   platform/generic/lib/utils/i2c/fdt_i2c_adapter_drivers.dep
+ GEN-DEP   platform/generic/lib/utils/i2c/fdt_i2c_adapter_drivers.dep
+ CC-DEP    platform/generic/lib/utils/i2c/fdt_i2c.dep
+ CC-DEP    platform/generic/lib/utils/i2c/i2c.dep
+ CC-DEP    platform/generic/lib/utils/ipi/fdt_ipi_plicsw.dep
+ CC-DEP    platform/generic/lib/utils/ipi/fdt_ipi_mswi.dep
+ GEN-DEP   platform/generic/lib/utils/ipi/fdt_ipi_drivers.dep
+ GEN-DEP   platform/generic/lib/utils/ipi/fdt_ipi_drivers.dep
+ CC-DEP    platform/generic/lib/utils/ipi/fdt_ipi.dep
+ CC-DEP    platform/generic/lib/utils/ipi/andes_plicsw.dep
+ CC-DEP    platform/generic/lib/utils/ipi/aclint_mswi.dep
+ CC-DEP    platform/generic/lib/utils/irqchip/plic.dep
+ CC-DEP    platform/generic/lib/utils/irqchip/imsic.dep
+ CC-DEP    platform/generic/lib/utils/irqchip/aplic.dep
+ CC-DEP    platform/generic/lib/utils/irqchip/fdt_irqchip_plic.dep
+ CC-DEP    platform/generic/lib/utils/irqchip/fdt_irqchip_imsic.dep
+ CC-DEP    platform/generic/lib/utils/irqchip/fdt_irqchip_aplic.dep
+ GEN-DEP   platform/generic/lib/utils/irqchip/fdt_irqchip_drivers.dep
+ GEN-DEP   platform/generic/lib/utils/irqchip/fdt_irqchip_drivers.dep
+ CC-DEP    platform/generic/lib/utils/irqchip/fdt_irqchip.dep
+ CC-DEP    platform/generic/lib/utils/libfdt/fdt_wip.dep
+ CC-DEP    platform/generic/lib/utils/libfdt/fdt_sw.dep
+ CC-DEP    platform/generic/lib/utils/libfdt/fdt_strerror.dep
+ CC-DEP    platform/generic/lib/utils/libfdt/fdt_rw.dep
+ CC-DEP    platform/generic/lib/utils/libfdt/fdt_ro.dep
+ CC-DEP    platform/generic/lib/utils/libfdt/fdt_empty_tree.dep
+ CC-DEP    platform/generic/lib/utils/libfdt/fdt_check.dep
+ CC-DEP    platform/generic/lib/utils/libfdt/fdt_addresses.dep
+ CC-DEP    platform/generic/lib/utils/libfdt/fdt.dep
+ CC-DEP    platform/generic/lib/utils/regmap/regmap.dep
+ CC-DEP    platform/generic/lib/utils/regmap/fdt_regmap_syscon.dep
+ GEN-DEP   platform/generic/lib/utils/regmap/fdt_regmap_drivers.dep
+ GEN-DEP   platform/generic/lib/utils/regmap/fdt_regmap_drivers.dep
+ CC-DEP    platform/generic/lib/utils/regmap/fdt_regmap.dep
+ CC-DEP    platform/generic/lib/utils/reset/fdt_reset_syscon.dep
+ CC-DEP    platform/generic/lib/utils/reset/fdt_reset_sunxi_wdt.dep
+ CC-DEP    platform/generic/lib/utils/reset/fdt_reset_htif.dep
+ CC-DEP    platform/generic/lib/utils/reset/fdt_reset_gpio.dep
+ CC-DEP    platform/generic/lib/utils/reset/fdt_reset_atcwdt200.dep
+ GEN-DEP   platform/generic/lib/utils/reset/fdt_reset_drivers.dep
+ GEN-DEP   platform/generic/lib/utils/reset/fdt_reset_drivers.dep
+ CC-DEP    platform/generic/lib/utils/reset/fdt_reset.dep
+ CC-DEP    platform/generic/lib/utils/serial/semihosting.dep
+ CC-DEP    platform/generic/lib/utils/serial/xlnx-uartlite.dep
+ CC-DEP    platform/generic/lib/utils/serial/uart8250.dep
+ CC-DEP    platform/generic/lib/utils/serial/litex-uart.dep
+ CC-DEP    platform/generic/lib/utils/serial/sifive-uart.dep
+ CC-DEP    platform/generic/lib/utils/serial/shakti-uart.dep
+ CC-DEP    platform/generic/lib/utils/serial/renesas_scif.dep
+ CC-DEP    platform/generic/lib/utils/serial/gaisler-uart.dep
+ CC-DEP    platform/generic/lib/utils/serial/cadence-uart.dep
+ CC-DEP    platform/generic/lib/utils/serial/fdt_serial_xlnx_uartlite.dep
+ CC-DEP    platform/generic/lib/utils/serial/fdt_serial_uart8250.dep
+ CC-DEP    platform/generic/lib/utils/serial/fdt_serial_litex.dep
+ CC-DEP    platform/generic/lib/utils/serial/fdt_serial_sifive.dep
+ CC-DEP    platform/generic/lib/utils/serial/fdt_serial_shakti.dep
+ CC-DEP    platform/generic/lib/utils/serial/fdt_serial_renesas_scif.dep
+ CC-DEP    platform/generic/lib/utils/serial/fdt_serial_htif.dep
+ CC-DEP    platform/generic/lib/utils/serial/fdt_serial_gaisler.dep
+ CC-DEP    platform/generic/lib/utils/serial/fdt_serial_cadence.dep
+ GEN-DEP   platform/generic/lib/utils/serial/fdt_serial_drivers.dep
+ GEN-DEP   platform/generic/lib/utils/serial/fdt_serial_drivers.dep
+ CC-DEP    platform/generic/lib/utils/serial/fdt_serial.dep
+ CC-DEP    platform/generic/lib/utils/sys/atcsmu.dep
+ CC-DEP    platform/generic/lib/utils/sys/htif.dep
+ CC-DEP    platform/generic/lib/utils/timer/fdt_timer_plmt.dep
+ CC-DEP    platform/generic/lib/utils/timer/fdt_timer_mtimer.dep
+ GEN-DEP   platform/generic/lib/utils/timer/fdt_timer_drivers.dep
+ GEN-DEP   platform/generic/lib/utils/timer/fdt_timer_drivers.dep
+ CC-DEP    platform/generic/lib/utils/timer/fdt_timer.dep
+ CC-DEP    platform/generic/lib/utils/timer/andes_plmt.dep
+ CC-DEP    platform/generic/lib/utils/timer/aclint_mtimer.dep
+ CC-DEP    lib/sbi/sbi_ecall_dbtr.dep
+ CC-DEP    lib/sbi/sbi_ecall_vendor.dep
+ CC-DEP    lib/sbi/sbi_ecall_legacy.dep
+ CC-DEP    lib/sbi/sbi_ecall_cppc.dep
+ CC-DEP    lib/sbi/sbi_ecall_dbcn.dep
+ CC-DEP    lib/sbi/sbi_ecall_pmu.dep
+ CC-DEP    lib/sbi/sbi_ecall_susp.dep
+ CC-DEP    lib/sbi/sbi_ecall_srst.dep
+ CC-DEP    lib/sbi/sbi_ecall_hsm.dep
+ CC-DEP    lib/sbi/sbi_ecall_ipi.dep
+ CC-DEP    lib/sbi/sbi_ecall_rfence.dep
+ CC-DEP    lib/sbi/sbi_ecall_time.dep
+ CC-DEP    platform/generic/allwinner/sun20i-d1.dep
+ CC-DEP    platform/generic/andes/andes_pmu.dep
+ CC-DEP    platform/generic/andes/andes_sbi.dep
+ CC-DEP    platform/generic/andes/andes45-pma.dep
+ AS-DEP    platform/generic/andes/sleep.dep
+ CC-DEP    platform/generic/andes/ae350.dep
+ CC-DEP    platform/generic/renesas/rzfive/rzfive.dep
+ CC-DEP    platform/generic/sifive/fu740.dep
+ CC-DEP    platform/generic/sifive/fu540.dep
+ CC-DEP    platform/generic/sophgo/sg2042.dep
+ CC-DEP    platform/generic/starfive/jh7110.dep
+ CC-DEP    platform/generic/thead/thead-generic.dep
+ CC-DEP    platform/generic/thead/thead_c9xx_errata_tlb_flush.dep
+ AS-DEP    platform/generic/thead/thead_c9xx_tlb_trap_handler.dep
+ CC-DEP    platform/generic/thead/thead_c9xx_pmu.dep
+ CC        lib/sbi/riscv_asm.o
+ CC        lib/sbi/riscv_atomic.o
+ AS        lib/sbi/riscv_hardfp.o
+ CC        lib/sbi/riscv_locks.o
+ CC        lib/sbi/sbi_ecall.o
+ CARRAY    lib/sbi/sbi_ecall_exts.c
+ CC        lib/sbi/sbi_ecall_time.o
+ CC        lib/sbi/sbi_ecall_rfence.o
+ CC        lib/sbi/sbi_ecall_ipi.o
+ CC        lib/sbi/sbi_ecall_base.o
+ CC        lib/sbi/sbi_ecall_hsm.o
+ CC        lib/sbi/sbi_ecall_srst.o
+ CC        lib/sbi/sbi_ecall_susp.o
+ CC        lib/sbi/sbi_ecall_pmu.o
+ CC        lib/sbi/sbi_ecall_dbcn.o
+ CC        lib/sbi/sbi_ecall_cppc.o
+ CC        lib/sbi/sbi_ecall_legacy.o
+ CC        lib/sbi/sbi_ecall_vendor.o
+ CC        lib/sbi/sbi_ecall_dbtr.o
+ CC        lib/sbi/sbi_bitmap.o
+ CC        lib/sbi/sbi_bitops.o
+ CC        lib/sbi/sbi_console.o
+ CC        lib/sbi/sbi_domain.o
+ CC        lib/sbi/sbi_emulate_csr.o
+ CC        lib/sbi/sbi_fifo.o
+ CC        lib/sbi/sbi_hart.o
+ CC        lib/sbi/sbi_heap.o
+ CC        lib/sbi/sbi_math.o
+ AS        lib/sbi/sbi_hfence.o
+ CC        lib/sbi/sbi_hsm.o
+ CC        lib/sbi/sbi_illegal_insn.o
+ CC        lib/sbi/sbi_init.o
+ CC        lib/sbi/sbi_ipi.o
+ CC        lib/sbi/sbi_irqchip.o
+ CC        lib/sbi/sbi_misaligned_ldst.o
+ CC        lib/sbi/sbi_platform.o
+ CC        lib/sbi/sbi_pmu.o
+ CC        lib/sbi/sbi_dbtr.o
+ CC        lib/sbi/sbi_scratch.o
+ CC        lib/sbi/sbi_string.o
+ CC        lib/sbi/sbi_system.o
+ CC        lib/sbi/sbi_timer.o
+ CC        lib/sbi/sbi_tlb.o
+ CC        lib/sbi/sbi_trap.o
+ CC        lib/sbi/sbi_unpriv.o
+ AS        lib/sbi/sbi_expected_trap.o
+ CC        lib/sbi/sbi_cppc.o
+ CC        lib/sbi/sbi_ecall_exts.o
+ CC        platform/generic/lib/utils/timer/aclint_mtimer.o
+ CC        platform/generic/lib/utils/timer/andes_plmt.o
+ CC        platform/generic/lib/utils/timer/fdt_timer.o
+ CARRAY    platform/generic/lib/utils/timer/fdt_timer_drivers.c
+ CC        platform/generic/lib/utils/timer/fdt_timer_mtimer.o
+ CC        platform/generic/lib/utils/timer/fdt_timer_plmt.o
+ CC        platform/generic/lib/utils/sys/htif.o
+ CC        platform/generic/lib/utils/sys/atcsmu.o
+ CC        platform/generic/lib/utils/serial/fdt_serial.o
+ CARRAY    platform/generic/lib/utils/serial/fdt_serial_drivers.c
+ CC        platform/generic/lib/utils/serial/fdt_serial_cadence.o
+ CC        platform/generic/lib/utils/serial/fdt_serial_gaisler.o
+ CC        platform/generic/lib/utils/serial/fdt_serial_htif.o
+ CC        platform/generic/lib/utils/serial/fdt_serial_renesas_scif.o
+ CC        platform/generic/lib/utils/serial/fdt_serial_shakti.o
+ CC        platform/generic/lib/utils/serial/fdt_serial_sifive.o
+ CC        platform/generic/lib/utils/serial/fdt_serial_litex.o
+ CC        platform/generic/lib/utils/serial/fdt_serial_uart8250.o
+ CC        platform/generic/lib/utils/serial/fdt_serial_xlnx_uartlite.o
+ CC        platform/generic/lib/utils/serial/cadence-uart.o
+ CC        platform/generic/lib/utils/serial/gaisler-uart.o
+ CC        platform/generic/lib/utils/serial/renesas_scif.o
+ CC        platform/generic/lib/utils/serial/shakti-uart.o
+ CC        platform/generic/lib/utils/serial/sifive-uart.o
+ CC        platform/generic/lib/utils/serial/litex-uart.o
+ CC        platform/generic/lib/utils/serial/uart8250.o
+ CC        platform/generic/lib/utils/serial/xlnx-uartlite.o
+ CC        platform/generic/lib/utils/serial/semihosting.o
+ CC        platform/generic/lib/utils/reset/fdt_reset.o
+ CARRAY    platform/generic/lib/utils/reset/fdt_reset_drivers.c
+ CC        platform/generic/lib/utils/reset/fdt_reset_atcwdt200.o
+ CC        platform/generic/lib/utils/reset/fdt_reset_gpio.o
+ CC        platform/generic/lib/utils/reset/fdt_reset_htif.o
+ CC        platform/generic/lib/utils/reset/fdt_reset_sunxi_wdt.o
+ CC        platform/generic/lib/utils/reset/fdt_reset_syscon.o
+ CC        platform/generic/lib/utils/regmap/fdt_regmap.o
+ CARRAY    platform/generic/lib/utils/regmap/fdt_regmap_drivers.c
+ CC        platform/generic/lib/utils/regmap/fdt_regmap_syscon.o
+ CC        platform/generic/lib/utils/regmap/regmap.o
+ CC        platform/generic/lib/utils/libfdt/fdt.o
+ CC        platform/generic/lib/utils/libfdt/fdt_addresses.o
+ CC        platform/generic/lib/utils/libfdt/fdt_check.o
+ CC        platform/generic/lib/utils/libfdt/fdt_empty_tree.o
+ CC        platform/generic/lib/utils/libfdt/fdt_ro.o
+ CC        platform/generic/lib/utils/libfdt/fdt_rw.o
+ CC        platform/generic/lib/utils/libfdt/fdt_strerror.o
+ CC        platform/generic/lib/utils/libfdt/fdt_sw.o
+ CC        platform/generic/lib/utils/libfdt/fdt_wip.o
+ CC        platform/generic/lib/utils/irqchip/fdt_irqchip.o
+ CARRAY    platform/generic/lib/utils/irqchip/fdt_irqchip_drivers.c
+ CC        platform/generic/lib/utils/irqchip/fdt_irqchip_aplic.o
+ CC        platform/generic/lib/utils/irqchip/fdt_irqchip_imsic.o
+ CC        platform/generic/lib/utils/irqchip/fdt_irqchip_plic.o
+ CC        platform/generic/lib/utils/irqchip/aplic.o
+ CC        platform/generic/lib/utils/irqchip/imsic.o
+ CC        platform/generic/lib/utils/irqchip/plic.o
+ CC        platform/generic/lib/utils/ipi/aclint_mswi.o
+ CC        platform/generic/lib/utils/ipi/andes_plicsw.o
+ CC        platform/generic/lib/utils/ipi/fdt_ipi.o
+ CARRAY    platform/generic/lib/utils/ipi/fdt_ipi_drivers.c
+ CC        platform/generic/lib/utils/ipi/fdt_ipi_mswi.o
+ CC        platform/generic/lib/utils/ipi/fdt_ipi_plicsw.o
+ CC        platform/generic/lib/utils/i2c/i2c.o
+ CC        platform/generic/lib/utils/i2c/fdt_i2c.o
+ CARRAY    platform/generic/lib/utils/i2c/fdt_i2c_adapter_drivers.c
+ CC        platform/generic/lib/utils/i2c/fdt_i2c_sifive.o
+ CC        platform/generic/lib/utils/i2c/fdt_i2c_dw.o
+ CC        platform/generic/lib/utils/i2c/dw_i2c.o
+ CC        platform/generic/lib/utils/gpio/fdt_gpio.o
+ CARRAY    platform/generic/lib/utils/gpio/fdt_gpio_drivers.c
+ CC        platform/generic/lib/utils/gpio/fdt_gpio_designware.o
+ CC        platform/generic/lib/utils/gpio/fdt_gpio_sifive.o
+ CC        platform/generic/lib/utils/gpio/fdt_gpio_starfive.o
+ CC        platform/generic/lib/utils/gpio/gpio.o
+ CC        platform/generic/lib/utils/fdt/fdt_domain.o
+ CC        platform/generic/lib/utils/fdt/fdt_pmu.o
+ CC        platform/generic/lib/utils/fdt/fdt_helper.o
+ CC        platform/generic/lib/utils/fdt/fdt_fixup.o
+ CC        platform/generic/thead/thead_c9xx_pmu.o
+ AS        platform/generic/thead/thead_c9xx_tlb_trap_handler.o
+ CC        platform/generic/thead/thead_c9xx_errata_tlb_flush.o
+ CC        platform/generic/thead/thead-generic.o
+ CC        platform/generic/starfive/jh7110.o
+ CC        platform/generic/sophgo/sg2042.o
+ CC        platform/generic/sifive/fu540.o
+ CC        platform/generic/sifive/fu740.o
+ CC        platform/generic/renesas/rzfive/rzfive.o
+ CC        platform/generic/platform.o
+ CARRAY    platform/generic/platform_override_modules.c
+ CC        platform/generic/andes/ae350.o
+ AS        platform/generic/andes/sleep.o
+ CC        platform/generic/andes/andes45-pma.o
+ CC        platform/generic/andes/andes_sbi.o
+ CC        platform/generic/andes/andes_pmu.o
+ CC        platform/generic/allwinner/sun20i-d1.o
+ AS        platform/generic/firmware/payloads/test_head.o
+ CC        platform/generic/firmware/payloads/test_main.o
+ CPP       platform/generic/firmware/payloads/test.elf.ld
+ CC        platform/generic/lib/utils/timer/fdt_timer_drivers.o
+ CC        platform/generic/lib/utils/serial/fdt_serial_drivers.o
+ CC        platform/generic/lib/utils/reset/fdt_reset_drivers.o
+ CC        platform/generic/lib/utils/regmap/fdt_regmap_drivers.o
+ CC        platform/generic/lib/utils/irqchip/fdt_irqchip_drivers.o
+ CC        platform/generic/lib/utils/ipi/fdt_ipi_drivers.o
+ CC        platform/generic/lib/utils/i2c/fdt_i2c_adapter_drivers.o
+ CC        platform/generic/lib/utils/gpio/fdt_gpio_drivers.o
+ CC        platform/generic/platform_override_modules.o
+ AS        platform/generic/firmware/fw_dynamic.o
+ CPP       platform/generic/firmware/fw_dynamic.elf.ld
+ AR        platform/generic/lib/libplatsbi.a
+ AS        platform/generic/firmware/fw_jump.o
+ CPP       platform/generic/firmware/fw_jump.elf.ld
+ MERGE     platform/generic/firmware/payloads/test.o
+ CPP       platform/generic/firmware/fw_payload.elf.ld
+ AR        lib/libsbi.a
+ ELF       platform/generic/firmware/payloads/test.elf
+ ELF       platform/generic/firmware/fw_dynamic.elf
+ ELF       platform/generic/firmware/fw_jump.elf
+ OBJCOPY   platform/generic/firmware/payloads/test.bin
+ OBJCOPY   platform/generic/firmware/fw_dynamic.bin
+ OBJCOPY   platform/generic/firmware/fw_jump.bin
+ AS        platform/generic/firmware/fw_payload.o
+ ELF       platform/generic/firmware/fw_payload.elf
+ OBJCOPY   platform/generic/firmware/fw_payload.bin
+make[2]: Leaving directory '~/projects/IBM-ACE-On-QEMU-Reproduction/upstream/ACE-RISCV/security-monitor/opensbi'
+make[2]: Entering directory '~/projects/IBM-ACE-On-QEMU-Reproduction/upstream/ACE-RISCV/security-monitor/opensbi'
+make[2]: warning: -j2 forced in submake: resetting jobserver mode.
+Loaded configuration '~/projects/IBM-ACE-On-QEMU-Reproduction/upstream/ACE-RISCV/security-monitor/opensbi/platform/generic/configs/defconfig'
+Configuration saved to '~/projects/IBM-ACE-On-QEMU-Reproduction/upstream/ACE-RISCV/security-monitor/opensbi/build/platform/generic/kconfig/.config'
+ CPP-DEP   platform/generic/firmware/fw_payload.elf.dep
+ CPP-DEP   platform/generic/firmware/fw_jump.elf.dep
+ CPP-DEP   platform/generic/firmware/fw_dynamic.elf.dep
+ CPP-DEP   platform/generic/firmware/payloads/test.elf.dep
+ AS-DEP    platform/generic/firmware/fw_payload.dep
+ AS-DEP    platform/generic/firmware/fw_jump.dep
+ AS-DEP    platform/generic/firmware/fw_dynamic.dep
+ AS-DEP    platform/generic/firmware/payloads/test_head.dep
+ CC-DEP    platform/generic/firmware/payloads/test_main.dep
+ CC-DEP    lib/sbi/sbi_cppc.dep
+ AS-DEP    lib/sbi/sbi_expected_trap.dep
+ CC-DEP    lib/sbi/sbi_unpriv.dep
+ CC-DEP    lib/sbi/sbi_trap.dep
+ CC-DEP    lib/sbi/sbi_tlb.dep
+ CC-DEP    lib/sbi/sbi_timer.dep
+ CC-DEP    lib/sbi/sbi_system.dep
+ CC-DEP    lib/sbi/sbi_string.dep
+ CC-DEP    lib/sbi/sbi_scratch.dep
+ CC-DEP    lib/sbi/sbi_dbtr.dep
+ CC-DEP    lib/sbi/sbi_pmu.dep
+ CC-DEP    lib/sbi/sbi_platform.dep
+ CC-DEP    lib/sbi/sbi_misaligned_ldst.dep
+ CC-DEP    lib/sbi/sbi_irqchip.dep
+ CC-DEP    lib/sbi/sbi_ipi.dep
+ CC-DEP    lib/sbi/sbi_init.dep
+ CC-DEP    lib/sbi/sbi_illegal_insn.dep
+ CC-DEP    lib/sbi/sbi_hsm.dep
+ AS-DEP    lib/sbi/sbi_hfence.dep
+ CC-DEP    lib/sbi/sbi_math.dep
+ CC-DEP    lib/sbi/sbi_heap.dep
+ CC-DEP    lib/sbi/sbi_hart.dep
+ CC-DEP    lib/sbi/sbi_fifo.dep
+ CC-DEP    lib/sbi/sbi_emulate_csr.dep
+ CC-DEP    lib/sbi/sbi_domain.dep
+ CC-DEP    lib/sbi/sbi_console.dep
+ CC-DEP    lib/sbi/sbi_bitops.dep
+ CC-DEP    lib/sbi/sbi_bitmap.dep
+ CC-DEP    lib/sbi/sbi_ecall_base.dep
+ GEN-DEP   lib/sbi/sbi_ecall_exts.dep
+ GEN-DEP   lib/sbi/sbi_ecall_exts.dep
+ CC-DEP    lib/sbi/sbi_ecall.dep
+ CC-DEP    lib/sbi/riscv_locks.dep
+ AS-DEP    lib/sbi/riscv_hardfp.dep
+ CC-DEP    lib/sbi/riscv_atomic.dep
+ CC-DEP    lib/sbi/riscv_asm.dep
+ GEN-DEP   platform/generic/platform_override_modules.dep
+ GEN-DEP   platform/generic/platform_override_modules.dep
+ CC-DEP    platform/generic/platform.dep
+ MERGE-DEP platform/generic/firmware/payloads/test.dep
+ CC-DEP    platform/generic/lib/utils/fdt/fdt_fixup.dep
+ CC-DEP    platform/generic/lib/utils/fdt/fdt_helper.dep
+ CC-DEP    platform/generic/lib/utils/fdt/fdt_pmu.dep
+ CC-DEP    platform/generic/lib/utils/fdt/fdt_domain.dep
+ CC-DEP    platform/generic/lib/utils/gpio/gpio.dep
+ CC-DEP    platform/generic/lib/utils/gpio/fdt_gpio_starfive.dep
+ CC-DEP    platform/generic/lib/utils/gpio/fdt_gpio_sifive.dep
+ CC-DEP    platform/generic/lib/utils/gpio/fdt_gpio_designware.dep
+ GEN-DEP   platform/generic/lib/utils/gpio/fdt_gpio_drivers.dep
+ GEN-DEP   platform/generic/lib/utils/gpio/fdt_gpio_drivers.dep
+ CC-DEP    platform/generic/lib/utils/gpio/fdt_gpio.dep
+ CC-DEP    platform/generic/lib/utils/i2c/dw_i2c.dep
+ CC-DEP    platform/generic/lib/utils/i2c/fdt_i2c_dw.dep
+ CC-DEP    platform/generic/lib/utils/i2c/fdt_i2c_sifive.dep
+ GEN-DEP   platform/generic/lib/utils/i2c/fdt_i2c_adapter_drivers.dep
+ GEN-DEP   platform/generic/lib/utils/i2c/fdt_i2c_adapter_drivers.dep
+ CC-DEP    platform/generic/lib/utils/i2c/fdt_i2c.dep
+ CC-DEP    platform/generic/lib/utils/i2c/i2c.dep
+ CC-DEP    platform/generic/lib/utils/ipi/fdt_ipi_plicsw.dep
+ CC-DEP    platform/generic/lib/utils/ipi/fdt_ipi_mswi.dep
+ GEN-DEP   platform/generic/lib/utils/ipi/fdt_ipi_drivers.dep
+ GEN-DEP   platform/generic/lib/utils/ipi/fdt_ipi_drivers.dep
+ CC-DEP    platform/generic/lib/utils/ipi/fdt_ipi.dep
+ CC-DEP    platform/generic/lib/utils/ipi/andes_plicsw.dep
+ CC-DEP    platform/generic/lib/utils/ipi/aclint_mswi.dep
+ CC-DEP    platform/generic/lib/utils/irqchip/plic.dep
+ CC-DEP    platform/generic/lib/utils/irqchip/imsic.dep
+ CC-DEP    platform/generic/lib/utils/irqchip/aplic.dep
+ CC-DEP    platform/generic/lib/utils/irqchip/fdt_irqchip_plic.dep
+ CC-DEP    platform/generic/lib/utils/irqchip/fdt_irqchip_imsic.dep
+ CC-DEP    platform/generic/lib/utils/irqchip/fdt_irqchip_aplic.dep
+ GEN-DEP   platform/generic/lib/utils/irqchip/fdt_irqchip_drivers.dep
+ GEN-DEP   platform/generic/lib/utils/irqchip/fdt_irqchip_drivers.dep
+ CC-DEP    platform/generic/lib/utils/irqchip/fdt_irqchip.dep
+ CC-DEP    platform/generic/lib/utils/libfdt/fdt_wip.dep
+ CC-DEP    platform/generic/lib/utils/libfdt/fdt_sw.dep
+ CC-DEP    platform/generic/lib/utils/libfdt/fdt_strerror.dep
+ CC-DEP    platform/generic/lib/utils/libfdt/fdt_rw.dep
+ CC-DEP    platform/generic/lib/utils/libfdt/fdt_ro.dep
+ CC-DEP    platform/generic/lib/utils/libfdt/fdt_empty_tree.dep
+ CC-DEP    platform/generic/lib/utils/libfdt/fdt_check.dep
+ CC-DEP    platform/generic/lib/utils/libfdt/fdt_addresses.dep
+ CC-DEP    platform/generic/lib/utils/libfdt/fdt.dep
+ CC-DEP    platform/generic/lib/utils/regmap/regmap.dep
+ CC-DEP    platform/generic/lib/utils/regmap/fdt_regmap_syscon.dep
+ GEN-DEP   platform/generic/lib/utils/regmap/fdt_regmap_drivers.dep
+ GEN-DEP   platform/generic/lib/utils/regmap/fdt_regmap_drivers.dep
+ CC-DEP    platform/generic/lib/utils/regmap/fdt_regmap.dep
+ CC-DEP    platform/generic/lib/utils/reset/fdt_reset_syscon.dep
+ CC-DEP    platform/generic/lib/utils/reset/fdt_reset_sunxi_wdt.dep
+ CC-DEP    platform/generic/lib/utils/reset/fdt_reset_htif.dep
+ CC-DEP    platform/generic/lib/utils/reset/fdt_reset_gpio.dep
+ CC-DEP    platform/generic/lib/utils/reset/fdt_reset_atcwdt200.dep
+ GEN-DEP   platform/generic/lib/utils/reset/fdt_reset_drivers.dep
+ GEN-DEP   platform/generic/lib/utils/reset/fdt_reset_drivers.dep
+ CC-DEP    platform/generic/lib/utils/reset/fdt_reset.dep
+ CC-DEP    platform/generic/lib/utils/serial/semihosting.dep
+ CC-DEP    platform/generic/lib/utils/serial/xlnx-uartlite.dep
+ CC-DEP    platform/generic/lib/utils/serial/uart8250.dep
+ CC-DEP    platform/generic/lib/utils/serial/litex-uart.dep
+ CC-DEP    platform/generic/lib/utils/serial/sifive-uart.dep
+ CC-DEP    platform/generic/lib/utils/serial/shakti-uart.dep
+ CC-DEP    platform/generic/lib/utils/serial/renesas_scif.dep
+ CC-DEP    platform/generic/lib/utils/serial/gaisler-uart.dep
+ CC-DEP    platform/generic/lib/utils/serial/cadence-uart.dep
+ CC-DEP    platform/generic/lib/utils/serial/fdt_serial_xlnx_uartlite.dep
+ CC-DEP    platform/generic/lib/utils/serial/fdt_serial_uart8250.dep
+ CC-DEP    platform/generic/lib/utils/serial/fdt_serial_litex.dep
+ CC-DEP    platform/generic/lib/utils/serial/fdt_serial_sifive.dep
+ CC-DEP    platform/generic/lib/utils/serial/fdt_serial_shakti.dep
+ CC-DEP    platform/generic/lib/utils/serial/fdt_serial_renesas_scif.dep
+ CC-DEP    platform/generic/lib/utils/serial/fdt_serial_htif.dep
+ CC-DEP    platform/generic/lib/utils/serial/fdt_serial_gaisler.dep
+ CC-DEP    platform/generic/lib/utils/serial/fdt_serial_cadence.dep
+ GEN-DEP   platform/generic/lib/utils/serial/fdt_serial_drivers.dep
+ GEN-DEP   platform/generic/lib/utils/serial/fdt_serial_drivers.dep
+ CC-DEP    platform/generic/lib/utils/serial/fdt_serial.dep
+ CC-DEP    platform/generic/lib/utils/sys/atcsmu.dep
+ CC-DEP    platform/generic/lib/utils/sys/htif.dep
+ CC-DEP    platform/generic/lib/utils/timer/fdt_timer_plmt.dep
+ CC-DEP    platform/generic/lib/utils/timer/fdt_timer_mtimer.dep
+ GEN-DEP   platform/generic/lib/utils/timer/fdt_timer_drivers.dep
+ GEN-DEP   platform/generic/lib/utils/timer/fdt_timer_drivers.dep
+ CC-DEP    platform/generic/lib/utils/timer/fdt_timer.dep
+ CC-DEP    platform/generic/lib/utils/timer/andes_plmt.dep
+ CC-DEP    platform/generic/lib/utils/timer/aclint_mtimer.dep
+ CC-DEP    lib/sbi/sbi_ecall_dbtr.dep
+ CC-DEP    lib/sbi/sbi_ecall_vendor.dep
+ CC-DEP    lib/sbi/sbi_ecall_legacy.dep
+ CC-DEP    lib/sbi/sbi_ecall_cppc.dep
+ CC-DEP    lib/sbi/sbi_ecall_dbcn.dep
+ CC-DEP    lib/sbi/sbi_ecall_pmu.dep
+ CC-DEP    lib/sbi/sbi_ecall_susp.dep
+ CC-DEP    lib/sbi/sbi_ecall_srst.dep
+ CC-DEP    lib/sbi/sbi_ecall_hsm.dep
+ CC-DEP    lib/sbi/sbi_ecall_ipi.dep
+ CC-DEP    lib/sbi/sbi_ecall_rfence.dep
+ CC-DEP    lib/sbi/sbi_ecall_time.dep
+ CC-DEP    platform/generic/allwinner/sun20i-d1.dep
+ CC-DEP    platform/generic/andes/andes_pmu.dep
+ CC-DEP    platform/generic/andes/andes_sbi.dep
+ CC-DEP    platform/generic/andes/andes45-pma.dep
+ AS-DEP    platform/generic/andes/sleep.dep
+ CC-DEP    platform/generic/andes/ae350.dep
+ CC-DEP    platform/generic/renesas/rzfive/rzfive.dep
+ CC-DEP    platform/generic/sifive/fu740.dep
+ CC-DEP    platform/generic/sifive/fu540.dep
+ CC-DEP    platform/generic/sophgo/sg2042.dep
+ CC-DEP    platform/generic/starfive/jh7110.dep
+ CC-DEP    platform/generic/thead/thead-generic.dep
+ CC-DEP    platform/generic/thead/thead_c9xx_errata_tlb_flush.dep
+ AS-DEP    platform/generic/thead/thead_c9xx_tlb_trap_handler.dep
+ CC-DEP    platform/generic/thead/thead_c9xx_pmu.dep
+ CC        lib/sbi/riscv_asm.o
+ CC        lib/sbi/riscv_atomic.o
+ AS        lib/sbi/riscv_hardfp.o
+ CC        lib/sbi/riscv_locks.o
+ CC        lib/sbi/sbi_ecall.o
+ CARRAY    lib/sbi/sbi_ecall_exts.c
+ CC        lib/sbi/sbi_ecall_time.o
+ CC        lib/sbi/sbi_ecall_rfence.o
+ CC        lib/sbi/sbi_ecall_ipi.o
+ CC        lib/sbi/sbi_ecall_base.o
+ CC        lib/sbi/sbi_ecall_hsm.o
+ CC        lib/sbi/sbi_ecall_srst.o
+ CC        lib/sbi/sbi_ecall_susp.o
+ CC        lib/sbi/sbi_ecall_pmu.o
+ CC        lib/sbi/sbi_ecall_dbcn.o
+ CC        lib/sbi/sbi_ecall_cppc.o
+ CC        lib/sbi/sbi_ecall_legacy.o
+ CC        lib/sbi/sbi_ecall_vendor.o
+ CC        lib/sbi/sbi_ecall_dbtr.o
+ CC        lib/sbi/sbi_bitmap.o
+ CC        lib/sbi/sbi_bitops.o
+ CC        lib/sbi/sbi_console.o
+ CC        lib/sbi/sbi_domain.o
+ CC        lib/sbi/sbi_emulate_csr.o
+ CC        lib/sbi/sbi_fifo.o
+ CC        lib/sbi/sbi_hart.o
+ CC        lib/sbi/sbi_heap.o
+ CC        lib/sbi/sbi_math.o
+ AS        lib/sbi/sbi_hfence.o
+ CC        lib/sbi/sbi_hsm.o
+ CC        lib/sbi/sbi_illegal_insn.o
+ CC        lib/sbi/sbi_init.o
+ CC        lib/sbi/sbi_ipi.o
+ CC        lib/sbi/sbi_irqchip.o
+ CC        lib/sbi/sbi_misaligned_ldst.o
+ CC        lib/sbi/sbi_platform.o
+ CC        lib/sbi/sbi_pmu.o
+ CC        lib/sbi/sbi_dbtr.o
+ CC        lib/sbi/sbi_scratch.o
+ CC        lib/sbi/sbi_string.o
+ CC        lib/sbi/sbi_system.o
+ CC        lib/sbi/sbi_timer.o
+ CC        lib/sbi/sbi_tlb.o
+ CC        lib/sbi/sbi_trap.o
+ CC        lib/sbi/sbi_unpriv.o
+ AS        lib/sbi/sbi_expected_trap.o
+ CC        lib/sbi/sbi_cppc.o
+ CC        lib/sbi/sbi_ecall_exts.o
+ CC        platform/generic/lib/utils/timer/aclint_mtimer.o
+ CC        platform/generic/lib/utils/timer/andes_plmt.o
+ CC        platform/generic/lib/utils/timer/fdt_timer.o
+ CARRAY    platform/generic/lib/utils/timer/fdt_timer_drivers.c
+ CC        platform/generic/lib/utils/timer/fdt_timer_mtimer.o
+ CC        platform/generic/lib/utils/timer/fdt_timer_plmt.o
+ CC        platform/generic/lib/utils/sys/htif.o
+ CC        platform/generic/lib/utils/sys/atcsmu.o
+ CC        platform/generic/lib/utils/serial/fdt_serial.o
+ CARRAY    platform/generic/lib/utils/serial/fdt_serial_drivers.c
+ CC        platform/generic/lib/utils/serial/fdt_serial_cadence.o
+ CC        platform/generic/lib/utils/serial/fdt_serial_gaisler.o
+ CC        platform/generic/lib/utils/serial/fdt_serial_htif.o
+ CC        platform/generic/lib/utils/serial/fdt_serial_renesas_scif.o
+ CC        platform/generic/lib/utils/serial/fdt_serial_shakti.o
+ CC        platform/generic/lib/utils/serial/fdt_serial_sifive.o
+ CC        platform/generic/lib/utils/serial/fdt_serial_litex.o
+ CC        platform/generic/lib/utils/serial/fdt_serial_uart8250.o
+ CC        platform/generic/lib/utils/serial/fdt_serial_xlnx_uartlite.o
+ CC        platform/generic/lib/utils/serial/cadence-uart.o
+ CC        platform/generic/lib/utils/serial/gaisler-uart.o
+ CC        platform/generic/lib/utils/serial/renesas_scif.o
+ CC        platform/generic/lib/utils/serial/shakti-uart.o
+ CC        platform/generic/lib/utils/serial/sifive-uart.o
+ CC        platform/generic/lib/utils/serial/litex-uart.o
+ CC        platform/generic/lib/utils/serial/uart8250.o
+ CC        platform/generic/lib/utils/serial/xlnx-uartlite.o
+ CC        platform/generic/lib/utils/serial/semihosting.o
+ CC        platform/generic/lib/utils/reset/fdt_reset.o
+ CARRAY    platform/generic/lib/utils/reset/fdt_reset_drivers.c
+ CC        platform/generic/lib/utils/reset/fdt_reset_atcwdt200.o
+ CC        platform/generic/lib/utils/reset/fdt_reset_gpio.o
+ CC        platform/generic/lib/utils/reset/fdt_reset_htif.o
+ CC        platform/generic/lib/utils/reset/fdt_reset_sunxi_wdt.o
+ CC        platform/generic/lib/utils/reset/fdt_reset_syscon.o
+ CC        platform/generic/lib/utils/regmap/fdt_regmap.o
+ CARRAY    platform/generic/lib/utils/regmap/fdt_regmap_drivers.c
+ CC        platform/generic/lib/utils/regmap/fdt_regmap_syscon.o
+ CC        platform/generic/lib/utils/regmap/regmap.o
+ CC        platform/generic/lib/utils/libfdt/fdt.o
+ CC        platform/generic/lib/utils/libfdt/fdt_addresses.o
+ CC        platform/generic/lib/utils/libfdt/fdt_check.o
+ CC        platform/generic/lib/utils/libfdt/fdt_empty_tree.o
+ CC        platform/generic/lib/utils/libfdt/fdt_ro.o
+ CC        platform/generic/lib/utils/libfdt/fdt_rw.o
+ CC        platform/generic/lib/utils/libfdt/fdt_strerror.o
+ CC        platform/generic/lib/utils/libfdt/fdt_sw.o
+ CC        platform/generic/lib/utils/libfdt/fdt_wip.o
+ CC        platform/generic/lib/utils/irqchip/fdt_irqchip.o
+ CARRAY    platform/generic/lib/utils/irqchip/fdt_irqchip_drivers.c
+ CC        platform/generic/lib/utils/irqchip/fdt_irqchip_aplic.o
+ CC        platform/generic/lib/utils/irqchip/fdt_irqchip_imsic.o
+ CC        platform/generic/lib/utils/irqchip/fdt_irqchip_plic.o
+ CC        platform/generic/lib/utils/irqchip/aplic.o
+ CC        platform/generic/lib/utils/irqchip/imsic.o
+ CC        platform/generic/lib/utils/irqchip/plic.o
+ CC        platform/generic/lib/utils/ipi/aclint_mswi.o
+ CC        platform/generic/lib/utils/ipi/andes_plicsw.o
+ CC        platform/generic/lib/utils/ipi/fdt_ipi.o
+ CARRAY    platform/generic/lib/utils/ipi/fdt_ipi_drivers.c
+ CC        platform/generic/lib/utils/ipi/fdt_ipi_mswi.o
+ CC        platform/generic/lib/utils/ipi/fdt_ipi_plicsw.o
+ CC        platform/generic/lib/utils/i2c/i2c.o
+ CC        platform/generic/lib/utils/i2c/fdt_i2c.o
+ CARRAY    platform/generic/lib/utils/i2c/fdt_i2c_adapter_drivers.c
+ CC        platform/generic/lib/utils/i2c/fdt_i2c_sifive.o
+ CC        platform/generic/lib/utils/i2c/fdt_i2c_dw.o
+ CC        platform/generic/lib/utils/i2c/dw_i2c.o
+ CC        platform/generic/lib/utils/gpio/fdt_gpio.o
+ CARRAY    platform/generic/lib/utils/gpio/fdt_gpio_drivers.c
+ CC        platform/generic/lib/utils/gpio/fdt_gpio_designware.o
+ CC        platform/generic/lib/utils/gpio/fdt_gpio_sifive.o
+ CC        platform/generic/lib/utils/gpio/fdt_gpio_starfive.o
+ CC        platform/generic/lib/utils/gpio/gpio.o
+ CC        platform/generic/lib/utils/fdt/fdt_domain.o
+ CC        platform/generic/lib/utils/fdt/fdt_pmu.o
+ CC        platform/generic/lib/utils/fdt/fdt_helper.o
+ CC        platform/generic/lib/utils/fdt/fdt_fixup.o
+ CC        platform/generic/thead/thead_c9xx_pmu.o
+ AS        platform/generic/thead/thead_c9xx_tlb_trap_handler.o
+ CC        platform/generic/thead/thead_c9xx_errata_tlb_flush.o
+ CC        platform/generic/thead/thead-generic.o
+ CC        platform/generic/starfive/jh7110.o
+ CC        platform/generic/sophgo/sg2042.o
+ CC        platform/generic/sifive/fu540.o
+ CC        platform/generic/sifive/fu740.o
+ CC        platform/generic/renesas/rzfive/rzfive.o
+ CC        platform/generic/platform.o
+ CARRAY    platform/generic/platform_override_modules.c
+ CC        platform/generic/andes/ae350.o
+ AS        platform/generic/andes/sleep.o
+ CC        platform/generic/andes/andes45-pma.o
+ CC        platform/generic/andes/andes_sbi.o
+ CC        platform/generic/andes/andes_pmu.o
+ CC        platform/generic/allwinner/sun20i-d1.o
+ AR        lib/libsbi.a
+ CC        platform/generic/lib/utils/timer/fdt_timer_drivers.o
+ CC        platform/generic/lib/utils/serial/fdt_serial_drivers.o
+ CC        platform/generic/lib/utils/reset/fdt_reset_drivers.o
+ CC        platform/generic/lib/utils/regmap/fdt_regmap_drivers.o
+ CC        platform/generic/lib/utils/irqchip/fdt_irqchip_drivers.o
+ CC        platform/generic/lib/utils/ipi/fdt_ipi_drivers.o
+ CC        platform/generic/lib/utils/i2c/fdt_i2c_adapter_drivers.o
+ CC        platform/generic/lib/utils/gpio/fdt_gpio_drivers.o
+ CC        platform/generic/platform_override_modules.o
+ AS        platform/generic/firmware/payloads/test_head.o
+ CC        platform/generic/firmware/payloads/test_main.o
+ CPP       platform/generic/firmware/payloads/test.elf.ld
+ AR        platform/generic/lib/libplatsbi.a
+ AS        platform/generic/firmware/fw_dynamic.o
+ CPP       platform/generic/firmware/fw_dynamic.elf.ld
+ AS        platform/generic/firmware/fw_jump.o
+ CPP       platform/generic/firmware/fw_jump.elf.ld
+ MERGE     platform/generic/firmware/payloads/test.o
+ CPP       platform/generic/firmware/fw_payload.elf.ld
+ INSTALL   include
+ INSTALL   lib64/lp64d/libsbi.a
+ INSTALL   lib64/lp64d/opensbi/generic/lib/libplatsbi.a
+ ELF       platform/generic/firmware/payloads/test.elf
+ ELF       platform/generic/firmware/fw_dynamic.elf
+ ELF       platform/generic/firmware/fw_jump.elf
+ OBJCOPY   platform/generic/firmware/payloads/test.bin
+ OBJCOPY   platform/generic/firmware/fw_dynamic.bin
+ OBJCOPY   platform/generic/firmware/fw_jump.bin
+ AS        platform/generic/firmware/fw_payload.o
+ ELF       platform/generic/firmware/fw_payload.elf
+ OBJCOPY   platform/generic/firmware/fw_payload.bin
+ INSTALL   share/opensbi/lp64d/generic/firmware//payloads/test.elf
+ INSTALL   share/opensbi/lp64d/generic/firmware//fw_dynamic.elf
+ INSTALL   share/opensbi/lp64d/generic/firmware//fw_jump.elf
+ INSTALL   share/opensbi/lp64d/generic/firmware//fw_payload.elf
+ INSTALL   share/opensbi/lp64d/generic/firmware//payloads/test.bin
+ INSTALL   share/opensbi/lp64d/generic/firmware//fw_dynamic.bin
+ INSTALL   share/opensbi/lp64d/generic/firmware//fw_jump.bin
+ INSTALL   share/opensbi/lp64d/generic/firmware//fw_payload.bin
+make[2]: Leaving directory '~/projects/IBM-ACE-On-QEMU-Reproduction/upstream/ACE-RISCV/security-monitor/opensbi'
+echo "Generating OpenSBI bindings" ;\
+mkdir -p ~/projects/IBM-ACE-On-QEMU-Reproduction/build/ace//security-monitor ; \
+rm -f ~/projects/IBM-ACE-On-QEMU-Reproduction/build/ace//security-monitor/riscv64gc-unknown-none-elf/release/libace.a; \
+RUSTFLAGS='-Clink-arg=-Tsrc/platform/qemu/virt.lds -Crelocation-model=pie ' CARGO_TARGET_DIR=~/projects/IBM-ACE-On-QEMU-Reproduction/build/ace//security-monitor INSTALL_DIR=~/projects/IBM-ACE-On-QEMU-Reproduction/build/ace/ cargo build --release --target=riscv64gc-unknown-none-elf --features verbose ; \
+cp ~/projects/IBM-ACE-On-QEMU-Reproduction/build/ace//security-monitor/riscv64gc-unknown-none-elf/release/libace.a ~/projects/IBM-ACE-On-QEMU-Reproduction/build/ace//security-monitor/ ; \
+rm -rf ~/projects/IBM-ACE-On-QEMU-Reproduction/build/ace//security-monitor/opensbi/
+Generating OpenSBI bindings
+    Updating crates.io index
+ Downloading crates ...
+  Downloaded aho-corasick v1.1.5
+  Downloaded static_assertions v1.1.0
+  Downloaded rustc-hash v2.1.3
+  Downloaded riscv-decode v0.2.3
+  Downloaded rustc_version v0.2.3
+  Downloaded num-derive v0.3.3
+  Downloaded glob v0.3.4
+  Downloaded unsafe_unwrap v0.1.0
+  Downloaded memoffset v0.5.6
+  Downloaded semver-parser v0.7.0
+  Downloaded memoffset v0.9.1
+  Downloaded shlex v2.0.1
+  Downloaded endian-type-rs v0.1.4
+  Downloaded semver v0.9.0
+  Downloaded fdt-rs v0.4.5
+  Downloaded clang-sys v1.9.1
+  Downloaded fallible-iterator v0.2.0
+  Downloaded bitflags v2.13.2
+  Downloaded cexpr v0.6.0
+  Downloaded spin v0.12.3
+  Downloaded minimal-lexical v0.2.1
+  Downloaded memchr v2.8.3
+  Downloaded regex v1.13.1
+  Downloaded nom v7.1.3
+  Downloaded bindgen v0.73.2
+  Downloaded regex-syntax v0.8.11
+  Downloaded regex-automata v0.4.18
+   Compiling cmov v0.5.4
+   Compiling typenum v1.20.1
+   Compiling ctutils v0.4.2
+   Compiling proc-macro2 v1.0.107
+   Compiling hybrid-array v0.4.15
+   Compiling unicode-ident v1.0.26
+   Compiling quote v1.0.47
+   Compiling autocfg v1.5.1
+   Compiling rand_core v0.10.1
+   Compiling crypto-common v0.2.2
+   Compiling syn v1.0.109
+   Compiling block-buffer v0.12.1
+   Compiling glob v0.3.4
+   Compiling clang-sys v1.9.1
+   Compiling num-traits v0.2.19
+   Compiling libc v0.2.189
+   Compiling inout v0.2.2
+   Compiling minimal-lexical v0.2.1
+   Compiling memchr v2.8.3
+   Compiling regex-syntax v0.8.11
+   Compiling nom v7.1.3
+   Compiling regex-automata v0.4.18
+   Compiling bindgen v0.73.2
+   Compiling cpubits v0.1.1
+   Compiling regex v1.13.1
+   Compiling cexpr v0.6.0
+   Compiling thiserror-impl-no-std v2.0.2
+   Compiling cipher v0.5.2
+   Compiling universal-hash v0.6.1
+   Compiling syn v3.0.6
+   Compiling memoffset v0.5.6
+   Compiling cfg-if v1.0.5
+   Compiling rustc-hash v2.1.3
+   Compiling bitflags v2.13.2
+   Compiling shlex v2.0.1
+   Compiling keccak v0.2.2
+   Compiling thiserror-no-std v2.0.2
+   Compiling polyval v0.7.3
+   Compiling digest v0.11.3
+   Compiling sha3 v0.11.0
+   Compiling ghash v0.6.0
+   Compiling aes v0.9.3
+   Compiling ctr v0.10.1
+   Compiling module-lattice v0.2.3
+   Compiling num-derive v0.3.3
+   Compiling aead v0.6.1
+   Compiling kem v0.3.0
+   Compiling memoffset v0.9.1
+   Compiling endian-type-rs v0.1.4
+   Compiling unsafe_unwrap v0.1.0
+   Compiling static_assertions v1.1.0
+   Compiling fallible-iterator v0.2.0
+   Compiling fdt-rs v0.4.5
+   Compiling ml-kem v0.3.2
+   Compiling aes-gcm v0.11.1
+   Compiling riscv_cove_tap v0.2.0 (~/projects/IBM-ACE-On-QEMU-Reproduction/upstream/ACE-RISCV/security-monitor/rust-crates/riscv_cove_tap)
+   Compiling flattened_device_tree v0.1.0 (~/projects/IBM-ACE-On-QEMU-Reproduction/upstream/ACE-RISCV/security-monitor/rust-crates/flattened_device_tree)
+   Compiling opensbi-sys v0.2.0 (~/projects/IBM-ACE-On-QEMU-Reproduction/upstream/ACE-RISCV/security-monitor/rust-crates/opensbi-sys)
+   Compiling pointers_utility v0.2.0 (~/projects/IBM-ACE-On-QEMU-Reproduction/upstream/ACE-RISCV/security-monitor/rust-crates/pointers_utility)
+   Compiling riscv-decode v0.2.3
+   Compiling spin v0.12.3
+   Compiling security-monitor v0.4.0 (~/projects/IBM-ACE-On-QEMU-Reproduction/upstream/ACE-RISCV/security-monitor)
+    Finished `release` profile [optimized] target(s) in 10.80s
+echo "Compiling OpenSBI" ;\
+if ! grep -q ace_setup_this_hart "~/projects/IBM-ACE-On-QEMU-Reproduction/upstream/ACE-RISCV/security-monitor//opensbi/lib/sbi/sbi_hsm.c"; then \
+	echo "Applying patches to OpenSBI" ;\
+	cd ~/projects/IBM-ACE-On-QEMU-Reproduction/upstream/ACE-RISCV/security-monitor//opensbi; git apply --whitespace=fix ~/projects/IBM-ACE-On-QEMU-Reproduction/upstream/ACE-RISCV/security-monitor//platform/opensbi_v1.4.patch; cd ~/projects/IBM-ACE-On-QEMU-Reproduction/upstream/ACE-RISCV/security-monitor/;\
+fi ;\
+if [ -f "~/projects/IBM-ACE-On-QEMU-Reproduction/build/ace//security-monitor/riscv64gc-unknown-none-elf/release/libace.a" ]; then \
+	mkdir -p ~/projects/IBM-ACE-On-QEMU-Reproduction/build/ace//security-monitor/opensbi ;\
+	SM_WORK_DIR=~/projects/IBM-ACE-On-QEMU-Reproduction/build/ace//security-monitor make -j2 -C ~/projects/IBM-ACE-On-QEMU-Reproduction/upstream/ACE-RISCV/security-monitor//opensbi O=~/projects/IBM-ACE-On-QEMU-Reproduction/build/ace//security-monitor/opensbi PLATFORM_DIR="~/projects/IBM-ACE-On-QEMU-Reproduction/upstream/ACE-RISCV/security-monitor//platform" PLATFORM="generic" CROSS_COMPILE=riscv64-unknown-linux-gnu- FW_PAYLOAD_PATH=~/projects/IBM-ACE-On-QEMU-Reproduction/build/ace//hypervisor//buildroot/images/Image FW_PAYLOAD=y PLATFORM_RISCV_XLEN=64 PLATFORM_RISCV_ISA=rv64gc PLATFORM_RISCV_ABI=lp64d; \
+fi
+Compiling OpenSBI
+Applying patches to OpenSBI
+make[2]: Entering directory '~/projects/IBM-ACE-On-QEMU-Reproduction/upstream/ACE-RISCV/security-monitor'
+make[2]: warning: -j2 forced in submake: resetting jobserver mode.
+Loaded configuration '~/projects/IBM-ACE-On-QEMU-Reproduction/upstream/ACE-RISCV/security-monitor/platform/generic/configs/defconfig'
+Configuration saved to '~/projects/IBM-ACE-On-QEMU-Reproduction/build/ace/security-monitor/opensbi/platform/generic/kconfig/.config'
+ CPP-DEP   platform/generic/firmware/fw_payload.elf.dep
+ CPP-DEP   platform/generic/firmware/fw_jump.elf.dep
+ CPP-DEP   platform/generic/firmware/fw_dynamic.elf.dep
+ CPP-DEP   platform/generic/firmware/payloads/test.elf.dep
+ AS-DEP    platform/generic/firmware/fw_payload.dep
+ AS-DEP    platform/generic/firmware/fw_jump.dep
+ AS-DEP    platform/generic/firmware/fw_dynamic.dep
+ AS-DEP    platform/generic/firmware/payloads/test_head.dep
+ CC-DEP    platform/generic/firmware/payloads/test_main.dep
+ CC-DEP    lib/sbi/sbi_cppc.dep
+ AS-DEP    lib/sbi/sbi_expected_trap.dep
+ CC-DEP    lib/sbi/sbi_unpriv.dep
+ CC-DEP    lib/sbi/sbi_trap.dep
+ CC-DEP    lib/sbi/sbi_tlb.dep
+ CC-DEP    lib/sbi/sbi_timer.dep
+ CC-DEP    lib/sbi/sbi_system.dep
+ CC-DEP    lib/sbi/sbi_string.dep
+ CC-DEP    lib/sbi/sbi_scratch.dep
+ CC-DEP    lib/sbi/sbi_dbtr.dep
+ CC-DEP    lib/sbi/sbi_pmu.dep
+ CC-DEP    lib/sbi/sbi_platform.dep
+ CC-DEP    lib/sbi/sbi_misaligned_ldst.dep
+ CC-DEP    lib/sbi/sbi_irqchip.dep
+ CC-DEP    lib/sbi/sbi_ipi.dep
+ CC-DEP    lib/sbi/sbi_init.dep
+ CC-DEP    lib/sbi/sbi_illegal_insn.dep
+ CC-DEP    lib/sbi/sbi_hsm.dep
+ AS-DEP    lib/sbi/sbi_hfence.dep
+ CC-DEP    lib/sbi/sbi_math.dep
+ CC-DEP    lib/sbi/sbi_heap.dep
+ CC-DEP    lib/sbi/sbi_hart.dep
+ CC-DEP    lib/sbi/sbi_fifo.dep
+ CC-DEP    lib/sbi/sbi_emulate_csr.dep
+ CC-DEP    lib/sbi/sbi_domain.dep
+ CC-DEP    lib/sbi/sbi_console.dep
+ CC-DEP    lib/sbi/sbi_bitops.dep
+ CC-DEP    lib/sbi/sbi_bitmap.dep
+ CC-DEP    lib/sbi/sbi_ecall_base.dep
+ GEN-DEP   lib/sbi/sbi_ecall_exts.dep
+ GEN-DEP   lib/sbi/sbi_ecall_exts.dep
+ CC-DEP    lib/sbi/sbi_ecall.dep
+ CC-DEP    lib/sbi/riscv_locks.dep
+ AS-DEP    lib/sbi/riscv_hardfp.dep
+ CC-DEP    lib/sbi/riscv_atomic.dep
+ CC-DEP    lib/sbi/riscv_asm.dep
+ GEN-DEP   platform/generic/platform_override_modules.dep
+ GEN-DEP   platform/generic/platform_override_modules.dep
+ CC-DEP    platform/generic/platform.dep
+ MERGE-DEP platform/generic/firmware/payloads/test.dep
+ CC-DEP    platform/generic/lib/utils/fdt/fdt_fixup.dep
+ CC-DEP    platform/generic/lib/utils/fdt/fdt_helper.dep
+ CC-DEP    platform/generic/lib/utils/fdt/fdt_pmu.dep
+ CC-DEP    platform/generic/lib/utils/fdt/fdt_domain.dep
+ CC-DEP    platform/generic/lib/utils/gpio/gpio.dep
+ CC-DEP    platform/generic/lib/utils/gpio/fdt_gpio_starfive.dep
+ CC-DEP    platform/generic/lib/utils/gpio/fdt_gpio_sifive.dep
+ CC-DEP    platform/generic/lib/utils/gpio/fdt_gpio_designware.dep
+ GEN-DEP   platform/generic/lib/utils/gpio/fdt_gpio_drivers.dep
+ GEN-DEP   platform/generic/lib/utils/gpio/fdt_gpio_drivers.dep
+ CC-DEP    platform/generic/lib/utils/gpio/fdt_gpio.dep
+ CC-DEP    platform/generic/lib/utils/i2c/dw_i2c.dep
+ CC-DEP    platform/generic/lib/utils/i2c/fdt_i2c_dw.dep
+ CC-DEP    platform/generic/lib/utils/i2c/fdt_i2c_sifive.dep
+ GEN-DEP   platform/generic/lib/utils/i2c/fdt_i2c_adapter_drivers.dep
+ GEN-DEP   platform/generic/lib/utils/i2c/fdt_i2c_adapter_drivers.dep
+ CC-DEP    platform/generic/lib/utils/i2c/fdt_i2c.dep
+ CC-DEP    platform/generic/lib/utils/i2c/i2c.dep
+ CC-DEP    platform/generic/lib/utils/ipi/fdt_ipi_plicsw.dep
+ CC-DEP    platform/generic/lib/utils/ipi/fdt_ipi_mswi.dep
+ GEN-DEP   platform/generic/lib/utils/ipi/fdt_ipi_drivers.dep
+ GEN-DEP   platform/generic/lib/utils/ipi/fdt_ipi_drivers.dep
+ CC-DEP    platform/generic/lib/utils/ipi/fdt_ipi.dep
+ CC-DEP    platform/generic/lib/utils/ipi/andes_plicsw.dep
+ CC-DEP    platform/generic/lib/utils/ipi/aclint_mswi.dep
+ CC-DEP    platform/generic/lib/utils/irqchip/plic.dep
+ CC-DEP    platform/generic/lib/utils/irqchip/imsic.dep
+ CC-DEP    platform/generic/lib/utils/irqchip/aplic.dep
+ CC-DEP    platform/generic/lib/utils/irqchip/fdt_irqchip_plic.dep
+ CC-DEP    platform/generic/lib/utils/irqchip/fdt_irqchip_imsic.dep
+ CC-DEP    platform/generic/lib/utils/irqchip/fdt_irqchip_aplic.dep
+ GEN-DEP   platform/generic/lib/utils/irqchip/fdt_irqchip_drivers.dep
+ GEN-DEP   platform/generic/lib/utils/irqchip/fdt_irqchip_drivers.dep
+ CC-DEP    platform/generic/lib/utils/irqchip/fdt_irqchip.dep
+ CC-DEP    platform/generic/lib/utils/libfdt/fdt_wip.dep
+ CC-DEP    platform/generic/lib/utils/libfdt/fdt_sw.dep
+ CC-DEP    platform/generic/lib/utils/libfdt/fdt_strerror.dep
+ CC-DEP    platform/generic/lib/utils/libfdt/fdt_rw.dep
+ CC-DEP    platform/generic/lib/utils/libfdt/fdt_ro.dep
+ CC-DEP    platform/generic/lib/utils/libfdt/fdt_empty_tree.dep
+ CC-DEP    platform/generic/lib/utils/libfdt/fdt_check.dep
+ CC-DEP    platform/generic/lib/utils/libfdt/fdt_addresses.dep
+ CC-DEP    platform/generic/lib/utils/libfdt/fdt.dep
+ CC-DEP    platform/generic/lib/utils/regmap/regmap.dep
+ CC-DEP    platform/generic/lib/utils/regmap/fdt_regmap_syscon.dep
+ GEN-DEP   platform/generic/lib/utils/regmap/fdt_regmap_drivers.dep
+ GEN-DEP   platform/generic/lib/utils/regmap/fdt_regmap_drivers.dep
+ CC-DEP    platform/generic/lib/utils/regmap/fdt_regmap.dep
+ CC-DEP    platform/generic/lib/utils/reset/fdt_reset_syscon.dep
+ CC-DEP    platform/generic/lib/utils/reset/fdt_reset_sunxi_wdt.dep
+ CC-DEP    platform/generic/lib/utils/reset/fdt_reset_htif.dep
+ CC-DEP    platform/generic/lib/utils/reset/fdt_reset_gpio.dep
+ GEN-DEP   platform/generic/lib/utils/reset/fdt_reset_drivers.dep
+ GEN-DEP   platform/generic/lib/utils/reset/fdt_reset_drivers.dep
+ CC-DEP    platform/generic/lib/utils/reset/fdt_reset.dep
+ CC-DEP    platform/generic/lib/utils/serial/semihosting.dep
+ CC-DEP    platform/generic/lib/utils/serial/xlnx-uartlite.dep
+ CC-DEP    platform/generic/lib/utils/serial/uart8250.dep
+ CC-DEP    platform/generic/lib/utils/serial/litex-uart.dep
+ CC-DEP    platform/generic/lib/utils/serial/sifive-uart.dep
+ CC-DEP    platform/generic/lib/utils/serial/shakti-uart.dep
+ CC-DEP    platform/generic/lib/utils/serial/renesas_scif.dep
+ CC-DEP    platform/generic/lib/utils/serial/gaisler-uart.dep
+ CC-DEP    platform/generic/lib/utils/serial/cadence-uart.dep
+ CC-DEP    platform/generic/lib/utils/serial/fdt_serial_xlnx_uartlite.dep
+ CC-DEP    platform/generic/lib/utils/serial/fdt_serial_uart8250.dep
+ CC-DEP    platform/generic/lib/utils/serial/fdt_serial_litex.dep
+ CC-DEP    platform/generic/lib/utils/serial/fdt_serial_sifive.dep
+ CC-DEP    platform/generic/lib/utils/serial/fdt_serial_shakti.dep
+ CC-DEP    platform/generic/lib/utils/serial/fdt_serial_renesas_scif.dep
+ CC-DEP    platform/generic/lib/utils/serial/fdt_serial_htif.dep
+ CC-DEP    platform/generic/lib/utils/serial/fdt_serial_gaisler.dep
+ CC-DEP    platform/generic/lib/utils/serial/fdt_serial_cadence.dep
+ GEN-DEP   platform/generic/lib/utils/serial/fdt_serial_drivers.dep
+ GEN-DEP   platform/generic/lib/utils/serial/fdt_serial_drivers.dep
+ CC-DEP    platform/generic/lib/utils/serial/fdt_serial.dep
+ CC-DEP    platform/generic/lib/utils/sys/htif.dep
+ CC-DEP    platform/generic/lib/utils/timer/fdt_timer_plmt.dep
+ CC-DEP    platform/generic/lib/utils/timer/fdt_timer_mtimer.dep
+ GEN-DEP   platform/generic/lib/utils/timer/fdt_timer_drivers.dep
+ GEN-DEP   platform/generic/lib/utils/timer/fdt_timer_drivers.dep
+ CC-DEP    platform/generic/lib/utils/timer/fdt_timer.dep
+ CC-DEP    platform/generic/lib/utils/timer/andes_plmt.dep
+ CC-DEP    platform/generic/lib/utils/timer/aclint_mtimer.dep
+ CC-DEP    lib/sbi/sbi_ecall_dbtr.dep
+ CC-DEP    lib/sbi/sbi_ecall_vendor.dep
+ CC-DEP    lib/sbi/sbi_ecall_legacy.dep
+ CC-DEP    lib/sbi/sbi_ecall_cppc.dep
+ CC-DEP    lib/sbi/sbi_ecall_dbcn.dep
+ CC-DEP    lib/sbi/sbi_ecall_pmu.dep
+ CC-DEP    lib/sbi/sbi_ecall_susp.dep
+ CC-DEP    lib/sbi/sbi_ecall_srst.dep
+ CC-DEP    lib/sbi/sbi_ecall_hsm.dep
+ CC-DEP    lib/sbi/sbi_ecall_ipi.dep
+ CC-DEP    lib/sbi/sbi_ecall_rfence.dep
+ CC-DEP    lib/sbi/sbi_ecall_time.dep
+ CC        lib/sbi/riscv_asm.o
+ CC        lib/sbi/riscv_atomic.o
+ AS        lib/sbi/riscv_hardfp.o
+ CC        lib/sbi/riscv_locks.o
+ CC        lib/sbi/sbi_ecall.o
+ CARRAY    lib/sbi/sbi_ecall_exts.c
+ CC        lib/sbi/sbi_ecall_time.o
+ CC        lib/sbi/sbi_ecall_rfence.o
+ CC        lib/sbi/sbi_ecall_ipi.o
+ CC        lib/sbi/sbi_ecall_base.o
+ CC        lib/sbi/sbi_ecall_hsm.o
+ CC        lib/sbi/sbi_ecall_srst.o
+ CC        lib/sbi/sbi_ecall_susp.o
+ CC        lib/sbi/sbi_ecall_pmu.o
+ CC        lib/sbi/sbi_ecall_dbcn.o
+ CC        lib/sbi/sbi_ecall_cppc.o
+ CC        lib/sbi/sbi_ecall_legacy.o
+ CC        lib/sbi/sbi_ecall_vendor.o
+ CC        lib/sbi/sbi_ecall_dbtr.o
+ CC        lib/sbi/sbi_bitmap.o
+ CC        lib/sbi/sbi_bitops.o
+ CC        lib/sbi/sbi_console.o
+ CC        lib/sbi/sbi_domain.o
+ CC        lib/sbi/sbi_emulate_csr.o
+ CC        lib/sbi/sbi_fifo.o
+ CC        lib/sbi/sbi_hart.o
+ CC        lib/sbi/sbi_heap.o
+ CC        lib/sbi/sbi_math.o
+ AS        lib/sbi/sbi_hfence.o
+ CC        lib/sbi/sbi_hsm.o
+ CC        lib/sbi/sbi_illegal_insn.o
+ CC        lib/sbi/sbi_init.o
+ CC        lib/sbi/sbi_ipi.o
+ CC        lib/sbi/sbi_irqchip.o
+ CC        lib/sbi/sbi_misaligned_ldst.o
+ CC        lib/sbi/sbi_platform.o
+ CC        lib/sbi/sbi_pmu.o
+ CC        lib/sbi/sbi_dbtr.o
+ CC        lib/sbi/sbi_scratch.o
+ CC        lib/sbi/sbi_string.o
+ CC        lib/sbi/sbi_system.o
+ CC        lib/sbi/sbi_timer.o
+ CC        lib/sbi/sbi_tlb.o
+ CC        lib/sbi/sbi_trap.o
+ CC        lib/sbi/sbi_unpriv.o
+ AS        lib/sbi/sbi_expected_trap.o
+ CC        lib/sbi/sbi_cppc.o
+ CC        lib/sbi/sbi_ecall_exts.o
+ CC        platform/generic/lib/utils/timer/aclint_mtimer.o
+ CC        platform/generic/lib/utils/timer/andes_plmt.o
+ CC        platform/generic/lib/utils/timer/fdt_timer.o
+ CARRAY    platform/generic/lib/utils/timer/fdt_timer_drivers.c
+ CC        platform/generic/lib/utils/timer/fdt_timer_mtimer.o
+ CC        platform/generic/lib/utils/timer/fdt_timer_plmt.o
+ CC        platform/generic/lib/utils/sys/htif.o
+ CC        platform/generic/lib/utils/serial/fdt_serial.o
+ CARRAY    platform/generic/lib/utils/serial/fdt_serial_drivers.c
+ CC        platform/generic/lib/utils/serial/fdt_serial_cadence.o
+ CC        platform/generic/lib/utils/serial/fdt_serial_gaisler.o
+ CC        platform/generic/lib/utils/serial/fdt_serial_htif.o
+ CC        platform/generic/lib/utils/serial/fdt_serial_renesas_scif.o
+ CC        platform/generic/lib/utils/serial/fdt_serial_shakti.o
+ CC        platform/generic/lib/utils/serial/fdt_serial_sifive.o
+ CC        platform/generic/lib/utils/serial/fdt_serial_litex.o
+ CC        platform/generic/lib/utils/serial/fdt_serial_uart8250.o
+ CC        platform/generic/lib/utils/serial/fdt_serial_xlnx_uartlite.o
+ CC        platform/generic/lib/utils/serial/cadence-uart.o
+ CC        platform/generic/lib/utils/serial/gaisler-uart.o
+ CC        platform/generic/lib/utils/serial/renesas_scif.o
+ CC        platform/generic/lib/utils/serial/shakti-uart.o
+ CC        platform/generic/lib/utils/serial/sifive-uart.o
+ CC        platform/generic/lib/utils/serial/litex-uart.o
+ CC        platform/generic/lib/utils/serial/uart8250.o
+ CC        platform/generic/lib/utils/serial/xlnx-uartlite.o
+ CC        platform/generic/lib/utils/serial/semihosting.o
+ CC        platform/generic/lib/utils/reset/fdt_reset.o
+ CARRAY    platform/generic/lib/utils/reset/fdt_reset_drivers.c
+ CC        platform/generic/lib/utils/reset/fdt_reset_gpio.o
+ CC        platform/generic/lib/utils/reset/fdt_reset_htif.o
+ CC        platform/generic/lib/utils/reset/fdt_reset_sunxi_wdt.o
+ CC        platform/generic/lib/utils/reset/fdt_reset_syscon.o
+ CC        platform/generic/lib/utils/regmap/fdt_regmap.o
+ CARRAY    platform/generic/lib/utils/regmap/fdt_regmap_drivers.c
+ CC        platform/generic/lib/utils/regmap/fdt_regmap_syscon.o
+ CC        platform/generic/lib/utils/regmap/regmap.o
+ CC        platform/generic/lib/utils/libfdt/fdt.o
+ CC        platform/generic/lib/utils/libfdt/fdt_addresses.o
+ CC        platform/generic/lib/utils/libfdt/fdt_check.o
+ CC        platform/generic/lib/utils/libfdt/fdt_empty_tree.o
+ CC        platform/generic/lib/utils/libfdt/fdt_ro.o
+ CC        platform/generic/lib/utils/libfdt/fdt_rw.o
+ CC        platform/generic/lib/utils/libfdt/fdt_strerror.o
+ CC        platform/generic/lib/utils/libfdt/fdt_sw.o
+ CC        platform/generic/lib/utils/libfdt/fdt_wip.o
+ CC        platform/generic/lib/utils/irqchip/fdt_irqchip.o
+ CARRAY    platform/generic/lib/utils/irqchip/fdt_irqchip_drivers.c
+ CC        platform/generic/lib/utils/irqchip/fdt_irqchip_aplic.o
+ CC        platform/generic/lib/utils/irqchip/fdt_irqchip_imsic.o
+ CC        platform/generic/lib/utils/irqchip/fdt_irqchip_plic.o
+ CC        platform/generic/lib/utils/irqchip/aplic.o
+ CC        platform/generic/lib/utils/irqchip/imsic.o
+ CC        platform/generic/lib/utils/irqchip/plic.o
+ CC        platform/generic/lib/utils/ipi/aclint_mswi.o
+ CC        platform/generic/lib/utils/ipi/andes_plicsw.o
+ CC        platform/generic/lib/utils/ipi/fdt_ipi.o
+ CARRAY    platform/generic/lib/utils/ipi/fdt_ipi_drivers.c
+ CC        platform/generic/lib/utils/ipi/fdt_ipi_mswi.o
+ CC        platform/generic/lib/utils/ipi/fdt_ipi_plicsw.o
+ CC        platform/generic/lib/utils/i2c/i2c.o
+ CC        platform/generic/lib/utils/i2c/fdt_i2c.o
+ CARRAY    platform/generic/lib/utils/i2c/fdt_i2c_adapter_drivers.c
+ CC        platform/generic/lib/utils/i2c/fdt_i2c_sifive.o
+ CC        platform/generic/lib/utils/i2c/fdt_i2c_dw.o
+ CC        platform/generic/lib/utils/i2c/dw_i2c.o
+ CC        platform/generic/lib/utils/gpio/fdt_gpio.o
+ CARRAY    platform/generic/lib/utils/gpio/fdt_gpio_drivers.c
+ CC        platform/generic/lib/utils/gpio/fdt_gpio_designware.o
+ CC        platform/generic/lib/utils/gpio/fdt_gpio_sifive.o
+ CC        platform/generic/lib/utils/gpio/fdt_gpio_starfive.o
+ CC        platform/generic/lib/utils/gpio/gpio.o
+ CC        platform/generic/lib/utils/fdt/fdt_domain.o
+ CC        platform/generic/lib/utils/fdt/fdt_pmu.o
+ CC        platform/generic/lib/utils/fdt/fdt_helper.o
+ CC        platform/generic/lib/utils/fdt/fdt_fixup.o
+ CC        platform/generic/platform.o
+ CARRAY    platform/generic/platform_override_modules.c
+ AS        platform/generic/firmware/payloads/test_head.o
+ CC        platform/generic/firmware/payloads/test_main.o
+ CPP       platform/generic/firmware/payloads/test.elf.ld
+ CC        platform/generic/lib/utils/timer/fdt_timer_drivers.o
+ CC        platform/generic/lib/utils/serial/fdt_serial_drivers.o
+ CC        platform/generic/lib/utils/reset/fdt_reset_drivers.o
+ CC        platform/generic/lib/utils/regmap/fdt_regmap_drivers.o
+ CC        platform/generic/lib/utils/irqchip/fdt_irqchip_drivers.o
+ CC        platform/generic/lib/utils/ipi/fdt_ipi_drivers.o
+ CC        platform/generic/lib/utils/i2c/fdt_i2c_adapter_drivers.o
+ CC        platform/generic/lib/utils/gpio/fdt_gpio_drivers.o
+ CC        platform/generic/platform_override_modules.o
+ AS        platform/generic/firmware/fw_dynamic.o
+ CPP       platform/generic/firmware/fw_dynamic.elf.ld
+ AR        platform/generic/lib/libplatsbi.a
+ AS        platform/generic/firmware/fw_jump.o
+ CPP       platform/generic/firmware/fw_jump.elf.ld
+ AS        platform/generic/firmware/fw_payload.o
+ CPP       platform/generic/firmware/fw_payload.elf.ld
+ AR        lib/libsbi.a
+ MERGE     platform/generic/firmware/payloads/test.o
+ ELF       platform/generic/firmware/fw_dynamic.elf
+ ELF       platform/generic/firmware/fw_jump.elf
+ ELF       platform/generic/firmware/fw_payload.elf
+ ELF       platform/generic/firmware/payloads/test.elf
+ OBJCOPY   platform/generic/firmware/fw_dynamic.bin
+ OBJCOPY   platform/generic/firmware/fw_jump.bin
+ OBJCOPY   platform/generic/firmware/payloads/test.bin
+ OBJCOPY   platform/generic/firmware/fw_payload.bin
+make[2]: Leaving directory '~/projects/IBM-ACE-On-QEMU-Reproduction/upstream/ACE-RISCV/security-monitor/opensbi'
+make[1]: Leaving directory '~/projects/IBM-ACE-On-QEMU-Reproduction/upstream/ACE-RISCV/security-monitor'
+$ date -u
+Mon Nov  2 13:10:41 UTC 2026
+$ stop_if_failed 'step 7'
+$ section '8. Verify the firmware and the security monitor'
+
+===== 8. Verify the firmware and the security monitor =====
+$ FW=~/projects/IBM-ACE-On-QEMU-Reproduction/build/ace//security-monitor/opensbi/platform/generic/firmware
+$ ls -l ~/projects/IBM-ACE-On-QEMU-Reproduction/build/ace//security-monitor/opensbi/platform/generic/firmware
+total 70748
+-rwx------ 1 <user> <user>   535472 Nov  2 13:10 fw_dynamic.bin
+-rw------- 1 <user> <user>     1486 Nov  2 13:10 fw_dynamic.dep
+-rwx------ 1 <user> <user>  1711888 Nov  2 13:10 fw_dynamic.elf
+-rw------- 1 <user> <user>      505 Nov  2 13:10 fw_dynamic.elf.dep
+-rw------- 1 <user> <user>     1049 Nov  2 13:10 fw_dynamic.elf.ld
+-rw------- 1 <user> <user>    36664 Nov  2 13:10 fw_dynamic.o
+-rwx------ 1 <user> <user>   535432 Nov  2 13:10 fw_jump.bin
+-rw------- 1 <user> <user>     1356 Nov  2 13:10 fw_jump.dep
+-rwx------ 1 <user> <user>  1711432 Nov  2 13:10 fw_jump.elf
+-rw------- 1 <user> <user>      499 Nov  2 13:10 fw_jump.elf.dep
+-rw------- 1 <user> <user>     1049 Nov  2 13:10 fw_jump.elf.ld
+-rw------- 1 <user> <user>    32720 Nov  2 13:10 fw_jump.o
+-rwx------ 1 <user> <user> 24128008 Nov  2 13:10 fw_payload.bin
+-rw------- 1 <user> <user>     1362 Nov  2 13:10 fw_payload.dep
+-rwx------ 1 <user> <user> 23743600 Nov  2 13:10 fw_payload.elf
+-rw------- 1 <user> <user>      505 Nov  2 13:10 fw_payload.elf.dep
+-rw------- 1 <user> <user>     1191 Nov  2 13:10 fw_payload.elf.ld
+-rw------- 1 <user> <user> 22063672 Nov  2 13:10 fw_payload.o
+drwx------ 2 <user> <user>     4096 Nov  2 13:10 payloads
+$ file ~/projects/IBM-ACE-On-QEMU-Reproduction/build/ace//security-monitor/opensbi/platform/generic/firmware/fw_payload.elf
+~/projects/IBM-ACE-On-QEMU-Reproduction/build/ace//security-monitor/opensbi/platform/generic/firmware/fw_payload.elf: ELF 64-bit LSB executable, UCB RISC-V, RVC, double-float ABI, version 1 (SYSV), static-pie linked, with debug_info, not stripped
+$ sha256sum ~/projects/IBM-ACE-On-QEMU-Reproduction/build/ace//security-monitor/opensbi/platform/generic/firmware/fw_payload.elf ~/projects/IBM-ACE-On-QEMU-Reproduction/build/ace//security-monitor/opensbi/platform/generic/firmware/fw_payload.bin
+6a41b58184c3f25db92b036635abf9738df2a4b375e63c58100e313473b8c286  ~/projects/IBM-ACE-On-QEMU-Reproduction/build/ace//security-monitor/opensbi/platform/generic/firmware/fw_payload.elf
+412348080fb77dfb0e3c08738d201c6ec2bdab09fa8acd7afc1d2ef540fea281  ~/projects/IBM-ACE-On-QEMU-Reproduction/build/ace//security-monitor/opensbi/platform/generic/firmware/fw_payload.bin
+$ ls -l ~/projects/IBM-ACE-On-QEMU-Reproduction/build/ace//security-monitor/libace.a
+-rw------- 1 <user> <user> 7645364 Nov  2 13:10 ~/projects/IBM-ACE-On-QEMU-Reproduction/build/ace//security-monitor/libace.a
+$ sha256sum ~/projects/IBM-ACE-On-QEMU-Reproduction/build/ace//security-monitor/libace.a
+2f3e87b7425424fed1830a73b3cf92d09f754bb549987058f0f0e084c610bd76  ~/projects/IBM-ACE-On-QEMU-Reproduction/build/ace//security-monitor/libace.a
+$ section '9. Check that the firmware carries the G09 hypervisor kernel'
+
+===== 9. Check that the firmware carries the G09 hypervisor kernel =====
+$ python3 -c 'import sys; fw = open(sys.argv[1], "rb").read(); img = open(sys.argv[2], "rb").read(); i = fw.find(img); print("payload offset:", hex(i) if i >= 0 else "NOT FOUND"); sys.exit(i < 0)' ~/projects/IBM-ACE-On-QEMU-Reproduction/build/ace//security-monitor/opensbi/platform/generic/firmware/fw_payload.bin ~/projects/IBM-ACE-On-QEMU-Reproduction/build/ace//hypervisor/buildroot/images/Image
+payload offset: 0x200000
+$ section '10. Record the crates that were downloaded'
+
+===== 10. Record the crates that were downloaded =====
+$ find ~/projects/IBM-ACE-On-QEMU-Reproduction/build/cargo-home/registry/cache -name '*.crate'
+$ wc -l
+84
+$ find ~/projects/IBM-ACE-On-QEMU-Reproduction/build/cargo-home/registry/cache -name '*.crate' -printf '%f\n'
+$ sort
+aead-0.6.1.crate
+aes-0.9.3.crate
+aes-gcm-0.11.1.crate
+aho-corasick-1.1.5.crate
+anstream-1.0.0.crate
+anstyle-1.0.14.crate
+anstyle-parse-1.0.0.crate
+anstyle-query-1.1.5.crate
+autocfg-1.5.1.crate
+bindgen-0.73.2.crate
+bitflags-2.13.2.crate
+block-buffer-0.12.1.crate
+byteorder-1.5.0.crate
+cexpr-0.6.0.crate
+cfg-if-1.0.5.crate
+chacha20-0.10.2.crate
+cipher-0.5.2.crate
+clang-sys-1.9.1.crate
+clap-4.6.7.crate
+clap-num-1.2.0.crate
+clap_builder-4.6.7.crate
+clap_derive-4.6.7.crate
+clap_lex-1.1.1.crate
+cmov-0.5.4.crate
+colorchoice-1.0.5.crate
+cpubits-0.1.1.crate
+cpufeatures-0.3.1.crate
+crypto-common-0.2.2.crate
+ctr-0.10.1.crate
+ctutils-0.4.2.crate
+digest-0.11.3.crate
+endian-type-rs-0.1.4.crate
+fallible-iterator-0.2.0.crate
+fdt-rs-0.4.5.crate
+getrandom-0.4.3.crate
+ghash-0.6.0.crate
+glob-0.3.4.crate
+heck-0.5.0.crate
+hybrid-array-0.4.15.crate
+inout-0.2.2.crate
+is_terminal_polyfill-1.70.2.crate
+keccak-0.2.2.crate
+kem-0.3.0.crate
+libc-0.2.189.crate
+memchr-2.8.3.crate
+memoffset-0.5.6.crate
+memoffset-0.9.1.crate
+minimal-lexical-0.2.1.crate
+ml-kem-0.3.2.crate
+module-lattice-0.2.3.crate
+nom-7.1.3.crate
+num-derive-0.3.3.crate
+num-traits-0.2.19.crate
+polyval-0.7.3.crate
+proc-macro2-1.0.107.crate
+quote-1.0.47.crate
+rand-0.10.3.crate
+rand_core-0.10.1.crate
+regex-1.13.1.crate
+regex-automata-0.4.18.crate
+regex-syntax-0.8.11.crate
+riscv-decode-0.2.3.crate
+rustc-hash-2.1.3.crate
+rustc_version-0.2.3.crate
+semver-0.9.0.crate
+semver-parser-0.7.0.crate
+sha3-0.11.0.crate
+sha3-0.12.0.crate
+shlex-2.0.1.crate
+spin-0.12.3.crate
+sponge-cursor-0.1.0.crate
+static_assertions-1.1.0.crate
+strsim-0.11.1.crate
+syn-1.0.109.crate
+syn-3.0.6.crate
+thiserror-2.0.21.crate
+thiserror-impl-2.0.21.crate
+thiserror-impl-no-std-2.0.2.crate
+thiserror-no-std-2.0.2.crate
+typenum-1.20.1.crate
+unicode-ident-1.0.26.crate
+universal-hash-0.6.1.crate
+unsafe_unwrap-0.1.0.crate
+utf8parse-0.2.2.crate
+$ section '11. Record the changes the build made to the upstream tree'
+
+===== 11. Record the changes the build made to the upstream tree =====
+$ cd ~/projects/IBM-ACE-On-QEMU-Reproduction/upstream/ACE-RISCV
+$ git status --short
+ M confidential-vms/linux_vm/Makefile
+ M hypervisor/Makefile
+ M security-monitor/Makefile
+ m security-monitor/opensbi
+ M tools/ace_run_hypervisor.sh
+ M tools/common.sh
+$ git diff --stat
+ confidential-vms/linux_vm/Makefile |  8 +++++---
+ hypervisor/Makefile                | 10 ++++++----
+ security-monitor/Makefile          |  2 +-
+ security-monitor/opensbi           |  0
+ tools/ace_run_hypervisor.sh        |  2 +-
+ tools/common.sh                    |  6 +++---
+ 6 files changed, 16 insertions(+), 12 deletions(-)
+$ git -C security-monitor/opensbi status --short
+ M lib/sbi/sbi_hart.c
+ M lib/sbi/sbi_hsm.c
+$ git -C security-monitor/opensbi diff --stat
+ lib/sbi/sbi_hart.c | 6 +++---
+ lib/sbi/sbi_hsm.c  | 7 +++++++
+ 2 files changed, 10 insertions(+), 3 deletions(-)
+$ grep -c ace_setup_this_hart security-monitor/opensbi/lib/sbi/sbi_hsm.c
+2
+$ cd ~/projects/IBM-ACE-On-QEMU-Reproduction
+$ git status --short
+?? docs/G10_firmware.md
+?? scripts/G10_firmware.sh
+$ free -h
+               total        used        free      shared  buff/cache   available
+Mem:            30Gi        21Gi       2.3Gi       3.8Gi        11Gi       9.7Gi
+Swap:          8.0Gi       2.5Gi       5.5Gi
+$ df -h ~/projects/IBM-ACE-On-QEMU-Reproduction
+Filesystem      Size  Used Avail Use% Mounted on
+/dev/nvme0n1p2  915G  403G  466G  47% /
+$ finish completed
+
+===== SUMMARY =====
+failed_commands=0  completed
+# masked_from_raw_sha256=fb35759d914d66b3569a25e598a0cdf5cb6e1d30b692d250956c900545ee9053

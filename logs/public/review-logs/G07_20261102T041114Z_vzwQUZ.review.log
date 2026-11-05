@@ -1,0 +1,126 @@
+# G07 Tools | run=G07_20261102T041114Z_vzwQUZ | input_sha256=d87e48892483b98919271a837d20c51344a6d1cb4bf3d92ab722f9cb51cb37c7
+# previous gate: G06 PASS (see logs/review/G06_review.md)
+$ section '1. Verify the downloaded files and all sealed evidence'
+
+===== 1. Verify the downloaded files and all sealed evidence =====
+$ cd ~/download
+$ sha256sum G07_tools.sh G07_tools.md
+d87e48892483b98919271a837d20c51344a6d1cb4bf3d92ab722f9cb51cb37c7  G07_tools.sh
+7db29be659771282eaf4f0ff5d53045aee2a711e2750e145cce6cbd9b90ee944  G07_tools.md
+$ sha256sum -c -
+$ echo 'dfbfc14deddc132b5b93cb1abab9da05f92b9dcf289cdb0a193016db7fff87cc  G06_review.md'
+G06_review.md: OK
+$ cd ~/projects/IBM-ACE-On-QEMU-Reproduction/logs
+$ sha256sum -c ACE-G00-Host-Baseline-20261030T115047Z-a1SbSFY1.raw.log.sha256 G00_20261030T122505Z_7St35c.sha256 G01_20261030T125107Z_P3Dw1C.sha256 G02_20261030T130813Z_vP2nrT.sha256 G03_20261030T132027Z_gN9Ntr.sha256 G04_20261102T023215Z_DtsO6K.sha256 G05_20261102T025456Z_lCG0ac.sha256 G05b_20261102T035410Z_z0g7ji.sha256 G06_20261102T040430Z_BPbdDC.sha256
+ACE-G00-Host-Baseline-20261030T115047Z-a1SbSFY1.raw.log: OK
+G00_20261030T122505Z_7St35c.raw.log: OK
+G00_20261030T122505Z_7St35c.input.sh: OK
+G01_20261030T125107Z_P3Dw1C.raw.log: OK
+G01_20261030T125107Z_P3Dw1C.input.sh: OK
+G02_20261030T130813Z_vP2nrT.raw.log: OK
+G02_20261030T130813Z_vP2nrT.input.sh: OK
+G03_20261030T132027Z_gN9Ntr.raw.log: OK
+G03_20261030T132027Z_gN9Ntr.input.sh: OK
+G04_20261102T023215Z_DtsO6K.raw.log: OK
+G04_20261102T023215Z_DtsO6K.input.sh: OK
+G05_20261102T025456Z_lCG0ac.raw.log: OK
+G05_20261102T025456Z_lCG0ac.input.sh: OK
+G05b_20261102T035410Z_z0g7ji.raw.log: OK
+G05b_20261102T035410Z_z0g7ji.input.sh: OK
+G06_20261102T040430Z_BPbdDC.raw.log: OK
+G06_20261102T040430Z_BPbdDC.input.sh: OK
+$ stop_if_failed 'step 1'
+$ section '2. Commit the reviewed G06 work (local only, UTC)'
+
+===== 2. Commit the reviewed G06 work (local only, UTC) =====
+$ cd ~/projects/IBM-ACE-On-QEMU-Reproduction
+$ cp ~/download/G06_review.md logs/review/
+$ git add scripts/G06_devtools.sh docs/G06_devtools.md
+$ git status --short
+A  docs/G06_devtools.md
+A  scripts/G06_devtools.sh
+$ git diff --cached --quiet
+$ TZ=UTC0
+$ git commit -m 'G06: RISC-V GNU toolchain (make devtools)'
+[main 1e7d46d] G06: RISC-V GNU toolchain (make devtools)
+ 2 files changed, 348 insertions(+)
+ create mode 100644 docs/G06_devtools.md
+ create mode 100644 scripts/G06_devtools.sh
+$ git log -1 '--format=%h  %aI  %an <%ae>  %s'
+1e7d46d  2026-11-02T04:11:14+00:00  junlinh12 <238169016+junlinh12@users.noreply.github.com>  G06: RISC-V GNU toolchain (make devtools)
+$ git show --stat --format= HEAD
+ docs/G06_devtools.md    | 161 +++++++++++++++++++++++++++++++++++++++++
+ scripts/G06_devtools.sh | 187 ++++++++++++++++++++++++++++++++++++++++++++++++
+ 2 files changed, 348 insertions(+)
+$ cp ~/download/G07_tools.sh scripts/
+$ cp ~/download/G07_tools.md docs/
+$ stop_if_failed 'step 2'
+$ section '3. Record the host and source state before the build'
+
+===== 3. Record the host and source state before the build =====
+$ uname -r
+7.0.0-38-generic
+$ free -h
+               total        used        free      shared  buff/cache   available
+Mem:            30Gi        18Gi       787Mi       3.3Gi        15Gi        12Gi
+Swap:          8.0Gi       608Ki       8.0Gi
+$ df -h ~/projects/IBM-ACE-On-QEMU-Reproduction
+Filesystem      Size  Used Avail Use% Mounted on
+/dev/nvme0n1p2  915G  393G  476G  46% /
+$ cd ~/projects/IBM-ACE-On-QEMU-Reproduction/upstream/ACE-RISCV
+$ git status --short
+ M confidential-vms/linux_vm/Makefile
+ M hypervisor/Makefile
+ M security-monitor/Makefile
+ M tools/ace_run_hypervisor.sh
+ M tools/common.sh
+$ section '4. Set the build environment'
+
+===== 4. Set the build environment =====
+$ source ~/projects/IBM-ACE-On-QEMU-Reproduction/scripts/build_env.sh
+$$ export ACE_DIR=~/projects/IBM-ACE-On-QEMU-Reproduction/build/ace/
+$$ ACE_DIR=~/projects/IBM-ACE-On-QEMU-Reproduction/build/ace/
+$$ export QEMU_SOURCE_DIR=~/projects/IBM-ACE-On-QEMU-Reproduction/build/qemu-source/
+$$ QEMU_SOURCE_DIR=~/projects/IBM-ACE-On-QEMU-Reproduction/build/qemu-source/
+$$ export BR2_DL_DIR=~/projects/IBM-ACE-On-QEMU-Reproduction/build/dl
+$$ BR2_DL_DIR=~/projects/IBM-ACE-On-QEMU-Reproduction/build/dl
+$$ export CARGO_HOME=~/projects/IBM-ACE-On-QEMU-Reproduction/build/cargo-home
+$$ CARGO_HOME=~/projects/IBM-ACE-On-QEMU-Reproduction/build/cargo-home
+$$ export BR2_JLEVEL=2
+$$ BR2_JLEVEL=2
+$$ export OMP_NUM_THREADS=2
+$$ OMP_NUM_THREADS=2
+$$ export CARGO_BUILD_JOBS=2
+$$ CARGO_BUILD_JOBS=2
+$ env
+$ sort
+$ grep -E '^(ACE_DIR|QEMU_SOURCE_DIR|BR2_DL_DIR|CARGO_HOME|BR2_JLEVEL|OMP_NUM_THREADS|CARGO_BUILD_JOBS)='
+ACE_DIR=~/projects/IBM-ACE-On-QEMU-Reproduction/build/ace/
+BR2_DL_DIR=~/projects/IBM-ACE-On-QEMU-Reproduction/build/dl
+BR2_JLEVEL=2
+CARGO_BUILD_JOBS=2
+CARGO_HOME=~/projects/IBM-ACE-On-QEMU-Reproduction/build/cargo-home
+OMP_NUM_THREADS=2
+QEMU_SOURCE_DIR=~/projects/IBM-ACE-On-QEMU-Reproduction/build/qemu-source/
+$ stop_if_failed 'step 4'
+$ section '5. Check the Rust toolchain selected for the TAP tool'
+
+===== 5. Check the Rust toolchain selected for the TAP tool =====
+$ cd ~/projects/IBM-ACE-On-QEMU-Reproduction/upstream/ACE-RISCV/tools/cove_tap_tool
+$ cat rust-toolchain.toml
+[toolchain]
+channel = "stable"$ rustup show active-toolchain
+stable-x86_64-unknown-linux-gnu (overridden by '~/projects/IBM-ACE-On-QEMU-Reproduction/upstream/ACE-RISCV/tools/cove_tap_tool/rust-toolchain.toml')
+$ rustc --version
+rustc 1.98.1 (48a229cea 2026-09-01)
+$ cargo --version
+cargo 1.98.1 (797e8a9bc 2026-08-05)
+$ cargo fmt --version
+error: 'cargo-fmt' is not installed for the toolchain 'stable-x86_64-unknown-linux-gnu'.
+help: run `rustup component add rustfmt` to install it
+### FAILED: exit=1 line=140
+$ stop_if_failed 'step 5'
+
+===== SUMMARY =====
+failed_commands=1  STOPPED at: step 5
+# masked_from_raw_sha256=9ec4d8bc7e9af4b6fe1d060096a91634672fa2ed985aa651c01fc031d4e17d06

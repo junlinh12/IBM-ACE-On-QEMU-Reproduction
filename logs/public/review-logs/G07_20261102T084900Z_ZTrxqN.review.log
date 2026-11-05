@@ -1,0 +1,430 @@
+# G07 Tools | run=G07_20261102T084900Z_ZTrxqN | input_sha256=e42ccfec0dd998e7407af1a9600e1cf8c719a0f50fbd04e78d0be45ff74cff95
+# previous gate: G06 PASS; G07 first run BLOCKED (see logs/review/G07_run1_review.md)
+$ section '1. Verify the downloaded files and all sealed evidence'
+
+===== 1. Verify the downloaded files and all sealed evidence =====
+$ cd ~/download
+$ sha256sum G07_tools.sh G07_tools.md
+e42ccfec0dd998e7407af1a9600e1cf8c719a0f50fbd04e78d0be45ff74cff95  G07_tools.sh
+a4b5f034792b2729f1eddf0e1b78c990bc4983910458c9d2f5cad1d3dd383214  G07_tools.md
+$ echo 'dfbfc14deddc132b5b93cb1abab9da05f92b9dcf289cdb0a193016db7fff87cc  G06_review.md'
+$ sha256sum -c -
+G06_review.md: OK
+$ echo '9525f71a312ad4d2e94bc80a5ce55089b9389d57e4f497a842b5bfddcf895b57  G07_run1_review.md'
+$ sha256sum -c -
+G07_run1_review.md: OK
+$ cd ~/projects/IBM-ACE-On-QEMU-Reproduction/logs
+$ sha256sum -c ACE-G00-Host-Baseline-20261030T115047Z-a1SbSFY1.raw.log.sha256 G00_20261030T122505Z_7St35c.sha256 G01_20261030T125107Z_P3Dw1C.sha256 G02_20261030T130813Z_vP2nrT.sha256 G03_20261030T132027Z_gN9Ntr.sha256 G04_20261102T023215Z_DtsO6K.sha256 G05_20261102T025456Z_lCG0ac.sha256 G05b_20261102T035410Z_z0g7ji.sha256 G06_20261102T040430Z_BPbdDC.sha256 G07_20261102T041114Z_vzwQUZ.sha256
+ACE-G00-Host-Baseline-20261030T115047Z-a1SbSFY1.raw.log: OK
+G00_20261030T122505Z_7St35c.raw.log: OK
+G00_20261030T122505Z_7St35c.input.sh: OK
+G01_20261030T125107Z_P3Dw1C.raw.log: OK
+G01_20261030T125107Z_P3Dw1C.input.sh: OK
+G02_20261030T130813Z_vP2nrT.raw.log: OK
+G02_20261030T130813Z_vP2nrT.input.sh: OK
+G03_20261030T132027Z_gN9Ntr.raw.log: OK
+G03_20261030T132027Z_gN9Ntr.input.sh: OK
+G04_20261102T023215Z_DtsO6K.raw.log: OK
+G04_20261102T023215Z_DtsO6K.input.sh: OK
+G05_20261102T025456Z_lCG0ac.raw.log: OK
+G05_20261102T025456Z_lCG0ac.input.sh: OK
+G05b_20261102T035410Z_z0g7ji.raw.log: OK
+G05b_20261102T035410Z_z0g7ji.input.sh: OK
+G06_20261102T040430Z_BPbdDC.raw.log: OK
+G06_20261102T040430Z_BPbdDC.input.sh: OK
+G07_20261102T041114Z_vzwQUZ.raw.log: OK
+G07_20261102T041114Z_vzwQUZ.input.sh: OK
+$ stop_if_failed 'step 1'
+$ section '2. Commit the reviewed G06 work (local only, UTC)'
+
+===== 2. Commit the reviewed G06 work (local only, UTC) =====
+$ cd ~/projects/IBM-ACE-On-QEMU-Reproduction
+$ cp ~/download/G06_review.md logs/review/
+$ cp ~/download/G07_run1_review.md logs/review/
+$ git add scripts/G06_devtools.sh docs/G06_devtools.md
+$ git status --short
+?? docs/G07_tools.md
+?? scripts/G07_tools.sh
+$ git diff --cached --quiet
+$ git log -1 '--format=%h  %aI  %an <%ae>  %s'
+1e7d46d  2026-11-02T04:11:14+00:00  junlinh12 <238169016+junlinh12@users.noreply.github.com>  G06: RISC-V GNU toolchain (make devtools)
+$ cp ~/download/G07_tools.sh scripts/
+$ cp ~/download/G07_tools.md docs/
+$ stop_if_failed 'step 2'
+$ section '3. Record the host and source state before the build'
+
+===== 3. Record the host and source state before the build =====
+$ uname -r
+7.0.0-38-generic
+$ free -h
+               total        used        free      shared  buff/cache   available
+Mem:            30Gi        23Gi       1.7Gi       3.7Gi        10Gi       7.6Gi
+Swap:          8.0Gi       1.2Mi       8.0Gi
+$ df -h ~/projects/IBM-ACE-On-QEMU-Reproduction
+Filesystem      Size  Used Avail Use% Mounted on
+/dev/nvme0n1p2  915G  393G  476G  46% /
+$ cd ~/projects/IBM-ACE-On-QEMU-Reproduction/upstream/ACE-RISCV
+$ git status --short
+ M confidential-vms/linux_vm/Makefile
+ M hypervisor/Makefile
+ M security-monitor/Makefile
+ M tools/ace_run_hypervisor.sh
+ M tools/common.sh
+$ section '4. Set the build environment'
+
+===== 4. Set the build environment =====
+$ source ~/projects/IBM-ACE-On-QEMU-Reproduction/scripts/build_env.sh
+$$ export ACE_DIR=~/projects/IBM-ACE-On-QEMU-Reproduction/build/ace/
+$$ ACE_DIR=~/projects/IBM-ACE-On-QEMU-Reproduction/build/ace/
+$$ export QEMU_SOURCE_DIR=~/projects/IBM-ACE-On-QEMU-Reproduction/build/qemu-source/
+$$ QEMU_SOURCE_DIR=~/projects/IBM-ACE-On-QEMU-Reproduction/build/qemu-source/
+$$ export BR2_DL_DIR=~/projects/IBM-ACE-On-QEMU-Reproduction/build/dl
+$$ BR2_DL_DIR=~/projects/IBM-ACE-On-QEMU-Reproduction/build/dl
+$$ export CARGO_HOME=~/projects/IBM-ACE-On-QEMU-Reproduction/build/cargo-home
+$$ CARGO_HOME=~/projects/IBM-ACE-On-QEMU-Reproduction/build/cargo-home
+$$ export BR2_JLEVEL=2
+$$ BR2_JLEVEL=2
+$$ export OMP_NUM_THREADS=2
+$$ OMP_NUM_THREADS=2
+$$ export CARGO_BUILD_JOBS=2
+$$ CARGO_BUILD_JOBS=2
+$ grep -E '^(ACE_DIR|QEMU_SOURCE_DIR|BR2_DL_DIR|CARGO_HOME|BR2_JLEVEL|OMP_NUM_THREADS|CARGO_BUILD_JOBS)='
+$ env
+$ sort
+ACE_DIR=~/projects/IBM-ACE-On-QEMU-Reproduction/build/ace/
+BR2_DL_DIR=~/projects/IBM-ACE-On-QEMU-Reproduction/build/dl
+BR2_JLEVEL=2
+CARGO_BUILD_JOBS=2
+CARGO_HOME=~/projects/IBM-ACE-On-QEMU-Reproduction/build/cargo-home
+OMP_NUM_THREADS=2
+QEMU_SOURCE_DIR=~/projects/IBM-ACE-On-QEMU-Reproduction/build/qemu-source/
+$ stop_if_failed 'step 4'
+$ section '5. Install Rust 1.98.1 for the TAP tool (stable and default unchanged)'
+
+===== 5. Install Rust 1.98.1 for the TAP tool (stable and default unchanged) =====
+$ rustup toolchain list
+stable-x86_64-unknown-linux-gnu (default)
+nightly-2024-11-27-x86_64-unknown-linux-gnu
+nightly-2026-03-23-x86_64-unknown-linux-gnu (active)
+$ rustup toolchain install 1.98.1 --profile minimal --component rustfmt --no-self-update
+info: syncing channel updates for 1.98.1-x86_64-unknown-linux-gnu
+info: latest update on 2026-09-03 for version 1.98.1 (48a229cea 2026-09-01)
+info: downloading 4 components
+
+  1.98.1-x86_64-unknown-linux-gnu installed - rustc 1.98.1 (48a229cea 2026-09-01)
+
+$ rustup toolchain list
+stable-x86_64-unknown-linux-gnu (default)
+nightly-2024-11-27-x86_64-unknown-linux-gnu
+nightly-2026-03-23-x86_64-unknown-linux-gnu (active)
+1.98.1-x86_64-unknown-linux-gnu
+$ rustup default
+stable-x86_64-unknown-linux-gnu (default)
+$ stop_if_failed 'step 5'
+$ section '6. Select Rust 1.98.1 for the TAP tool and check it equals the host'\''s stable'
+
+===== 6. Select Rust 1.98.1 for the TAP tool and check it equals the host's stable =====
+$ cd ~/projects/IBM-ACE-On-QEMU-Reproduction/upstream/ACE-RISCV/tools/cove_tap_tool
+$ cat rust-toolchain.toml
+[toolchain]
+channel = "stable"$ echo
+
+$ rustup run stable rustc --version
+rustc 1.98.1 (48a229cea 2026-09-01)
+$ export RUSTUP_TOOLCHAIN=1.98.1
+$ RUSTUP_TOOLCHAIN=1.98.1
+$ rustup show active-toolchain
+1.98.1-x86_64-unknown-linux-gnu (overridden by environment variable RUSTUP_TOOLCHAIN)
+$ rustc --version
+rustc 1.98.1 (48a229cea 2026-09-01)
+$ cargo --version
+cargo 1.98.1 (797e8a9bc 2026-08-05)
+$ cargo fmt --version
+rustfmt 1.9.0-stable (48a229ceae 2026-09-01)
+$$ rustup run stable rustc --version
+$$ rustc --version
+$ test 'rustc 1.98.1 (48a229cea 2026-09-01)' = 'rustc 1.98.1 (48a229cea 2026-09-01)'
+$ stop_if_failed 'step 6'
+$ section '7. Build the tools with the upstream Makefile'
+
+===== 7. Build the tools with the upstream Makefile =====
+$ cd ~/projects/IBM-ACE-On-QEMU-Reproduction/upstream/ACE-RISCV
+$ date -u
+Mon Nov  2 08:49:06 UTC 2026
+$ make -j2 tools
+echo ~/projects/IBM-ACE-On-QEMU-Reproduction/build/ace/
+~/projects/IBM-ACE-On-QEMU-Reproduction/build/ace/
+mkdir -p ~/projects/IBM-ACE-On-QEMU-Reproduction/build/ace//tools ;\
+cp -rf ~/projects/IBM-ACE-On-QEMU-Reproduction/upstream/ACE-RISCV//tools/*.sh ~/projects/IBM-ACE-On-QEMU-Reproduction/build/ace//tools/ ;\
+cp -rf ~/projects/IBM-ACE-On-QEMU-Reproduction/upstream/ACE-RISCV//tools/ace ~/projects/IBM-ACE-On-QEMU-Reproduction/build/ace//tools/ ;\
+PATH="~/projects/IBM-ACE-On-QEMU-Reproduction/build/ace//riscv-gnu-toolchain//bin:~/projects/IBM-ACE-On-QEMU-Reproduction/build/ace//riscv-gnu-toolchain//bin:~/bin:~/.cargo/bin:~/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin:/snap/bin" TOOLS_WORK_DIR=~/projects/IBM-ACE-On-QEMU-Reproduction/build/ace//tools ACE_DIR=~/projects/IBM-ACE-On-QEMU-Reproduction/build/ace/ make -C tools/cove_tap_tool;
+make[1]: Entering directory '~/projects/IBM-ACE-On-QEMU-Reproduction/upstream/ACE-RISCV/tools/cove_tap_tool'
+warning: failed to connect to jobserver from environment variable `MAKEFLAGS="w -j2 --jobserver-auth=5,6"`: cannot open file descriptor 5 from the jobserver environment variable value: Bad file descriptor (os error 9)
+echo "Building Local Attestation utility" ;\
+mkdir -p ~/projects/IBM-ACE-On-QEMU-Reproduction/build/ace//cove_tap_tool ; \
+rm -f ~/projects/IBM-ACE-On-QEMU-Reproduction/build/ace//cove_tap_tool/release/cove-tap-tool; \
+RUSTFLAGS='' CARGO_TARGET_DIR=~/projects/IBM-ACE-On-QEMU-Reproduction/build/ace//cove_tap_tool INSTALL_DIR=~/projects/IBM-ACE-On-QEMU-Reproduction/build/ace// cargo build --release ; \
+cp ~/projects/IBM-ACE-On-QEMU-Reproduction/build/ace//cove_tap_tool/release/cove-tap-tool ~/projects/IBM-ACE-On-QEMU-Reproduction/build/ace//tools/ ;
+Building Local Attestation utility
+warning: failed to connect to jobserver from environment variable `MAKEFLAGS="w -j2 --jobserver-auth=5,6"`: cannot open file descriptor 5 from the jobserver environment variable value: Bad file descriptor (os error 9)
+    Updating crates.io index
+ Downloading crates ...
+  Downloaded cfg-if v1.0.5
+  Downloaded block-buffer v0.12.1
+  Downloaded anstyle v1.0.14
+  Downloaded byteorder v1.5.0
+  Downloaded aead v0.6.1
+  Downloaded cpubits v0.1.1
+  Downloaded aes v0.9.3
+  Downloaded colorchoice v1.0.5
+  Downloaded clap v4.6.7
+  Downloaded polyval v0.7.3
+  Downloaded clap_derive v4.6.7
+  Downloaded ctutils v0.4.2
+  Downloaded unicode-ident v1.0.26
+  Downloaded autocfg v1.5.1
+  Downloaded cmov v0.5.4
+  Downloaded digest v0.11.3
+  Downloaded module-lattice v0.2.3
+  Downloaded cpufeatures v0.3.1
+  Downloaded is_terminal_polyfill v1.70.2
+  Downloaded clap_lex v1.1.1
+  Downloaded ghash v0.6.0
+  Downloaded heck v0.5.0
+  Downloaded anstyle-query v1.1.5
+  Downloaded inout v0.2.2
+  Downloaded cipher v0.5.2
+  Downloaded quote v1.0.47
+  Downloaded sponge-cursor v0.1.0
+  Downloaded clap-num v1.2.0
+  Downloaded crypto-common v0.2.2
+  Downloaded kem v0.3.0
+  Downloaded utf8parse v0.2.2
+  Downloaded universal-hash v0.6.1
+  Downloaded strsim v0.11.1
+  Downloaded chacha20 v0.10.2
+  Downloaded thiserror-impl-no-std v2.0.2
+  Downloaded anstream v1.0.0
+  Downloaded hybrid-array v0.4.15
+  Downloaded proc-macro2 v1.0.107
+  Downloaded thiserror v2.0.21
+  Downloaded ctr v0.10.1
+  Downloaded keccak v0.2.2
+  Downloaded thiserror-impl v2.0.21
+  Downloaded thiserror-no-std v2.0.2
+  Downloaded rand_core v0.10.1
+  Downloaded ml-kem v0.3.2
+  Downloaded getrandom v0.4.3
+  Downloaded anstyle-parse v1.0.0
+  Downloaded num-traits v0.2.19
+  Downloaded typenum v1.20.1
+  Downloaded rand v0.10.3
+  Downloaded aes-gcm v0.11.1
+  Downloaded clap_builder v4.6.7
+  Downloaded sha3 v0.12.0
+  Downloaded syn v1.0.109
+  Downloaded syn v3.0.6
+  Downloaded sha3 v0.11.0
+  Downloaded libc v0.2.189
+   Compiling cmov v0.5.4
+   Compiling typenum v1.20.1
+   Compiling ctutils v0.4.2
+   Compiling cfg-if v1.0.5
+   Compiling libc v0.2.189
+   Compiling getrandom v0.4.3
+   Compiling hybrid-array v0.4.15
+   Compiling rand_core v0.10.1
+   Compiling proc-macro2 v1.0.107
+   Compiling quote v1.0.47
+   Compiling crypto-common v0.2.2
+   Compiling unicode-ident v1.0.26
+   Compiling block-buffer v0.12.1
+   Compiling autocfg v1.5.1
+   Compiling cpufeatures v0.3.1
+   Compiling num-traits v0.2.19
+   Compiling inout v0.2.2
+   Compiling syn v1.0.109
+   Compiling cpubits v0.1.1
+   Compiling cipher v0.5.2
+   Compiling digest v0.11.3
+   Compiling syn v3.0.6
+   Compiling universal-hash v0.6.1
+   Compiling keccak v0.2.2
+   Compiling utf8parse v0.2.2
+   Compiling anstyle-parse v1.0.0
+   Compiling polyval v0.7.3
+   Compiling colorchoice v1.0.5
+   Compiling anstyle-query v1.1.5
+   Compiling anstyle v1.0.14
+   Compiling is_terminal_polyfill v1.70.2
+   Compiling anstream v1.0.0
+   Compiling thiserror-impl-no-std v2.0.2
+   Compiling ghash v0.6.0
+   Compiling sha3 v0.11.0
+   Compiling module-lattice v0.2.3
+   Compiling ctr v0.10.1
+   Compiling aes v0.9.3
+   Compiling aead v0.6.1
+   Compiling chacha20 v0.10.2
+   Compiling kem v0.3.0
+   Compiling clap_lex v1.1.1
+   Compiling heck v0.5.0
+   Compiling strsim v0.11.1
+   Compiling thiserror v2.0.21
+   Compiling clap_builder v4.6.7
+   Compiling clap_derive v4.6.7
+   Compiling ml-kem v0.3.2
+   Compiling aes-gcm v0.11.1
+   Compiling rand v0.10.3
+   Compiling thiserror-no-std v2.0.2
+   Compiling thiserror-impl v2.0.21
+   Compiling sponge-cursor v0.1.0
+   Compiling sha3 v0.12.0
+   Compiling riscv_cove_tap v0.2.0 (~/projects/IBM-ACE-On-QEMU-Reproduction/upstream/ACE-RISCV/security-monitor/rust-crates/riscv_cove_tap)
+   Compiling clap v4.6.7
+   Compiling clap-num v1.2.0
+   Compiling byteorder v1.5.0
+   Compiling cove-tap-tool v0.1.0 (~/projects/IBM-ACE-On-QEMU-Reproduction/upstream/ACE-RISCV/tools/cove_tap_tool)
+    Finished `release` profile [optimized] target(s) in 9.18s
+make[1]: Leaving directory '~/projects/IBM-ACE-On-QEMU-Reproduction/upstream/ACE-RISCV/tools/cove_tap_tool'
+$ date -u
+Mon Nov  2 08:49:15 UTC 2026
+$ unset RUSTUP_TOOLCHAIN
+$ stop_if_failed 'step 7'
+$ section '8. Verify the installed tools'
+
+===== 8. Verify the installed tools =====
+$ ls -l ~/projects/IBM-ACE-On-QEMU-Reproduction/build/ace//tools
+total 1340
+-rwx------ 1 <user> <user>     697 <local time> ace
+-rwx------ 1 <user> <user>     472 <local time> ace_connect.sh
+-rwx------ 1 <user> <user>    1752 <local time> ace_run_hypervisor.sh
+-rwx------ 1 <user> <user>     951 <local time> ace_start.sh
+-rwx------ 1 <user> <user>     373 <local time> ace_stop.sh
+-rwx------ 1 <user> <user>    1114 <local time> ace_test.sh
+-rw------- 1 <user> <user>    1285 <local time> common.sh
+-rwx------ 1 <user> <user> 1338664 <local time> cove-tap-tool
+-rwx------ 1 <user> <user>     398 <local time> objdump_baremetal.sh
+$ sha256sum ~/projects/IBM-ACE-On-QEMU-Reproduction/build/ace//tools/cove-tap-tool
+f2a6d7dc4f8671336f4bc53cae10ea824afcc6f6c91ff55773477f8f3efcf1eb  ~/projects/IBM-ACE-On-QEMU-Reproduction/build/ace//tools/cove-tap-tool
+$ ~/projects/IBM-ACE-On-QEMU-Reproduction/build/ace//tools/cove-tap-tool --help
+Tool to create TVM attestation payload for CoVE's confidential VM
+
+Usage: cove-tap-tool <COMMAND>
+
+Commands:
+  attach    
+  generate  
+  measure   
+  help      Print this message or the help of the given subcommand(s)
+
+Options:
+  -h, --help     Print help
+  -V, --version  Print version
+$ grep -c hostfwd=tcp:127.0.0.1: ~/projects/IBM-ACE-On-QEMU-Reproduction/build/ace//tools/ace_run_hypervisor.sh
+1
+$ grep -c UserKnownHostsFile=/dev/null ~/projects/IBM-ACE-On-QEMU-Reproduction/build/ace//tools/common.sh
+1
+$ section '9. Record the crates that were downloaded'
+
+===== 9. Record the crates that were downloaded =====
+$ find ~/projects/IBM-ACE-On-QEMU-Reproduction/build/cargo-home/registry/cache -name '*.crate'
+$ wc -l
+57
+$ find ~/projects/IBM-ACE-On-QEMU-Reproduction/build/cargo-home/registry/cache -name '*.crate' -printf '%f\n'
+$ sort
+aead-0.6.1.crate
+aes-0.9.3.crate
+aes-gcm-0.11.1.crate
+anstream-1.0.0.crate
+anstyle-1.0.14.crate
+anstyle-parse-1.0.0.crate
+anstyle-query-1.1.5.crate
+autocfg-1.5.1.crate
+block-buffer-0.12.1.crate
+byteorder-1.5.0.crate
+cfg-if-1.0.5.crate
+chacha20-0.10.2.crate
+cipher-0.5.2.crate
+clap-4.6.7.crate
+clap-num-1.2.0.crate
+clap_builder-4.6.7.crate
+clap_derive-4.6.7.crate
+clap_lex-1.1.1.crate
+cmov-0.5.4.crate
+colorchoice-1.0.5.crate
+cpubits-0.1.1.crate
+cpufeatures-0.3.1.crate
+crypto-common-0.2.2.crate
+ctr-0.10.1.crate
+ctutils-0.4.2.crate
+digest-0.11.3.crate
+getrandom-0.4.3.crate
+ghash-0.6.0.crate
+heck-0.5.0.crate
+hybrid-array-0.4.15.crate
+inout-0.2.2.crate
+is_terminal_polyfill-1.70.2.crate
+keccak-0.2.2.crate
+kem-0.3.0.crate
+libc-0.2.189.crate
+ml-kem-0.3.2.crate
+module-lattice-0.2.3.crate
+num-traits-0.2.19.crate
+polyval-0.7.3.crate
+proc-macro2-1.0.107.crate
+quote-1.0.47.crate
+rand-0.10.3.crate
+rand_core-0.10.1.crate
+sha3-0.11.0.crate
+sha3-0.12.0.crate
+sponge-cursor-0.1.0.crate
+strsim-0.11.1.crate
+syn-1.0.109.crate
+syn-3.0.6.crate
+thiserror-2.0.21.crate
+thiserror-impl-2.0.21.crate
+thiserror-impl-no-std-2.0.2.crate
+thiserror-no-std-2.0.2.crate
+typenum-1.20.1.crate
+unicode-ident-1.0.26.crate
+universal-hash-0.6.1.crate
+utf8parse-0.2.2.crate
+$ du -sh ~/projects/IBM-ACE-On-QEMU-Reproduction/build/cargo-home
+32M	~/projects/IBM-ACE-On-QEMU-Reproduction/build/cargo-home
+$ section '10. Check the upstream tree, the shared Rust setup, and the project'
+
+===== 10. Check the upstream tree, the shared Rust setup, and the project =====
+$ cd ~/projects/IBM-ACE-On-QEMU-Reproduction/upstream/ACE-RISCV
+$ git status --short
+ M confidential-vms/linux_vm/Makefile
+ M hypervisor/Makefile
+ M security-monitor/Makefile
+ M tools/ace_run_hypervisor.sh
+ M tools/common.sh
+$ git diff --stat
+ confidential-vms/linux_vm/Makefile |  8 +++++---
+ hypervisor/Makefile                | 10 ++++++----
+ security-monitor/Makefile          |  2 +-
+ tools/ace_run_hypervisor.sh        |  2 +-
+ tools/common.sh                    |  6 +++---
+ 5 files changed, 16 insertions(+), 12 deletions(-)
+$ rustup default
+stable-x86_64-unknown-linux-gnu (default)
+$ rustup component list --installed --toolchain stable
+cargo-x86_64-unknown-linux-gnu
+rust-std-x86_64-unknown-linux-gnu
+rustc-x86_64-unknown-linux-gnu
+$ cd ~/projects/IBM-ACE-On-QEMU-Reproduction
+$ git status --short
+?? docs/G07_tools.md
+?? scripts/G07_tools.sh
+$ free -h
+               total        used        free      shared  buff/cache   available
+Mem:            30Gi        23Gi       1.2Gi       3.9Gi        10Gi       7.1Gi
+Swap:          8.0Gi       1.2Mi       8.0Gi
+$ finish completed
+
+===== SUMMARY =====
+failed_commands=0  completed
+# masked_from_raw_sha256=40352a8e17f22a187c3185ae4dae4daa246f60223d44147cdcbd398799bc9664

@@ -1,0 +1,57 @@
+# G08 Emulator | run=G08_20261102T112611Z_dl5kmx | input_sha256=d93a60b04dfdf92ae489167d4a4aeb7a3cc2655eb792612568a4ae125c6285bf
+# previous gate: G07 PASS (see logs/review/G07_review.md)
+$ section '1. Verify the downloaded files and all sealed evidence'
+
+===== 1. Verify the downloaded files and all sealed evidence =====
+$ cd ~/download
+$ sha256sum G08_emulator.sh G08_emulator.md
+d93a60b04dfdf92ae489167d4a4aeb7a3cc2655eb792612568a4ae125c6285bf  G08_emulator.sh
+3d06c1d028abc05960e17c867f3ee947924dc825efaa170d02905dd10ee0eb2c  G08_emulator.md
+$ echo '1c4b151f9e3512fe3a437ebd061d2d18d2e1b5e21da759c5a69c5bc77e70df63  G07_review.md'
+$ sha256sum -c -
+G07_review.md: OK
+$ echo '6a353adb19ed00865c6e5b29bfe46098ccab0d045200aa41a78396465cb490bb  SAFETY_AUDIT.md'
+$ sha256sum -c -
+SAFETY_AUDIT.md: OK
+$ echo '30c33c4311e42358850c421265e6613770ab85a9971f189710fc6c4917c731b2  SOURCE_PROVENANCE.md'
+$ sha256sum -c -
+SOURCE_PROVENANCE.md: OK
+$ echo 'dd8de984968d097bc882ab5f3dd47286c9fb71652864e0ec0db00a5260f90de8  build_env.sh'
+$ sha256sum -c -
+build_env.sh: OK
+$ sha256sum -c -
+$ echo 'ce1fecda74befd6a4c8d5bdcd3738434099975aa4ff8bc25a6cfeb577315e96f  wgetrc'
+sha256sum: wgetrc: No such file or directory
+wgetrc: FAILED open or read
+sha256sum: WARNING: 1 listed file could not be read
+### FAILED: exit=1 line=113
+$ cd ~/projects/IBM-ACE-On-QEMU-Reproduction/logs
+$ sha256sum -c ACE-G00-Host-Baseline-20261030T115047Z-a1SbSFY1.raw.log.sha256 G00_20261030T122505Z_7St35c.sha256 G01_20261030T125107Z_P3Dw1C.sha256 G02_20261030T130813Z_vP2nrT.sha256 G03_20261030T132027Z_gN9Ntr.sha256 G04_20261102T023215Z_DtsO6K.sha256 G05_20261102T025456Z_lCG0ac.sha256 G05b_20261102T035410Z_z0g7ji.sha256 G06_20261102T040430Z_BPbdDC.sha256 G07_20261102T041114Z_vzwQUZ.sha256 G07_20261102T084900Z_ZTrxqN.sha256 G08_20261102T091256Z_nnjq89.sha256
+ACE-G00-Host-Baseline-20261030T115047Z-a1SbSFY1.raw.log: OK
+G00_20261030T122505Z_7St35c.raw.log: OK
+G00_20261030T122505Z_7St35c.input.sh: OK
+G01_20261030T125107Z_P3Dw1C.raw.log: OK
+G01_20261030T125107Z_P3Dw1C.input.sh: OK
+G02_20261030T130813Z_vP2nrT.raw.log: OK
+G02_20261030T130813Z_vP2nrT.input.sh: OK
+G03_20261030T132027Z_gN9Ntr.raw.log: OK
+G03_20261030T132027Z_gN9Ntr.input.sh: OK
+G04_20261102T023215Z_DtsO6K.raw.log: OK
+G04_20261102T023215Z_DtsO6K.input.sh: OK
+G05_20261102T025456Z_lCG0ac.raw.log: OK
+G05_20261102T025456Z_lCG0ac.input.sh: OK
+G05b_20261102T035410Z_z0g7ji.raw.log: OK
+G05b_20261102T035410Z_z0g7ji.input.sh: OK
+G06_20261102T040430Z_BPbdDC.raw.log: OK
+G06_20261102T040430Z_BPbdDC.input.sh: OK
+G07_20261102T041114Z_vzwQUZ.raw.log: OK
+G07_20261102T041114Z_vzwQUZ.input.sh: OK
+G07_20261102T084900Z_ZTrxqN.raw.log: OK
+G07_20261102T084900Z_ZTrxqN.input.sh: OK
+G08_20261102T091256Z_nnjq89.raw.log: OK
+G08_20261102T091256Z_nnjq89.input.sh: OK
+$ stop_if_failed 'step 1'
+
+===== SUMMARY =====
+failed_commands=1  STOPPED at: step 1
+# masked_from_raw_sha256=4b310c959cf08453a9ca1442841858a1c868c0ae74b37732c7d4f187ac06c570

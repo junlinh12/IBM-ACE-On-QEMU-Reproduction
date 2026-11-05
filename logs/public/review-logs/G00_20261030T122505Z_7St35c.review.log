@@ -1,0 +1,272 @@
+# G00 Host Baseline | run=G00_20261030T122505Z_7St35c | input_sha256=d5c9647bf76ed3562d3225cc0cb29110d51494fe28e9af3f3d4257da89e6791b
+$ section '1. Check the operating system'
+
+===== 1. Check the operating system =====
+$ cat /etc/os-release
+PRETTY_NAME="Ubuntu 24.04.5 LTS"
+NAME="Ubuntu"
+VERSION_ID="24.04"
+VERSION="24.04.5 LTS (Noble Numbat)"
+VERSION_CODENAME=noble
+ID=ubuntu
+ID_LIKE=debian
+HOME_URL="https://www.ubuntu.com/"
+SUPPORT_URL="https://help.ubuntu.com/"
+BUG_REPORT_URL="https://bugs.launchpad.net/ubuntu/"
+PRIVACY_POLICY_URL="https://www.ubuntu.com/legal/terms-and-policies/privacy-policy"
+UBUNTU_CODENAME=noble
+LOGO=ubuntu-logo
+$ uname -srm
+Linux 7.0.0-38-generic x86_64
+$ section '2. Check CPU and memory'
+
+===== 2. Check CPU and memory =====
+$ nproc
+20
+$ lscpu
+Architecture:                            x86_64
+CPU op-mode(s):                          32-bit, 64-bit
+Address sizes:                           46 bits physical, 48 bits virtual
+Byte Order:                              Little Endian
+CPU(s):                                  20
+On-line CPU(s) list:                     0-19
+Vendor ID:                               GenuineIntel
+Model name:                              Intel(R) Core(TM) Ultra 7 265K
+CPU family:                              6
+Model:                                   198
+Thread(s) per core:                      1
+Core(s) per socket:                      20
+Socket(s):                               1
+Stepping:                                2
+CPU(s) scaling MHz:                      73%
+CPU max MHz:                             4600.0000
+CPU min MHz:                             800.0000
+BogoMIPS:                                7756.80
+Flags:                                   fpu vme de pse tsc msr pae mce cx8 apic sep mtrr pge mca cmov pat pse36 clflush dts acpi mmx fxsr sse sse2 ss ht tm pbe syscall nx pdpe1gb rdtscp lm constant_tsc art arch_perfmon pebs bts rep_good nopl xtopology nonstop_tsc cpuid aperfmperf tsc_known_freq pni pclmulqdq dtes64 monitor ds_cpl vmx smx est tm2 ssse3 sdbg fma cx16 xtpr pdcm pcid sse4_1 sse4_2 x2apic movbe popcnt tsc_deadline_timer aes xsave avx f16c rdrand lahf_lm abm 3dnowprefetch cpuid_fault ssbd ibrs ibpb stibp ibrs_enhanced tpr_shadow flexpriority ept vpid ept_ad fsgsbase tsc_adjust bmi1 avx2 smep bmi2 erms invpcid rdt_a rdseed adx smap clflushopt clwb intel_pt sha_ni xsaveopt xsavec xgetbv1 xsaves split_lock_detect user_shstk avx_vnni lam wbnoinvd dtherm ida arat pln pts hwp hwp_notify hwp_act_window hwp_epp hwp_pkg_req hfi vnmi umip pku ospke waitpkg gfni vaes vpclmulqdq rdpid bus_lock_detect movdiri movdir64b fsrm md_clear serialize arch_lbr ibt flush_l1d arch_capabilities
+Virtualization:                          VT-x
+L1d cache:                               704 KiB (18 instances)
+L1i cache:                               1.1 MiB (18 instances)
+L2 cache:                                36 MiB (11 instances)
+L3 cache:                                30 MiB (1 instance)
+NUMA node(s):                            1
+NUMA node0 CPU(s):                       0-19
+Vulnerability Gather data sampling:      Not affected
+Vulnerability Ghostwrite:                Not affected
+Vulnerability Indirect target selection: Not affected
+Vulnerability Itlb multihit:             Not affected
+Vulnerability L1tf:                      Not affected
+Vulnerability Mds:                       Not affected
+Vulnerability Meltdown:                  Not affected
+Vulnerability Mmio stale data:           Not affected
+Vulnerability Old microcode:             Not affected
+Vulnerability Reg file data sampling:    Not affected
+Vulnerability Retbleed:                  Not affected
+Vulnerability Spec rstack overflow:      Not affected
+Vulnerability Spec store bypass:         Mitigation; Speculative Store Bypass disabled via prctl
+Vulnerability Spectre v1:                Mitigation; usercopy/swapgs barriers and __user pointer sanitization
+Vulnerability Spectre v2:                Mitigation; Enhanced / Automatic IBRS; IBPB conditional; PBRSB-eIBRS Not affected; BHI BHI_DIS_S
+Vulnerability Srbds:                     Not affected
+Vulnerability Tsa:                       Not affected
+Vulnerability Tsx async abort:           Not affected
+Vulnerability Vmscape:                   Mitigation; IBPB before exit to userspace
+$ free -h
+               total        used        free      shared  buff/cache   available
+Mem:            30Gi        15Gi       2.7Gi       2.4Gi        14Gi        14Gi
+Swap:          8.0Gi       732Ki       8.0Gi
+$ grep -E '^(MemTotal|MemAvailable|SwapTotal):' /proc/meminfo
+MemTotal:       32213224 kB
+MemAvailable:   15492676 kB
+SwapTotal:       8388604 kB
+$ swapon --show
+NAME      TYPE SIZE USED PRIO
+/swap.img file   8G 732K   -1
+$ section '3. Check free disk space and inodes'
+
+===== 3. Check free disk space and inodes =====
+$ df -h ~/projects/IBM-ACE-On-QEMU-Reproduction
+Filesystem      Size  Used Avail Use% Mounted on
+/dev/nvme0n1p2  915G  389G  480G  45% /
+$ df -B1 --output=avail,iavail ~/projects/IBM-ACE-On-QEMU-Reproduction
+       Avail    IFree
+514897973248 57266018
+$ section '4. Check host developer tools'
+
+===== 4. Check host developer tools =====
+$ git --version
+git version 2.43.0
+$ make --version
+GNU Make 4.3
+Built for x86_64-pc-linux-gnu
+Copyright (C) 1988-2020 Free Software Foundation, Inc.
+License GPLv3+: GNU GPL version 3 or later <http://gnu.org/licenses/gpl.html>
+This is free software: you are free to change and redistribute it.
+There is NO WARRANTY, to the extent permitted by law.
+$ gcc --version
+gcc (Ubuntu 13.3.0-6ubuntu2~24.04.1) 13.3.0
+Copyright (C) 2023 Free Software Foundation, Inc.
+This is free software; see the source for copying conditions.  There is NO
+warranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+
+$ g++ --version
+g++ (Ubuntu 13.3.0-6ubuntu2~24.04.1) 13.3.0
+Copyright (C) 2023 Free Software Foundation, Inc.
+This is free software; see the source for copying conditions.  There is NO
+warranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+
+$ clang --version
+Ubuntu clang version 18.1.3 (1ubuntu1)
+Target: x86_64-pc-linux-gnu
+Thread model: posix
+InstalledDir: /usr/bin
+$ python3 --version
+Python 3.12.3
+$ ninja --version
+1.11.1
+$ curl --version
+curl 8.5.0 (x86_64-pc-linux-gnu) libcurl/8.5.0 OpenSSL/3.0.13 zlib/1.3 brotli/1.1.0 zstd/1.5.5 libidn2/2.3.7 libpsl/0.21.2 (+libidn2/2.3.7) libssh/0.10.6/openssl/zlib nghttp2/1.59.0 librtmp/2.3 OpenLDAP/2.6.10
+Release-Date: 2023-12-06, security patched: 8.5.0-2ubuntu10.16
+Protocols: dict file ftp ftps gopher gophers http https imap imaps ldap ldaps mqtt pop3 pop3s rtmp rtsp scp sftp smb smbs smtp smtps telnet tftp
+Features: alt-svc AsynchDNS brotli GSS-API HSTS HTTP2 HTTPS-proxy IDN IPv6 Kerberos Largefile libz NTLM PSL SPNEGO SSL threadsafe TLS-SRP UnixSockets zstd
+$ wget --version
+GNU Wget 1.21.4 built on linux-gnu.
+
+-cares +digest -gpgme +https +ipv6 +iri +large-file -metalink +nls 
++ntlm +opie +psl +ssl/openssl 
+
+Wgetrc: 
+    /etc/wgetrc (system)
+Locale: 
+    /usr/share/locale 
+Compile: 
+    gcc -DHAVE_CONFIG_H -DSYSTEM_WGETRC="/etc/wgetrc" 
+    -DLOCALEDIR="/usr/share/locale" -I. -I../../src -I../lib 
+    -I../../lib -Wdate-time -D_FORTIFY_SOURCE=3 -DHAVE_LIBSSL -DNDEBUG 
+    -g -O2 -fno-omit-frame-pointer -mno-omit-leaf-frame-pointer 
+    -ffile-prefix-map=/build/wget-JgCXcc/wget-1.21.4=. -flto=auto 
+    -ffat-lto-objects -fstack-protector-strong -fstack-clash-protection 
+    -Wformat -Werror=format-security -fcf-protection 
+    -fdebug-prefix-map=/build/wget-JgCXcc/wget-1.21.4=/usr/src/wget-1.21.4-1ubuntu4.5 
+    -DNO_SSLv2 -D_FILE_OFFSET_BITS=64 -g -Wall 
+Link: 
+    gcc -DHAVE_LIBSSL -DNDEBUG -g -O2 -fno-omit-frame-pointer 
+    -mno-omit-leaf-frame-pointer 
+    -ffile-prefix-map=/build/wget-JgCXcc/wget-1.21.4=. -flto=auto 
+    -ffat-lto-objects -fstack-protector-strong -fstack-clash-protection 
+    -Wformat -Werror=format-security -fcf-protection 
+    -fdebug-prefix-map=/build/wget-JgCXcc/wget-1.21.4=/usr/src/wget-1.21.4-1ubuntu4.5 
+    -DNO_SSLv2 -D_FILE_OFFSET_BITS=64 -g -Wall -Wl,-Bsymbolic-functions 
+    -flto=auto -ffat-lto-objects -Wl,-z,relro -Wl,-z,now -lpcre2-8 
+    -luuid -lidn2 -lssl -lcrypto -lz -lpsl ../lib/libgnu.a 
+
+Copyright (C) 2015 Free Software Foundation, Inc.
+License GPLv3+: GNU GPL version 3 or later
+<http://www.gnu.org/licenses/gpl.html>.
+This is free software: you are free to change and redistribute it.
+There is NO WARRANTY, to the extent permitted by law.
+
+Originally written by Hrvoje Niksic <hniksic@xemacs.org>.
+Please send bug reports and questions to <bug-wget@gnu.org>.
+$ section '5. Check the Rust toolchain'
+
+===== 5. Check the Rust toolchain =====
+$ rustup --version
+rustup 1.29.1 (d95a37b6a 2026-08-13)
+info: This is the version for the rustup toolchain manager, not the rustc compiler.
+info: the currently active `rustc` version is `rustc 1.98.1 (48a229cea 2026-09-01)`
+$ rustup toolchain list
+stable-x86_64-unknown-linux-gnu (active, default)
+nightly-2024-11-27-x86_64-unknown-linux-gnu
+$ rustup target list --installed
+x86_64-unknown-linux-gnu
+$ rustc --version
+rustc 1.98.1 (48a229cea 2026-09-01)
+$ cargo --version
+cargo 1.98.1 (797e8a9bc 2026-08-05)
+$ section '6. Check tools that ACE builds itself (absence is expected)'
+
+===== 6. Check tools that ACE builds itself (absence is expected) =====
+$ command -v qemu-system-riscv64
+/usr/bin/qemu-system-riscv64
+$ command -v riscv64-unknown-linux-gnu-gcc
+$ echo 'riscv64-unknown-linux-gnu-gcc: not on host'
+riscv64-unknown-linux-gnu-gcc: not on host
+$ section '7. Check apt packages required by ACE'
+
+===== 7. Check apt packages required by ACE =====
+$ dpkg-query -W '-f=${Package}  ${Status}  ${Version}\n' autoconf automake autotools-dev curl python3 libmpc-dev libmpfr-dev libgmp-dev gawk build-essential bison flex texinfo gperf libtool patchutils bc zlib1g-dev libexpat1-dev xz-utils clang libclang-dev llvm-dev git libglib2.0-dev libfdt-dev libpixman-1-dev ninja-build python3-venv libslirp-dev unzip sed binutils diffutils bash patch gzip bzip2 perl tar cpio rsync file findutils sshpass wget
+dpkg-query: no packages found matching llvm-dev
+autoconf  install ok installed  2.71-3
+automake  install ok installed  1:1.16.5-1.3ubuntu1
+autotools-dev  install ok installed  20220109.1
+bash  install ok installed  5.2.21-2ubuntu4
+bc  install ok installed  1.07.1-3ubuntu4
+binutils  install ok installed  2.42-4ubuntu2.10
+bison  install ok installed  2:3.8.2+dfsg-1ubuntu0.24.04.1
+build-essential  install ok installed  12.10ubuntu1
+bzip2  install ok installed  1.0.8-5.1ubuntu0.1
+clang  install ok installed  1:18.0-59~exp2
+cpio  install ok installed  2.15+dfsg-1ubuntu2.1
+curl  install ok installed  8.5.0-2ubuntu10.16
+diffutils  install ok installed  1:3.10-1ubuntu0.1
+file  install ok installed  1:5.45-3build1
+findutils  install ok installed  4.9.0-5build1
+flex  install ok installed  2.6.4-8.2build1
+gawk  install ok installed  1:5.2.1-2ubuntu0.1
+git  install ok installed  1:2.43.0-1ubuntu7.4
+gperf  install ok installed  3.1-1build1
+gzip  install ok installed  1.12-1ubuntu3.2
+libclang-dev  install ok installed  1:18.0-59~exp2
+libexpat1-dev  install ok installed  2.6.1-2ubuntu0.6
+libfdt-dev  install ok installed  1.7.0-2build1
+libglib2.0-dev  install ok installed  2.80.0-6ubuntu3.10
+libgmp-dev  install ok installed  2:6.3.0+dfsg-2ubuntu6.1
+libmpc-dev  install ok installed  1.3.1-1build1.1
+libmpfr-dev  install ok installed  4.2.1-1build1.1
+libpixman-1-dev  install ok installed  0.42.2-1build1
+libslirp-dev  install ok installed  4.7.0-1ubuntu3.1
+libtool  install ok installed  2.4.7-7build1
+ninja-build  install ok installed  1.11.1-2
+patch  install ok installed  2.7.6-7build3
+patchutils  install ok installed  0.4.2-1build3
+perl  install ok installed  5.38.2-3.2ubuntu0.6
+python3  install ok installed  3.12.3-0ubuntu2.1
+python3-venv  install ok installed  3.12.3-0ubuntu2.1
+rsync  install ok installed  3.2.7-1ubuntu1.5
+sed  install ok installed  4.9-2ubuntu0.24.04.1
+sshpass  install ok installed  1.09-1
+tar  install ok installed  1.35+dfsg-3ubuntu0.4
+texinfo  install ok installed  7.1-3build2
+unzip  install ok installed  6.0-28ubuntu4.1
+wget  install ok installed  1.21.4-1ubuntu4.5
+xz-utils  install ok installed  5.6.1+really5.4.5-1ubuntu0.4
+zlib1g-dev  install ok installed  1:1.3.dfsg-3.1ubuntu2.3
+### FAILED: exit=1 line=87
+$ section '8. Check other experiments running on this host'
+
+===== 8. Check other experiments running on this host =====
+$ grep -i qemu
+$$ id -un
+$ ps -u <user> -o pid=,comm=
+$ echo 'no QEMU processes'
+no QEMU processes
+$ ss -ltnH
+$ awk '{print $4}'
+$ sed 's/.*://'
+$ sort -un
+<port>
+<port>
+<port>
+<port>
+<port>
+$ ls -l /dev/kvm
+crw-rw----+ 1 root kvm 10, 232 <local time> /dev/kvm
+$ section '9. Check access to the upstream repository'
+
+===== 9. Check access to the upstream repository =====
+$ GIT_TERMINAL_PROMPT=0
+$ timeout 30 git ls-remote https://github.com/IBM/ACE-RISCV.git HEAD
+1ebdebf4cacc04fcb83191053b4e979cbcdcb2d6	HEAD
+
+===== SUMMARY =====
+failed_commands=1  (a missing tool counts here; judged in review)
+# masked_from_raw_sha256=0a77937499d4e40a5417aec1f0e9a1e11b41002bad1e806545a37f83fc903e6a

@@ -1,0 +1,520 @@
+# G14 Attestation | run=G14_20261104T123248Z_16kjwp | input_sha256=c3ab16b4c91c8afbd4155e63e5102697c55e99fa052cfcc06aa73c5e8199067a
+# previous gate: G13 PASS (see logs/review/G13_review.md)
+$ section '1. Verify the downloaded files and all sealed evidence'
+
+===== 1. Verify the downloaded files and all sealed evidence =====
+$ cd ~/download
+$ sha256sum G14_attestation.sh G14_attestation.md
+c3ab16b4c91c8afbd4155e63e5102697c55e99fa052cfcc06aa73c5e8199067a  G14_attestation.sh
+6211dd43edd8567961a5053a75e9f1fb1caeb934cbafa4d8b04c03488437ca0d  G14_attestation.md
+$ sha256sum -c -
+$ echo '5f5c5e4ace09cab0399d9d21d317dc412116510710d3f946ff09e864a220f932  G13_review.md'
+G13_review.md: OK
+$ cd ~/projects/IBM-ACE-On-QEMU-Reproduction/logs
+$ sha256sum -c ACE-G00-Host-Baseline-20261030T115047Z-a1SbSFY1.raw.log.sha256 G00_20261030T122505Z_7St35c.sha256 G01_20261030T125107Z_P3Dw1C.sha256 G02_20261030T130813Z_vP2nrT.sha256 G03_20261030T132027Z_gN9Ntr.sha256 G04_20261102T023215Z_DtsO6K.sha256 G05_20261102T025456Z_lCG0ac.sha256 G05b_20261102T035410Z_z0g7ji.sha256 G06_20261102T040430Z_BPbdDC.sha256 G07_20261102T041114Z_vzwQUZ.sha256 G07_20261102T084900Z_ZTrxqN.sha256 G08_20261102T091256Z_nnjq89.sha256 G08_20261102T112611Z_dl5kmx.sha256 G08_20261102T112702Z_6hnn8n.sha256 G09_20261102T114120Z_PLjTHu.sha256 G09_20261102T115757Z_b6e4Mk.sha256 G10_20261102T131021Z_RbQpnI.sha256 G11_20261102T132117Z_URiLe8.sha256 G12_20261104T091034Z_XoudcY.sha256 G13_20261104T111257Z_8tPBjL.sha256
+ACE-G00-Host-Baseline-20261030T115047Z-a1SbSFY1.raw.log: OK
+G00_20261030T122505Z_7St35c.raw.log: OK
+G00_20261030T122505Z_7St35c.input.sh: OK
+G01_20261030T125107Z_P3Dw1C.raw.log: OK
+G01_20261030T125107Z_P3Dw1C.input.sh: OK
+G02_20261030T130813Z_vP2nrT.raw.log: OK
+G02_20261030T130813Z_vP2nrT.input.sh: OK
+G03_20261030T132027Z_gN9Ntr.raw.log: OK
+G03_20261030T132027Z_gN9Ntr.input.sh: OK
+G04_20261102T023215Z_DtsO6K.raw.log: OK
+G04_20261102T023215Z_DtsO6K.input.sh: OK
+G05_20261102T025456Z_lCG0ac.raw.log: OK
+G05_20261102T025456Z_lCG0ac.input.sh: OK
+G05b_20261102T035410Z_z0g7ji.raw.log: OK
+G05b_20261102T035410Z_z0g7ji.input.sh: OK
+G06_20261102T040430Z_BPbdDC.raw.log: OK
+G06_20261102T040430Z_BPbdDC.input.sh: OK
+G07_20261102T041114Z_vzwQUZ.raw.log: OK
+G07_20261102T041114Z_vzwQUZ.input.sh: OK
+G07_20261102T084900Z_ZTrxqN.raw.log: OK
+G07_20261102T084900Z_ZTrxqN.input.sh: OK
+G08_20261102T091256Z_nnjq89.raw.log: OK
+G08_20261102T091256Z_nnjq89.input.sh: OK
+G08_20261102T112611Z_dl5kmx.raw.log: OK
+G08_20261102T112611Z_dl5kmx.input.sh: OK
+G08_20261102T112702Z_6hnn8n.raw.log: OK
+G08_20261102T112702Z_6hnn8n.input.sh: OK
+G09_20261102T114120Z_PLjTHu.raw.log: OK
+G09_20261102T114120Z_PLjTHu.input.sh: OK
+G09_20261102T115757Z_b6e4Mk.raw.log: OK
+G09_20261102T115757Z_b6e4Mk.input.sh: OK
+G10_20261102T131021Z_RbQpnI.raw.log: OK
+G10_20261102T131021Z_RbQpnI.input.sh: OK
+G11_20261102T132117Z_URiLe8.raw.log: OK
+G11_20261102T132117Z_URiLe8.input.sh: OK
+G12_20261104T091034Z_XoudcY.raw.log: OK
+G12_20261104T091034Z_XoudcY.input.sh: OK
+G13_20261104T111257Z_8tPBjL.raw.log: OK
+G13_20261104T111257Z_8tPBjL.input.sh: OK
+$ stop_if_failed 'step 1'
+$ section '2. Commit the reviewed G13 work (local only, UTC)'
+
+===== 2. Commit the reviewed G13 work (local only, UTC) =====
+$ cd ~/projects/IBM-ACE-On-QEMU-Reproduction
+$ cp ~/download/G13_review.md logs/review/
+$ git add scripts/G13_boot_hypervisor.sh docs/G13_boot_hypervisor.md
+$ git status --short
+A  docs/G13_boot_hypervisor.md
+A  scripts/G13_boot_hypervisor.sh
+$ git diff --cached --quiet
+$ TZ=UTC0
+$ git commit -m 'G13: boot OpenSBI, the ACE security monitor, and the Linux hypervisor'
+[main 4faa6fe] G13: boot OpenSBI, the ACE security monitor, and the Linux hypervisor
+ 2 files changed, 409 insertions(+)
+ create mode 100644 docs/G13_boot_hypervisor.md
+ create mode 100644 scripts/G13_boot_hypervisor.sh
+$ git log -1 '--format=%h  %aI  %an <%ae>  %s'
+4faa6fe  2026-11-04T12:32:48+00:00  junlinh12 <238169016+junlinh12@users.noreply.github.com>  G13: boot OpenSBI, the ACE security monitor, and the Linux hypervisor
+$ git show --stat --format= HEAD
+ docs/G13_boot_hypervisor.md    | 200 +++++++++++++++++++++++++++++++++++++++
+ scripts/G13_boot_hypervisor.sh | 209 +++++++++++++++++++++++++++++++++++++++++
+ 2 files changed, 409 insertions(+)
+$ cp ~/download/G14_attestation.sh scripts/
+$ cp ~/download/G14_attestation.md docs/
+$ stop_if_failed 'step 2'
+$ section '3. Check the host before booting: memory, port, other ACE QEMU'
+
+===== 3. Check the host before booting: memory, port, other ACE QEMU =====
+$ source ~/projects/IBM-ACE-On-QEMU-Reproduction/scripts/build_env.sh
+$$ export ACE_DIR=~/projects/IBM-ACE-On-QEMU-Reproduction/build/ace/
+$$ ACE_DIR=~/projects/IBM-ACE-On-QEMU-Reproduction/build/ace/
+$$ export QEMU_SOURCE_DIR=~/projects/IBM-ACE-On-QEMU-Reproduction/build/qemu-source/
+$$ QEMU_SOURCE_DIR=~/projects/IBM-ACE-On-QEMU-Reproduction/build/qemu-source/
+$$ export BR2_DL_DIR=~/projects/IBM-ACE-On-QEMU-Reproduction/build/dl
+$$ BR2_DL_DIR=~/projects/IBM-ACE-On-QEMU-Reproduction/build/dl
+$$ export CARGO_HOME=~/projects/IBM-ACE-On-QEMU-Reproduction/build/cargo-home
+$$ CARGO_HOME=~/projects/IBM-ACE-On-QEMU-Reproduction/build/cargo-home
+$$ export BR2_JLEVEL=2
+$$ BR2_JLEVEL=2
+$$ export OMP_NUM_THREADS=2
+$$ OMP_NUM_THREADS=2
+$$ export CARGO_BUILD_JOBS=2
+$$ CARGO_BUILD_JOBS=2
+$$ export WGETRC=~/projects/IBM-ACE-On-QEMU-Reproduction/scripts/wgetrc
+$$ WGETRC=~/projects/IBM-ACE-On-QEMU-Reproduction/scripts/wgetrc
+$ PORT=4022
+$ uname -r
+7.0.0-38-generic
+$ free -h
+               total        used        free      shared  buff/cache   available
+Mem:            30Gi        18Gi       2.6Gi       3.2Gi        12Gi        12Gi
+Swap:          8.0Gi       5.6Gi       2.4Gi
+$$ awk '/^MemAvailable:/ {print $2}' /proc/meminfo
+$ test 12719420 -ge 6291456
+$ ss -ltnH 'sport = :4022'
+$$ ss -ltnH 'sport = :4022'
+$ test -z ''
+$$$ id -un
+$$ pgrep -u <user> -f ~/projects/IBM-ACE-On-QEMU-Reproduction/build/ace//qemu/bin/qemu-system-riscv64
+$ test -z ''
+$ stop_if_failed 'step 3'
+$ section '4. Check that the images are the ones reviewed in G12'
+
+===== 4. Check that the images are the ones reviewed in G12 =====
+$ FW=~/projects/IBM-ACE-On-QEMU-Reproduction/build/ace//security-monitor/opensbi/platform/generic/firmware/fw_payload.elf
+$ HV=~/projects/IBM-ACE-On-QEMU-Reproduction/build/ace//hypervisor/buildroot/images/rootfs.ext2
+$ PRISTINE=~/projects/IBM-ACE-On-QEMU-Reproduction/build/pristine/hypervisor-rootfs.ext2
+$$ sha256sum
+$$ cut '-d ' -f1
+$ test 6a41b58184c3f25db92b036635abf9738df2a4b375e63c58100e313473b8c286 = 6a41b58184c3f25db92b036635abf9738df2a4b375e63c58100e313473b8c286
+$$ sha256sum
+$$ cut '-d ' -f1
+$ test cc07c2dc1d60a3c38bbacfa2a7d7e5f64cccf41d55e625027875b0242a2ceeed = cc07c2dc1d60a3c38bbacfa2a7d7e5f64cccf41d55e625027875b0242a2ceeed
+$$ sha256sum
+$$ cut '-d ' -f1
+$ test cc07c2dc1d60a3c38bbacfa2a7d7e5f64cccf41d55e625027875b0242a2ceeed = cc07c2dc1d60a3c38bbacfa2a7d7e5f64cccf41d55e625027875b0242a2ceeed
+$ stop_if_failed 'step 4'
+$ section '5. Start the hypervisor with the upstream run script'
+
+===== 5. Start the hypervisor with the upstream run script =====
+$$ date -u +%Y%m%dT%H%M%SZ
+$ STAMP=20261104T123249Z
+$ SERIAL=~/projects/IBM-ACE-On-QEMU-Reproduction/logs/G14_hypervisor_serial_20261104T123249Z.log
+$ TVM_CONSOLE=~/projects/IBM-ACE-On-QEMU-Reproduction/logs/G14_tvm_console_20261104T123249Z.log
+$ cd ~/projects/IBM-ACE-On-QEMU-Reproduction/build/ace/
+$ date -u
+Wed Nov  4 12:32:49 UTC 2026
+$ RUN_PID=844636
+$ echo 'run script PID: 844636; serial console: ~/projects/IBM-ACE-On-QEMU-Reproduction/logs/G14_hypervisor_serial_20261104T123249Z.log'
+run script PID: 844636; serial console: ~/projects/IBM-ACE-On-QEMU-Reproduction/logs/G14_hypervisor_serial_20261104T123249Z.log
+$ sleep 5
+$ ~/projects/IBM-ACE-On-QEMU-Reproduction/build/ace//tools/ace run --host-port=4022
+$ kill -0 844636
+$ stop_if_failed 'step 5'
+$ cut -c1-400
+$$ id -un
+$ pgrep -a -u <user> -f hostfwd=tcp:127.0.0.1:4022-:22
+844639 ~/projects/IBM-ACE-On-QEMU-Reproduction/build/ace//qemu/bin/qemu-system-riscv64 -m 4G -nographic -machine virt -cpu rv64 -bios none -kernel ~/projects/IBM-ACE-On-QEMU-Reproduction/build/ace//security-monitor/opensbi/platform/generic/firmware/fw_payload.elf -global virtio-mmio.force-legacy=false -append console=ttyS0 ro root=/dev/vda -drive if=none,format=raw,file=/ho
+$ ss -ltnH 'sport = :4022'
+LISTEN 0      1      127.0.0.1:4022 0.0.0.0:*
+$ section '6. Wait for the hypervisor'\''s SSH (at most 15 minutes)'
+
+===== 6. Wait for the hypervisor's SSH (at most 15 minutes) =====
+$ source ~/projects/IBM-ACE-On-QEMU-Reproduction/build/ace//tools/common.sh
+$$ export HYPERVISOR_TEST_LOGIN=root
+$$ HYPERVISOR_TEST_LOGIN=root
+$$ export HYPERVISOR_TEST_PASSWD=passwd
+$$ HYPERVISOR_TEST_PASSWD=passwd
+$$ export HYPERVISOR_TEST_HOSTNAME=localhost
+$$ HYPERVISOR_TEST_HOSTNAME=localhost
+$$ export 'SSH_PASSWD_PARAMS=-o PasswordAuthentication=yes -o PreferredAuthentications=keyboard-interactive,password -o PubkeyAuthentication=no -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -o LogLevel=ERROR'
+$$ SSH_PASSWD_PARAMS='-o PasswordAuthentication=yes -o PreferredAuthentications=keyboard-interactive,password -o PubkeyAuthentication=no -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -o LogLevel=ERROR'
+$$ export 'SSH_CMD=sshpass -p passwd ssh -o PasswordAuthentication=yes -o PreferredAuthentications=keyboard-interactive,password -o PubkeyAuthentication=no -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -o LogLevel=ERROR'
+$$ SSH_CMD='sshpass -p passwd ssh -o PasswordAuthentication=yes -o PreferredAuthentications=keyboard-interactive,password -o PubkeyAuthentication=no -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -o LogLevel=ERROR'
+$ timeout 900 bash -c 'source '\''~/projects/IBM-ACE-On-QEMU-Reproduction/build/ace//tools/common.sh'\''; wait_for_ssh root localhost 4022'
+$ date -u
+Wed Nov  4 12:32:54 UTC 2026
+$ sshpass -p passwd ssh -o PasswordAuthentication=yes -o PreferredAuthentications=keyboard-interactive,password -o PubkeyAuthentication=no -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -o LogLevel=ERROR -p 4022 root@localhost whoami
+root
+$ section '7. Start the confidential VM inside the hypervisor'
+
+===== 7. Start the confidential VM inside the hypervisor =====
+$ sshpass -p passwd ssh -o PasswordAuthentication=yes -o PreferredAuthentications=keyboard-interactive,password -o PubkeyAuthentication=no -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -o LogLevel=ERROR -p 4022 root@localhost 'cd /root && nohup ./run_linux_vm_qemu.sh -s=1 -m=256M --host-port=2222 < /dev/null > /root/tvm_console.log 2>&1 & sleep 5; head -n 5 /root/tvm_console.log; ps | grep "[q]emu-system-riscv64"'
+cp: recursion detected, omitting directory '/root/linux_vm/linux_vm'
+SSH port: 2222
+Number of cores assigned to the guest: 1
+-nographic
+qemu-system-riscv64: warning: Creating CoVE TVM
+  144 root     qemu-system-riscv64 -nographic --enable-kvm -machine virt,cove=true,cove-tap-filename=/root/linux_vm/cove_tap_qemu -cpu rv64,f=true -smp 1 -m 256M -kernel /root/linux_vm/Image -seed 0 -global virtio-mmio.force-legacy=false -append console=ttyS0 ro root=/dev/vda swiotlb=mmnn,force -device virtio-blk-pci,drive=hd0,iommu_platform=on,disable-legacy=on,disable-modern=off -drive if=none,format=raw,file=/root/linux_vm/rootfs.ext2,id=hd0 -device virtio-net-pci,netdev=net0,iommu_platform=on,disable-legacy=on,disable-modern=off -netdev user,id=net0,net=192.168.100.1/24,dhcpstart=192.168.100.128,hostfwd=tcp::2222-:22
+$ date -u
+Wed Nov  4 12:32:59 UTC 2026
+$ section '8. Wait for the confidential VM'\''s SSH (at most 5 minutes)'
+
+===== 8. Wait for the confidential VM's SSH (at most 5 minutes) =====
+$ timeout 400 sshpass -p passwd ssh -o PasswordAuthentication=yes -o PreferredAuthentications=keyboard-interactive,password -o PubkeyAuthentication=no -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -o LogLevel=ERROR -p 4022 root@localhost '. /root/common.sh; for i in $(seq 1 150); do [ "$($SSH_CMD -p2222 root@localhost whoami)" = root ] && break; sleep 2; done; $SSH_CMD -p2222 root@localhost whoami'
+ssh: 
+Host 'localhost' key accepted unconditionally.
+(ssh-ed25519 fingerprint SHA256:nPd4AQoLmLEgXJ00GTN1e48z5vtl8mZgvm3y7yYy/P0)
+
+ssh: 
+Host 'localhost' key accepted unconditionally.
+(ssh-ed25519 fingerprint SHA256:nPd4AQoLmLEgXJ00GTN1e48z5vtl8mZgvm3y7yYy/P0)
+
+root
+$ date -u
+Wed Nov  4 12:33:07 UTC 2026
+$ section '9. Record the confidential VM (E5)'
+
+===== 9. Record the confidential VM (E5) =====
+$ sshpass -p passwd ssh -o PasswordAuthentication=yes -o PreferredAuthentications=keyboard-interactive,password -o PubkeyAuthentication=no -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -o LogLevel=ERROR -p 4022 root@localhost '. /root/common.sh; $SSH_CMD -p2222 root@localhost "uname -a; grep -c ^processor /proc/cpuinfo; free -m; cat /root/this_is_confidential_vm_filesystem"'
+ssh: 
+Host 'localhost' key accepted unconditionally.
+(ssh-ed25519 fingerprint SHA256:nPd4AQoLmLEgXJ00GTN1e48z5vtl8mZgvm3y7yYy/P0)
+
+Linux confidential_vm 6.3.0-rc4 #1 SMP Mon Nov  2 13:31:03 UTC 2026 riscv64 GNU/Linux
+1
+              total        used        free      shared  buff/cache   available
+Mem:            151          11         134           0           6         135
+Swap:             0           0           0
+hello from confidential VM filesystem$ sshpass -p passwd ssh -o PasswordAuthentication=yes -o PreferredAuthentications=keyboard-interactive,password -o PubkeyAuthentication=no -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -o LogLevel=ERROR -p 4022 root@localhost '. /root/common.sh; $SSH_CMD -p2222 root@localhost "dmesg | grep -i -E \"cove|confidential|sbi|swiotlb|Machine model|Linux version\" || echo \"(no matching line)\""'
+ssh: 
+Host 'localhost' key accepted unconditionally.
+(ssh-ed25519 fingerprint SHA256:nPd4AQoLmLEgXJ00GTN1e48z5vtl8mZgvm3y7yYy/P0)
+
+[    0.000000] Linux version 6.3.0-rc4 (<user>@<host>) (riscv64-linux-gcc.br_real (Buildroot 2021.11-8547-g7e65a1a) 13.2.0, GNU ld (GNU Binutils) 2.41) #1 SMP Mon Nov  2 13:31:03 UTC 2026
+[    0.000000] Machine model: riscv-virtio,qemu
+[    0.000000] SBI specification v2.0 detected
+[    0.000000] SBI implementation ID=0x1 Version=0x1
+[    0.000000] SBI IPI extension detected
+[    0.000000] SBI RFENCE extension detected
+[    0.000000] SBI SRST extension detected
+[    0.000000] SBI HSM extension detected
+[    0.000000] Kernel command line: console=ttyS0 ro root=/dev/vda swiotlb=mmnn,force
+[    0.000000] riscv: providing IPIs using SBI IPI extension
+[    4.024119] syscon-poweroff poweroff: pm_power_off already claimed for sbi_srst_power_off
+[    4.448118] Run /sbin/init as init process
+[    4.453697]     /sbin/init
+$ section '10. Run the local attestation and read the secret (E6, E7)'
+
+===== 10. Run the local attestation and read the secret (E6, E7) =====
+$ sshpass -p passwd ssh -o PasswordAuthentication=yes -o PreferredAuthentications=keyboard-interactive,password -o PubkeyAuthentication=no -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -o LogLevel=ERROR -p 4022 root@localhost '. /root/common.sh; $SSH_CMD -p2222 root@localhost "insmod /root/ace_module/ace.ko"'
+ssh: 
+Host 'localhost' key accepted unconditionally.
+(ssh-ed25519 fingerprint SHA256:nPd4AQoLmLEgXJ00GTN1e48z5vtl8mZgvm3y7yYy/P0)
+
+$ sshpass -p passwd ssh -o PasswordAuthentication=yes -o PreferredAuthentications=keyboard-interactive,password -o PubkeyAuthentication=no -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -o LogLevel=ERROR -p 4022 root@localhost '. /root/common.sh; $SSH_CMD -p2222 root@localhost "dmesg | tail -n 30"'
+ssh: 
+Host 'localhost' key accepted unconditionally.
+(ssh-ed25519 fingerprint SHA256:nPd4AQoLmLEgXJ00GTN1e48z5vtl8mZgvm3y7yYy/P0)
+
+[    4.067474] sdhci: Copyright(c) Pierre Ossman
+[    4.076540] sdhci-pltfm: SDHCI platform and OF driver helper
+[    4.088626] usbcore: registered new interface driver usbhid
+[    4.099715] usbhid: USB HID core driver
+[    4.108484] NET: Registered PF_INET6 protocol family
+[    4.129379] Segment Routing with IPv6
+[    4.138037] In-situ OAM (IOAM) with IPv6
+[    4.146490] sit: IPv6, IPv4 and MPLS over IPv4 tunneling driver
+[    4.160754] NET: Registered PF_PACKET protocol family
+[    4.171988] 9pnet: Installing 9P2000 support
+[    4.181028] Key type dns_resolver registered
+[    4.189748] start plist test
+[    4.191820] end plist test
+[    4.214262] debug_vm_pgtable: [debug_vm_pgtable         ]: Validating architecture page table helpers
+[    4.237536] Legacy PMU implementation is available
+[    4.353346] EXT4-fs (vda): orphan cleanup on readonly fs
+[    4.361098] EXT4-fs (vda): mounted filesystem 64ef8473-ed12-468b-a928-52b829c7dc1e with ordered data mode. Quota mode: disabled.
+[    4.376348] VFS: Mounted root (ext4 filesystem) readonly on device 254:0.
+[    4.388556] devtmpfs: mounted
+[    4.439109] Freeing unused kernel image (initmem) memory: 2196K
+[    4.448118] Run /sbin/init as init process
+[    4.453680]   with arguments:
+[    4.453697]     /sbin/init
+[    4.453710]   with environment:
+[    4.453717]     HOME=/
+[    4.453726]     TERM=linux
+[    4.728947] EXT4-fs (vda): re-mounted 64ef8473-ed12-468b-a928-52b829c7dc1e. Quota mode: disabled.
+[   10.740468] ace: loading out-of-tree module taints kernel.
+[   10.754373] Requesting secret from the security monitor
+[   10.762501] Secret=0xc0ffeec0ffeec0ffeec0ffee
+$ sshpass -p passwd ssh -o PasswordAuthentication=yes -o PreferredAuthentications=keyboard-interactive,password -o PubkeyAuthentication=no -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -o LogLevel=ERROR -p 4022 root@localhost '. /root/common.sh; $SSH_CMD -p2222 root@localhost "dmesg | grep Secret"'
+ssh: 
+Host 'localhost' key accepted unconditionally.
+(ssh-ed25519 fingerprint SHA256:nPd4AQoLmLEgXJ00GTN1e48z5vtl8mZgvm3y7yYy/P0)
+
+[   10.762501] Secret=0xc0ffeec0ffeec0ffeec0ffee
+$$ sshpass -p passwd ssh -o PasswordAuthentication=yes -o PreferredAuthentications=keyboard-interactive,password -o PubkeyAuthentication=no -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -o LogLevel=ERROR -p 4022 root@localhost '. /root/common.sh; $SSH_CMD -p2222 root@localhost "dmesg | grep -c Secret=0xc0ffeec0ffeec0ffeec0ffee"'
+ssh: 
+Host 'localhost' key accepted unconditionally.
+(ssh-ed25519 fingerprint SHA256:nPd4AQoLmLEgXJ00GTN1e48z5vtl8mZgvm3y7yYy/P0)
+
+$ test 1 = 1
+$ section '11. Record what the security monitor and the VM reported'
+
+===== 11. Record what the security monitor and the VM reported =====
+$ grep -n -m 200 -E 'TVM|tvm|[Aa]ttest|[Mm]easure|PCR|pcr|[Dd]igest|TAP|[Ss]ecret|[Pp]romot|0x4e73d007' ~/projects/IBM-ACE-On-QEMU-Reproduction/logs/G14_hypervisor_serial_20261104T123249Z.log
+318:#ACE: Promoting a VM to a confidential VM
+322:#ACE: Reading TEE attestation payload (TAP) at memory address 0x81503000
+323:#ACE: VM measurements: 
+324:PCR0=0000000000000000000000000000000000000000000000000000000000000000
+325:PCR1=0000000000000000000000000000000000000000000000000000000000000000
+326:PCR2=0000000000000000000000000000000000000000000000000000000000000000
+327:PCR3=0000000000000000000000000000000000000000000000000000000000000000
+328:PCR4=4e73d007ac0f79c9e476f42ead1ad1299cffc44ddd0719c690b368e22040da33
+329:PCR5=0000000000000000000000000000000000000000000000000000000000000000
+330:PCR6=dc168ef5f9cc9a7e39546fe406f064d765335c8fcb251d790ff28300d58ea998
+331:PCR7=90d5d644dbaf17289b0056397d51204fec914706eee023e9baf91eda6459343f
+332:#ACE: Reference PCR4=Sha3_256=0x4e73d007ac0f79c9e476f42ead1ad1299cffc44ddd0719c690b368e22040da33
+333:#ACE: Attestation succeeded, fetched 1 secrets
+$ sshpass -p passwd ssh -o PasswordAuthentication=yes -o PreferredAuthentications=keyboard-interactive,password -o PubkeyAuthentication=no -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -o LogLevel=ERROR -p 4022 root@localhost 'cat /root/tvm_console.log'
+$ wc -l ~/projects/IBM-ACE-On-QEMU-Reproduction/logs/G14_tvm_console_20261104T123249Z.log
+208 ~/projects/IBM-ACE-On-QEMU-Reproduction/logs/G14_tvm_console_20261104T123249Z.log
+$ head -n 120 ~/projects/IBM-ACE-On-QEMU-Reproduction/logs/G14_tvm_console_20261104T123249Z.log
+cp: recursion detected, omitting directory '/root/linux_vm/linux_vm'
+SSH port: 2222
+Number of cores assigned to the guest: 1
+-nographic
+qemu-system-riscv64: warning: Creating CoVE TVM
+qemu-system-riscv64: warning: Register kernel region 80000000 22032384
+qemu-system-riscv64: Loading CoVE TAP /root/linux_vm/cove_tap_qemu 81503000
+[    0.000000] Linux version 6.3.0-rc4 (<user>@<host>) (riscv64-linux-gcc.br_real (Buildroot 2021.11-8547-g7e65a1a) 13.2.0, GNU ld (GNU Binutils) 2.41) #1 SMP Mon Nov  2 13:31:03 UTC 2026
+[    0.000000] random: crng init done
+[    0.000000] Machine model: riscv-virtio,qemu
+[    0.000000] SBI specification v2.0 detected
+[    0.000000] SBI implementation ID=0x1 Version=0x1
+[    0.000000] SBI IPI extension detected
+[    0.000000] SBI RFENCE extension detected
+[    0.000000] SBI SRST extension detected
+[    0.000000] efi: UEFI not found.
+[    0.000000] Zone ranges:
+[    0.000000]   DMA32    [mem 0x0000000080000000-0x000000008fffffff]
+[    0.000000]   Normal   empty
+[    0.000000] Movable zone start for each node
+[    0.000000] Early memory node ranges
+[    0.000000]   node   0: [mem 0x0000000080000000-0x000000008fffffff]
+[    0.000000] Initmem setup node 0 [mem 0x0000000080000000-0x000000008fffffff]
+[    0.000000] SBI HSM extension detected
+[    0.000000] riscv: base ISA extensions acdfim
+[    0.000000] riscv: ELF capabilities acdfim
+[    0.000000] percpu: Embedded 19 pages/cpu s39672 r8192 d29960 u77824
+[    0.000000] Built 1 zonelists, mobility grouping on.  Total pages: 64512
+[    0.000000] Kernel command line: console=ttyS0 ro root=/dev/vda swiotlb=mmnn,force
+[    0.000000] Dentry cache hash table entries: 32768 (order: 6, 262144 bytes, linear)
+[    0.000000] Inode-cache hash table entries: 16384 (order: 5, 131072 bytes, linear)
+[    0.000000] mem auto-init: stack:all(zero), heap alloc:off, heap free:off
+[    0.000000] software IO TLB: area num 1.
+[    0.000000] software IO TLB: mapped [mem 0x000000008aa00000-0x000000008ea00000] (64MB)
+[    0.000000] Virtual kernel memory layout:
+[    0.000000]       fixmap : 0xff1bfffffee00000 - 0xff1bffffff000000   (2048 kB)
+[    0.000000]       pci io : 0xff1bffffff000000 - 0xff1c000000000000   (  16 MB)
+[    0.000000]      vmemmap : 0xff1c000000000000 - 0xff20000000000000   (1024 TB)
+[    0.000000]      vmalloc : 0xff20000000000000 - 0xff60000000000000   (16384 TB)
+[    0.000000]      modules : 0xffffffff0157c000 - 0xffffffff80000000   (2026 MB)
+[    0.000000]       lowmem : 0xff60000000000000 - 0xff60000010000000   ( 256 MB)
+[    0.000000]       kernel : 0xffffffff80000000 - 0xffffffffffffffff   (2047 MB)
+[    0.000000] Memory: 152288K/262144K available (8976K kernel code, 4981K rwdata, 4096K rodata, 2198K init, 480K bss, 109856K reserved, 0K cma-reserved)
+[    0.000000] SLUB: HWalign=64, Order=0-3, MinObjects=0, CPUs=1, Nodes=1
+[    0.000000] rcu: Hierarchical RCU implementation.
+[    0.000000] rcu: 	RCU restricting CPUs from NR_CPUS=64 to nr_cpu_ids=1.
+[    0.000000] rcu: 	RCU debug extended QS entry/exit.
+[    0.000000] 	Tracing variant of Tasks RCU enabled.
+[    0.000000] rcu: RCU calculated value of scheduler-enlistment delay is 25 jiffies.
+[    0.000000] rcu: Adjusting geometry for rcu_fanout_leaf=16, nr_cpu_ids=1
+[    0.000000] NR_IRQS: 64, nr_irqs: 64, preallocated irqs: 0
+[    0.000000] riscv-intc: 64 local interrupts mapped
+[    0.000000] plic: plic@c000000: mapped 95 interrupts with 1 handlers for 1 contexts.
+[    0.000000] riscv: providing IPIs using SBI IPI extension
+[    0.000000] rcu: srcu_init: Setting srcu_struct sizes based on contention.
+[    0.000000] clocksource: riscv_clocksource: mask: 0xffffffffffffffff max_cycles: 0x24e6a1710, max_idle_ns: 440795202120 ns
+[    0.000051] sched_clock: 64 bits at 10MHz, resolution 100ns, wraps every 4398046511100ns
+[    0.000126] riscv-timer: Timer interrupt in S-mode is available via sstc extension
+[    0.010583] Console: colour dummy device 80x25
+[    1.516775] Calibrating delay loop (skipped), value calculated using timer frequency.. 20.00 BogoMIPS (lpj=40000)
+[    1.516892] pid_max: default: 32768 minimum: 301
+[    1.517833] LSM: initializing lsm=capability,integrity
+[    1.519331] Mount-cache hash table entries: 512 (order: 0, 4096 bytes, linear)
+[    1.519407] Mountpoint-cache hash table entries: 512 (order: 0, 4096 bytes, linear)
+[    1.543750] cacheinfo: Unable to detect cache hierarchy for CPU 0
+[    1.549300] cblist_init_generic: Setting adjustable number of callback queues.
+[    1.549402] cblist_init_generic: Setting shift to 0 and lim to 1.
+[    1.550453] riscv: ELF compat mode supported
+[    1.550800] ASID allocator using 16 bits (65536 entries)
+[    1.551696] rcu: Hierarchical SRCU implementation.
+[    1.551719] rcu: 	Max phase no-delay instances is 1000.
+[    1.553555] EFI services will not be available.
+[    1.556011] smp: Bringing up secondary CPUs ...
+[    1.556079] smp: Brought up 1 node, 1 CPU
+[    1.568544] devtmpfs: initialized
+[    1.574221] clocksource: jiffies: mask: 0xffffffff max_cycles: 0xffffffff, max_idle_ns: 7645041785100000 ns
+[    1.574385] futex hash table entries: 256 (order: 2, 16384 bytes, linear)
+[    1.576200] pinctrl core: initialized pinctrl subsystem
+[    1.588874] NET: Registered PF_NETLINK/PF_ROUTE protocol family
+[    1.595587] DMA: preallocated 128 KiB GFP_KERNEL pool for atomic allocations
+[    1.599584] DMA: preallocated 128 KiB GFP_KERNEL|GFP_DMA32 pool for atomic allocations
+[    1.599866] audit: initializing netlink subsys (disabled)
+[    1.603751] thermal_sys: Registered thermal governor 'step_wise'
+[    1.604850] audit: type=2000 audit(1.496:1): state=initialized audit_enabled=0 res=1
+[    1.605099] cpuidle: using governor menu
+[    1.615960] HugeTLB: registered 2.00 MiB page size, pre-allocated 0 pages
+[    1.615978] HugeTLB: 28 KiB vmemmap can be freed for a 2.00 MiB page
+[    1.619465] ACPI: Interpreter disabled.
+[    1.620630] iommu: Default domain type: Translated 
+[    1.620654] iommu: DMA domain TLB invalidation policy: strict mode 
+[    1.622345] SCSI subsystem initialized
+[    1.623925] usbcore: registered new interface driver usbfs
+[    1.624088] usbcore: registered new interface driver hub
+[    1.624244] usbcore: registered new device driver usb
+[    1.637712] vgaarb: loaded
+[    1.640088] clocksource: Switched to clocksource riscv_clocksource
+[    1.644158] pnp: PnP ACPI: disabled
+[    1.660485] NET: Registered PF_INET protocol family
+[    1.661411] IP idents hash table entries: 4096 (order: 3, 32768 bytes, linear)
+[    1.665255] tcp_listen_portaddr_hash hash table entries: 128 (order: 0, 4096 bytes, linear)
+[    1.665366] Table-perturb hash table entries: 65536 (order: 6, 262144 bytes, linear)
+[    1.665415] TCP established hash table entries: 2048 (order: 2, 16384 bytes, linear)
+[    1.665639] TCP bind hash table entries: 2048 (order: 5, 131072 bytes, linear)
+[    1.666757] TCP: Hash tables configured (established 2048 bind 2048)
+[    1.667937] UDP hash table entries: 256 (order: 2, 24576 bytes, linear)
+[    1.668302] UDP-Lite hash table entries: 256 (order: 2, 24576 bytes, linear)
+[    1.669457] NET: Registered PF_UNIX/PF_LOCAL protocol family
+[    1.675801] RPC: Registered named UNIX socket transport module.
+[    1.675835] RPC: Registered udp transport module.
+[    1.675841] RPC: Registered tcp transport module.
+[    1.675845] RPC: Registered tcp NFSv4.1 backchannel transport module.
+[    1.675938] PCI: CLS 0 bytes, default 64
+[    1.679076] workingset: timestamp_bits=46 max_order=16 bucket_order=0
+[    1.682590] NFS: Registering the id_resolver key type
+[    1.683162] Key type id_resolver registered
+[    1.683183] Key type id_legacy registered
+[    1.683336] nfs4filelayout_init: NFSv4 File Layout Driver Registering...
+[    1.683385] nfs4flexfilelayout_init: NFSv4 Flexfile Layout Driver Registering...
+[    1.683902] 9p: Installing v9fs 9p2000 file system support
+[    1.685104] NET: Registered PF_ALG protocol family
+$ grep -n -i -E 'secret|attest|cove|ace' ~/projects/IBM-ACE-On-QEMU-Reproduction/logs/G14_tvm_console_20261104T123249Z.log
+5:qemu-system-riscv64: warning: Creating CoVE TVM
+7:qemu-system-riscv64: Loading CoVE TAP /root/linux_vm/cove_tap_qemu 81503000
+92:[    1.623925] usbcore: registered new interface driver usbfs
+93:[    1.624088] usbcore: registered new interface driver hub
+164:[    3.954508] usbcore: registered new interface driver uas
+165:[    3.965625] usbcore: registered new interface driver usb-storage
+171:[    4.054854] sdhci: Secure Digital Host Controller Interface driver
+174:[    4.088626] usbcore: registered new interface driver usbhid
+197:udhcpc: broadcasting discover
+205:Welcome to ACE Confidential VM!
+206:confidential_vm login: [   10.740468] ace: loading out-of-tree module taints kernel.
+207:[   10.754373] Requesting secret from the security monitor
+208:[   10.762501] Secret=0xc0ffeec0ffeec0ffeec0ffee
+$ section '12. Stop the confidential VM, then shut down the hypervisor'
+
+===== 12. Stop the confidential VM, then shut down the hypervisor =====
+$ sshpass -p passwd ssh -o PasswordAuthentication=yes -o PreferredAuthentications=keyboard-interactive,password -o PubkeyAuthentication=no -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -o LogLevel=ERROR -p 4022 root@localhost '. /root/common.sh; kill_confidential_vm; sleep 2; ps | grep "[q]emu-system-riscv64" || echo "(no confidential VM running)"'
+(no confidential VM running)
+$ sshpass -p passwd ssh -o PasswordAuthentication=yes -o PreferredAuthentications=keyboard-interactive,password -o PubkeyAuthentication=no -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -o LogLevel=ERROR -p 4022 root@localhost poweroff
+$ timeout 300 tail --pid=844636 -f /dev/null
+$$ id -un
+$ pkill -u <user> -f hostfwd=tcp:127.0.0.1:4022-:22
+$ echo '(no QEMU of this gate left to stop)'
+(no QEMU of this gate left to stop)
+$ wait 844636
+$ echo 'run script exited with status 0'
+run script exited with status 0
+$ date -u
+Wed Nov  4 12:33:20 UTC 2026
+$$$ id -un
+$$ pgrep -u <user> -f ~/projects/IBM-ACE-On-QEMU-Reproduction/build/ace//qemu/bin/qemu-system-riscv64
+$ test -z ''
+$$ ss -ltnH 'sport = :4022'
+$ test -z ''
+$ section '13. Seal the console logs, restore the disk image, and check the project'
+
+===== 13. Seal the console logs, restore the disk image, and check the project =====
+$ chmod 400 ~/projects/IBM-ACE-On-QEMU-Reproduction/logs/G14_hypervisor_serial_20261104T123249Z.log ~/projects/IBM-ACE-On-QEMU-Reproduction/logs/G14_tvm_console_20261104T123249Z.log
+$ ls -l ~/projects/IBM-ACE-On-QEMU-Reproduction/logs/G14_hypervisor_serial_20261104T123249Z.log ~/projects/IBM-ACE-On-QEMU-Reproduction/logs/G14_tvm_console_20261104T123249Z.log
+-r-------- 1 <user> <user> 20890 Nov  4 12:33 ~/projects/IBM-ACE-On-QEMU-Reproduction/logs/G14_hypervisor_serial_20261104T123249Z.log
+-r-------- 1 <user> <user> 13784 Nov  4 12:33 ~/projects/IBM-ACE-On-QEMU-Reproduction/logs/G14_tvm_console_20261104T123249Z.log
+$ sha256sum ~/projects/IBM-ACE-On-QEMU-Reproduction/logs/G14_hypervisor_serial_20261104T123249Z.log ~/projects/IBM-ACE-On-QEMU-Reproduction/logs/G14_tvm_console_20261104T123249Z.log
+4111ae9c823fd3dbf71f4aca014eb07e0e4c3b2e08b93e8cb1c1bbafa6dcc25f  ~/projects/IBM-ACE-On-QEMU-Reproduction/logs/G14_hypervisor_serial_20261104T123249Z.log
+7834f4c26a604b04d75c454fea9f2472f1df3ab6d246305b0059d89f2f148434  ~/projects/IBM-ACE-On-QEMU-Reproduction/logs/G14_tvm_console_20261104T123249Z.log
+$ tail -n 20 ~/projects/IBM-ACE-On-QEMU-Reproduction/logs/G14_hypervisor_serial_20261104T123249Z.log
+PCR6=dc168ef5f9cc9a7e39546fe406f064d765335c8fcb251d790ff28300d58ea998
+PCR7=90d5d644dbaf17289b0056397d51204fec914706eee023e9baf91eda6459343f
+#ACE: Reference PCR4=Sha3_256=0x4e73d007ac0f79c9e476f42ead1ad1299cffc44ddd0719c690b368e22040da33
+#ACE: Attestation succeeded, fetched 1 secrets
+#ACE: Created new confidential VM[id=ConfidentialVmId(0)]
+#ACE: Removing ConfidentialVM[ConfidentialVmId(0)] from the control data structure
+Stopping dropbear sshd: OK
+Stopping network: OK
+Stopping klogd: OK
+Stopping syslogd: OK
+Seeding 256 bits and crediting
+Saving 256 bits of creditable seed for next boot
+umount: devtmpfs busy - remounted read-only
+[   28.546698] EXT4-fs (vda): re-mounted 319e0bee-c18d-4b61-96f5-d0fd63a44603. Quota mode: disabled.
+The system is going down NOW!
+Sent SIGTERM to all processes
+Sent SIGKILL to all processes
+Requesting system poweroff
+[   30.556821] kvm: exiting hardware virtualization
+[   30.561774] reboot: Power down
+$ sha256sum ~/projects/IBM-ACE-On-QEMU-Reproduction/build/ace//hypervisor/buildroot/images/rootfs.ext2
+497d815367b9b66f90ccf6e69680b6b8a745d66a42c47b7f6211b3bf06d3e634  ~/projects/IBM-ACE-On-QEMU-Reproduction/build/ace//hypervisor/buildroot/images/rootfs.ext2
+$ cp ~/projects/IBM-ACE-On-QEMU-Reproduction/build/pristine/hypervisor-rootfs.ext2 ~/projects/IBM-ACE-On-QEMU-Reproduction/build/ace//hypervisor/buildroot/images/rootfs.ext2
+$$ sha256sum
+$$ cut '-d ' -f1
+$ test cc07c2dc1d60a3c38bbacfa2a7d7e5f64cccf41d55e625027875b0242a2ceeed = cc07c2dc1d60a3c38bbacfa2a7d7e5f64cccf41d55e625027875b0242a2ceeed
+$ cd ~/projects/IBM-ACE-On-QEMU-Reproduction/upstream/ACE-RISCV
+$ git status --short
+ M confidential-vms/linux_vm/Makefile
+ M hypervisor/Makefile
+ M security-monitor/Makefile
+ m security-monitor/opensbi
+ M tools/ace_run_hypervisor.sh
+ M tools/common.sh
+$ cd ~/projects/IBM-ACE-On-QEMU-Reproduction
+$ git status --short
+?? docs/G14_attestation.md
+?? scripts/G14_attestation.sh
+$ free -h
+               total        used        free      shared  buff/cache   available
+Mem:            30Gi        18Gi       3.2Gi       3.1Gi        12Gi        12Gi
+Swap:          8.0Gi       5.8Gi       2.2Gi
+$ finish completed
+
+===== SUMMARY =====
+failed_commands=0  completed
+# masked_from_raw_sha256=f900659f6a7d894acd8e9228f08ecba345756af424be9b5bf1485d6ea7c17639

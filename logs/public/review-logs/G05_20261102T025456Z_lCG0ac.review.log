@@ -1,0 +1,1879 @@
+# G05 Audit Build Scripts | run=G05_20261102T025456Z_lCG0ac | input_sha256=a0abc9fe33f6e77d56bf39a1bb62b60a9e3224b23c3f79ea0733d0a66830e7fd
+# previous gate: G04 PASS (see logs/review/G04_review.md); checkpoint 1 recorded
+$ section '1. Verify the downloaded files and all sealed evidence'
+
+===== 1. Verify the downloaded files and all sealed evidence =====
+$ cd ~/download
+$ sha256sum G05_audit_build_scripts.sh G05_audit_build_scripts.md
+a0abc9fe33f6e77d56bf39a1bb62b60a9e3224b23c3f79ea0733d0a66830e7fd  G05_audit_build_scripts.sh
+5a6abf58568e6bbf0456f7f058f7314001c3850d234055752b983bd9c73578fa  G05_audit_build_scripts.md
+$ echo '16da5430a362ffa750fba019786c44d8bd5a286d99eb5169c891f254fea264f0  G04_review.md'
+$ sha256sum -c -
+G04_review.md: OK
+$ echo '6d0e9db7e6f48ab2956a70086ddef5fb552c9c5cd69d0b7f303c6a85bdc7d42d  CHECKPOINT_1.md'
+$ sha256sum -c -
+CHECKPOINT_1.md: OK
+$ echo '8bcf3e3afb1c34524803e47ef9015c64e52139cb9e6ec70efa69185cf13da045  PROJECT_CHARTER.md'
+$ sha256sum -c -
+PROJECT_CHARTER.md: OK
+$ cd ~/projects/IBM-ACE-On-QEMU-Reproduction/logs
+$ sha256sum -c ACE-G00-Host-Baseline-20261030T115047Z-a1SbSFY1.raw.log.sha256 G00_20261030T122505Z_7St35c.sha256 G01_20261030T125107Z_P3Dw1C.sha256 G02_20261030T130813Z_vP2nrT.sha256 G03_20261030T132027Z_gN9Ntr.sha256 G04_20261102T023215Z_DtsO6K.sha256
+ACE-G00-Host-Baseline-20261030T115047Z-a1SbSFY1.raw.log: OK
+G00_20261030T122505Z_7St35c.raw.log: OK
+G00_20261030T122505Z_7St35c.input.sh: OK
+G01_20261030T125107Z_P3Dw1C.raw.log: OK
+G01_20261030T125107Z_P3Dw1C.input.sh: OK
+G02_20261030T130813Z_vP2nrT.raw.log: OK
+G02_20261030T130813Z_vP2nrT.input.sh: OK
+G03_20261030T132027Z_gN9Ntr.raw.log: OK
+G03_20261030T132027Z_gN9Ntr.input.sh: OK
+G04_20261102T023215Z_DtsO6K.raw.log: OK
+G04_20261102T023215Z_DtsO6K.input.sh: OK
+$ stop_if_failed 'step 1'
+$ section '2. Commit the reviewed G04 work and charter v1.3 (local only, UTC)'
+
+===== 2. Commit the reviewed G04 work and charter v1.3 (local only, UTC) =====
+$ cd ~/projects/IBM-ACE-On-QEMU-Reproduction
+$ cp ~/download/G04_review.md logs/review/
+$ cp ~/download/CHECKPOINT_1.md logs/review/
+$ cp ~/download/PROJECT_CHARTER.md PROJECT_CHARTER.md
+$ git add PROJECT_CHARTER.md scripts/G04_rust_toolchain.sh docs/G04_rust_toolchain.md
+$ git status --short
+M  PROJECT_CHARTER.md
+A  docs/G04_rust_toolchain.md
+A  scripts/G04_rust_toolchain.sh
+$ git diff --cached --quiet
+$ TZ=UTC0
+$ git commit -m 'G04: install Rust nightly-2026-03-23; checkpoint 1'
+[main 6f2e410] G04: install Rust nightly-2026-03-23; checkpoint 1
+ 3 files changed, 303 insertions(+), 11 deletions(-)
+ create mode 100644 docs/G04_rust_toolchain.md
+ create mode 100644 scripts/G04_rust_toolchain.sh
+$ git log -1 '--format=%h  %aI  %an <%ae>  %s'
+6f2e410  2026-11-02T02:54:56+00:00  junlinh12 <238169016+junlinh12@users.noreply.github.com>  G04: install Rust nightly-2026-03-23; checkpoint 1
+$ git show --stat --format= HEAD
+ PROJECT_CHARTER.md            |  22 +++---
+ docs/G04_rust_toolchain.md    | 133 +++++++++++++++++++++++++++++++++++
+ scripts/G04_rust_toolchain.sh | 159 ++++++++++++++++++++++++++++++++++++++++++
+ 3 files changed, 303 insertions(+), 11 deletions(-)
+$ cp ~/download/G05_audit_build_scripts.sh scripts/
+$ cp ~/download/G05_audit_build_scripts.md docs/
+$ stop_if_failed 'step 2'
+$ section '3. Record the host state for this gate'
+
+===== 3. Record the host state for this gate =====
+$ uname -r
+7.0.0-38-generic
+$ free -h
+               total        used        free      shared  buff/cache   available
+Mem:            30Gi        18Gi       1.6Gi       3.3Gi        14Gi        12Gi
+Swap:          8.0Gi       608Ki       8.0Gi
+$ section '4. Record the upstream file layout'
+
+===== 4. Record the upstream file layout =====
+$ cd ~/projects/IBM-ACE-On-QEMU-Reproduction/upstream/ACE-RISCV
+$ git ls-files -- ':(exclude)security-monitor/src' ':(exclude)verification'
+.github/ISSUE_TEMPLATE/BUG.md
+.github/ace.png
+.github/fsm.png
+.github/pull_request_template.md
+.github/workflows/build.yml
+.github/workflows/prune_dune_modules.py
+.github/workflows/verify.yml
+.gitignore
+.gitmodules
+.vscode/settings.json
+CONTRIBUTING.md
+DCO1.1
+DEVELOPMENT.md
+LICENSE
+Makefile
+README.md
+confidential-vms/README.md
+confidential-vms/linux_vm/Makefile
+confidential-vms/linux_vm/configurations/busybox.config
+confidential-vms/linux_vm/configurations/linux64-defconfig
+confidential-vms/linux_vm/configurations/qemu_riscv64_virt_defconfig
+confidential-vms/linux_vm/hypervisor_rootfs/run_linux_vm_kvmtool.sh
+confidential-vms/linux_vm/hypervisor_rootfs/run_linux_vm_qemu.sh
+confidential-vms/linux_vm/overlay/root/ace_module/Makefile
+confidential-vms/linux_vm/overlay/root/ace_module/ace.c
+confidential-vms/linux_vm/overlay/root/this_is_confidential_vm_filesystem
+confidential-vms/linux_vm/overlay/this_is_confidential_vm_filesystem
+confidential-vms/linux_vm/patches/linux/6.3-rc4/0001-cove.patch
+confidential-vms/linux_vm/patches/linux/6.3-rc4/0002-ace.patch
+hypervisor/Makefile
+hypervisor/README.md
+hypervisor/buildroot
+hypervisor/configurations/linux64-defconfig
+hypervisor/configurations/qemu_riscv64_virt_defconfig
+hypervisor/patches/linux/6.3-rc4/0001-cove.patch
+hypervisor/patches/linux/6.3-rc4/0002-ace.patch
+hypervisor/patches/linux/6.3-rc4/README.md
+hypervisor/patches/qemu/8.1.1/cove.patch
+hypervisor/rootfs/common.sh
+hypervisor/rootfs/selftest.sh
+hypervisor/rootfs/test_attestation.sh
+hypervisor/rootfs/test_smp.sh
+renovate.json
+rust-toolchain.toml
+security-monitor/.cargo/audit.toml
+security-monitor/.rustfmt.toml
+security-monitor/Cargo.lock
+security-monitor/Cargo.toml
+security-monitor/Makefile
+security-monitor/README.md
+security-monitor/opensbi
+security-monitor/platform/generic/Kconfig
+security-monitor/platform/generic/configs/defconfig
+security-monitor/platform/generic/include/platform_override.h
+security-monitor/platform/generic/objects.mk
+security-monitor/platform/generic/platform.c
+security-monitor/platform/generic/platform_override_modules.carray
+security-monitor/platform/opensbi_v1.4.patch
+security-monitor/platform/p550/README.md
+security-monitor/platform/p550/patches/meta-sifive/ace.patch
+security-monitor/platform/p550/patches/openembedded-core/qemu_ace.patch
+security-monitor/rust-crates/flattened_device_tree/Cargo.toml
+security-monitor/rust-crates/flattened_device_tree/src/error.rs
+security-monitor/rust-crates/flattened_device_tree/src/lib.rs
+security-monitor/rust-crates/opensbi-sys/Cargo.toml
+security-monitor/rust-crates/opensbi-sys/build.rs
+security-monitor/rust-crates/opensbi-sys/src/__bindings.rs
+security-monitor/rust-crates/opensbi-sys/src/lib.rs
+security-monitor/rust-crates/opensbi-sys/src/wrapper.h
+security-monitor/rust-crates/opensbi.sh
+security-monitor/rust-crates/pointers_utility/Cargo.toml
+security-monitor/rust-crates/pointers_utility/src/error.rs
+security-monitor/rust-crates/pointers_utility/src/lib.rs
+security-monitor/rust-crates/riscv_cove_tap/Cargo.toml
+security-monitor/rust-crates/riscv_cove_tap/src/error.rs
+security-monitor/rust-crates/riscv_cove_tap/src/lib.rs
+security-monitor/rust-crates/riscv_cove_tap/src/parser.rs
+security-monitor/rust-crates/riscv_cove_tap/src/serializer.rs
+security-monitor/rust-crates/riscv_cove_tap/src/spec.rs
+tools/.gitkeep
+tools/ace
+tools/ace_connect.sh
+tools/ace_run_hypervisor.sh
+tools/ace_start.sh
+tools/ace_stop.sh
+tools/ace_test.sh
+tools/common.sh
+tools/cove_tap_tool/Cargo.lock
+tools/cove_tap_tool/Cargo.toml
+tools/cove_tap_tool/Makefile
+tools/cove_tap_tool/README.md
+tools/cove_tap_tool/rust-toolchain.toml
+tools/cove_tap_tool/src/attach.rs
+tools/cove_tap_tool/src/error.rs
+tools/cove_tap_tool/src/generate.rs
+tools/cove_tap_tool/src/main.rs
+tools/cove_tap_tool/src/measure.rs
+tools/objdump_baremetal.sh
+$ section '5. Record every Makefile with line numbers'
+
+===== 5. Record every Makefile with line numbers =====
+$ git ls-files -z -- '*Makefile*' '*.mk' ':(exclude)verification'
+$ xargs -0 -r grep -IHn ''
+Makefile:1:#!/usr/bin/env bash
+Makefile:2:# SPDX-FileCopyrightText: 2023 IBM Corporation
+Makefile:3:# SPDX-FileContributor: Wojciech Ozga <woz@zurich.ibm.com>, IBM Research - Zurich
+Makefile:4:# SPDX-License-Identifier: Apache-2.0
+Makefile:5:MAKEFILE_PATH 							:= $(abspath $(lastword $(MAKEFILE_LIST)))
+Makefile:6:MAKEFILE_SOURCE_DIR 					:= $(dir $(realpath $(lastword $(MAKEFILE_LIST))))
+Makefile:7:
+Makefile:8:export ACE_DIR 							?= $(MAKEFILE_SOURCE_DIR)/build/
+Makefile:9:# QEMU
+Makefile:10:export QEMU_SOURCE_DIR					?= $(MAKEFILE_SOURCE_DIR)/qemu/
+Makefile:11:export QEMU_WORK_DIR					?= $(ACE_DIR)/qemu/
+Makefile:12:export QEMU_RISCV_WORK_DIR				?= $(ACE_DIR)/qemu-riscv/
+Makefile:13:export QEMU_VERSION						?= 8.2.1
+Makefile:14:# Riscv toolchain
+Makefile:15:export RISCV_GNU_TOOLCHAIN_SOURCE_DIR	?= $(MAKEFILE_SOURCE_DIR)/riscv-gnu-toolchain/
+Makefile:16:export RISCV_GNU_TOOLCHAIN_WORK_DIR		?= $(ACE_DIR)/riscv-gnu-toolchain/
+Makefile:17:export RISCV_GNU_TOOLCHAIN_VERSION	    ?= riscv64-glibc-ubuntu-22.04-gcc-nightly-2023.09.27-nightly
+Makefile:18:# Confidential VMs
+Makefile:19:export CONFIDENTIAL_VMS_SOURCE_DIR		?= $(MAKEFILE_SOURCE_DIR)/confidential-vms
+Makefile:20:# Hypervisor
+Makefile:21:export HYPERVISOR_WORK_DIR				?= $(ACE_DIR)/hypervisor/
+Makefile:22:export HYPERVISOR_OVERLAY_DIR			?= $(HYPERVISOR_WORK_DIR)/overlay
+Makefile:23:export HYPERVISOR_OVERLAY_ROOT_DIR		?= $(HYPERVISOR_OVERLAY_DIR)/root
+Makefile:24:export LINUX_IMAGE						?= $(HYPERVISOR_WORK_DIR)/buildroot/images/Image
+Makefile:25:# Tools
+Makefile:26:export TOOLS_SOURCE_DIR					?= $(MAKEFILE_SOURCE_DIR)/tools
+Makefile:27:export TOOLS_WORK_DIR					?= $(ACE_DIR)/tools
+Makefile:28:
+Makefile:29:export CROSS_COMPILE					?= riscv64-unknown-linux-gnu-
+Makefile:30:export PLATFORM_RISCV_XLEN				= 64
+Makefile:31:export PLATFORM_RISCV_ISA				= rv64gc
+Makefile:32:export PLATFORM_RISCV_ABI				= lp64d
+Makefile:33:export PATH 							:= $(RISCV_GNU_TOOLCHAIN_WORK_DIR)/bin:$(PATH)
+Makefile:34:
+Makefile:35:all: emulator tools firmware confidential_vms
+Makefile:36:
+Makefile:37:setup:
+Makefile:38:	echo $(ACE_DIR)
+Makefile:39:	@mkdir -p $(ACE_DIR)
+Makefile:40:
+Makefile:41:devtools: setup
+Makefile:42:	if [ ! -f "${RISCV_GNU_TOOLCHAIN_WORK_DIR}/bin/${CROSS_COMPILE}gcc" ]; then \
+Makefile:43:		rm -rf $(RISCV_GNU_TOOLCHAIN_WORK_DIR); \
+Makefile:44:		mkdir -p $(RISCV_GNU_TOOLCHAIN_WORK_DIR); \
+Makefile:45:		wget -q https://github.com/riscv-collab/riscv-gnu-toolchain/releases/download/2023.09.27/$(RISCV_GNU_TOOLCHAIN_VERSION).tar.gz ; \
+Makefile:46:		tar -zxf $(RISCV_GNU_TOOLCHAIN_VERSION).tar.gz --directory ${RISCV_GNU_TOOLCHAIN_WORK_DIR}/ ; \
+Makefile:47:		mv ${RISCV_GNU_TOOLCHAIN_WORK_DIR}/riscv/* ${RISCV_GNU_TOOLCHAIN_WORK_DIR}/ ; \
+Makefile:48:		rm -f $(RISCV_GNU_TOOLCHAIN_VERSION).tar.gz ; \
+Makefile:49:	fi
+Makefile:50:
+Makefile:51:hypervisor: setup devtools
+Makefile:52:	PATH="$(RISCV_GNU_TOOLCHAIN_WORK_DIR)/bin:$(PATH)" ACE_DIR=$(ACE_DIR) $(MAKE) -C hypervisor
+Makefile:53:
+Makefile:54:hypervisor_dev:
+Makefile:55:	PATH="$(RISCV_GNU_TOOLCHAIN_WORK_DIR)/bin:$(PATH)" ACE_DIR=$(ACE_DIR) $(MAKE) -C hypervisor dev
+Makefile:56:
+Makefile:57:hypervisor_kvmtool:
+Makefile:58:	PATH="$(RISCV_GNU_TOOLCHAIN_WORK_DIR)/bin:$(PATH)" ACE_DIR=$(ACE_DIR) $(MAKE) -C hypervisor kvmtool
+Makefile:59:
+Makefile:60:confidential_vms: setup devtools hypervisor tools
+Makefile:61:	PATH="$(RISCV_GNU_TOOLCHAIN_WORK_DIR)/bin:$(PATH)" ACE_DIR=$(ACE_DIR) $(MAKE) -C $(CONFIDENTIAL_VMS_SOURCE_DIR)/linux_vm/ buildroot ;\
+Makefile:62:	PATH="$(RISCV_GNU_TOOLCHAIN_WORK_DIR)/bin:$(PATH)" ACE_DIR=$(ACE_DIR) $(MAKE) -C $(CONFIDENTIAL_VMS_SOURCE_DIR)/linux_vm/ overlay rootfs ;\
+Makefile:63:	PATH="$(RISCV_GNU_TOOLCHAIN_WORK_DIR)/bin:$(PATH)" ACE_DIR=$(ACE_DIR) $(MAKE) -C hypervisor rootfs;
+Makefile:64:
+Makefile:65:confidential_vms_dev: tools
+Makefile:66:	$(MAKE) -C $(CONFIDENTIAL_VMS_SOURCE_DIR)/linux_vm/ dev ;\
+Makefile:67:	$(MAKE) -C $(CONFIDENTIAL_VMS_SOURCE_DIR)/linux_vm/ overlay ;\
+Makefile:68:	PATH="$(RISCV_GNU_TOOLCHAIN_WORK_DIR)/bin:$(PATH)" ACE_DIR=$(ACE_DIR) $(MAKE) -C hypervisor rootfs;
+Makefile:69:
+Makefile:70:security_monitor: setup devtools
+Makefile:71:	PATH="$(RISCV_GNU_TOOLCHAIN_WORK_DIR)/bin:$(PATH)" ACE_DIR=$(ACE_DIR) LINUX_IMAGE=$(LINUX_IMAGE) CROSS_COMPILE=$(CROSS_COMPILE) PLATFORM_RISCV_XLEN=$(PLATFORM_RISCV_XLEN) PLATFORM_RISCV_ISA=$(PLATFORM_RISCV_ISA) PLATFORM_RISCV_ABI=$(PLATFORM_RISCV_ABI) $(MAKE) -C security-monitor build
+Makefile:72:
+Makefile:73:firmware: setup devtools hypervisor
+Makefile:74:	PATH="$(RISCV_GNU_TOOLCHAIN_WORK_DIR)/bin:$(PATH)" ACE_DIR=$(ACE_DIR) LINUX_IMAGE=$(LINUX_IMAGE) CROSS_COMPILE=$(CROSS_COMPILE) PLATFORM_RISCV_XLEN=$(PLATFORM_RISCV_XLEN) PLATFORM_RISCV_ISA=$(PLATFORM_RISCV_ISA) PLATFORM_RISCV_ABI=$(PLATFORM_RISCV_ABI) $(MAKE) -C security-monitor opensbi
+Makefile:75:
+Makefile:76:emulator: setup devtools
+Makefile:77:	if [ ! -f "${QEMU_WORK_DIR}/bin/qemu-system-riscv64" ]; then \
+Makefile:78:		mkdir -p $(QEMU_WORK_DIR); \
+Makefile:79:		rm -rf $(QEMU_SOURCE_DIR); \
+Makefile:80:		mkdir -p $(QEMU_SOURCE_DIR); \
+Makefile:81:		cd $(QEMU_SOURCE_DIR); \
+Makefile:82:		wget https://download.qemu.org/qemu-$(QEMU_VERSION).tar.xz; \
+Makefile:83:		tar xJf qemu-$(QEMU_VERSION).tar.xz; \
+Makefile:84:		mv qemu-$(QEMU_VERSION)/* $(QEMU_SOURCE_DIR)/; \
+Makefile:85:		./configure --prefix=$(QEMU_WORK_DIR) --enable-slirp --enable-kvm --target-list=riscv64-softmmu; \
+Makefile:86:		PATH="$(RISCV_GNU_TOOLCHAIN_WORK_DIR)/bin:$(PATH)" $(MAKE) -C $(QEMU_SOURCE_DIR) >/dev/null; \
+Makefile:87:		PATH="$(RISCV_GNU_TOOLCHAIN_WORK_DIR)/bin:$(PATH)" $(MAKE) -C $(QEMU_SOURCE_DIR) install; \
+Makefile:88:	fi
+Makefile:89:
+Makefile:90:tools: setup
+Makefile:91:	mkdir -p $(TOOLS_WORK_DIR) ;\
+Makefile:92:	cp -rf $(TOOLS_SOURCE_DIR)/*.sh $(TOOLS_WORK_DIR)/ ;\
+Makefile:93:	cp -rf $(TOOLS_SOURCE_DIR)/ace $(TOOLS_WORK_DIR)/ ;\
+Makefile:94:	PATH="$(RISCV_GNU_TOOLCHAIN_WORK_DIR)/bin:$(PATH)" TOOLS_WORK_DIR=$(TOOLS_WORK_DIR) ACE_DIR=$(ACE_DIR) $(MAKE) -C tools/cove_tap_tool;
+Makefile:95:
+Makefile:96:verify:
+Makefile:97:	rm -rf $(ACE_DIR)/security_monitor/verify/
+Makefile:98:	PATH="$(RISCV_GNU_TOOLCHAIN_WORK_DIR)/bin:$(PATH)" ACE_DIR=$(ACE_DIR) LINUX_IMAGE=$(LINUX_IMAGE) CROSS_COMPILE=$(CROSS_COMPILE) PLATFORM_RISCV_XLEN=$(PLATFORM_RISCV_XLEN) PLATFORM_RISCV_ISA=$(PLATFORM_RISCV_ISA) PLATFORM_RISCV_ABI=$(PLATFORM_RISCV_ABI) $(MAKE) -C verification verify
+Makefile:99:generate_refinedrust_translation:
+Makefile:100:	rm -rf $(ACE_DIR)/security_monitor/verify/
+Makefile:101:	PATH="$(RISCV_GNU_TOOLCHAIN_WORK_DIR)/bin:$(PATH)" ACE_DIR=$(ACE_DIR) LINUX_IMAGE=$(LINUX_IMAGE) CROSS_COMPILE=$(CROSS_COMPILE) PLATFORM_RISCV_XLEN=$(PLATFORM_RISCV_XLEN) PLATFORM_RISCV_ISA=$(PLATFORM_RISCV_ISA) PLATFORM_RISCV_ABI=$(PLATFORM_RISCV_ABI) $(MAKE) -C verification generate
+Makefile:102:
+Makefile:103:clean:
+Makefile:104:	rm -rf $(ACE_DIR)
+Makefile:105:
+Makefile:106:.PHONY: all security-monitor riscv-gnu-toolchain devtools hypervisor firmware emulator tools clean
+confidential-vms/linux_vm/Makefile:1:#!/usr/bin/env bash
+confidential-vms/linux_vm/Makefile:2:# SPDX-FileCopyrightText: 2023 IBM Corporation
+confidential-vms/linux_vm/Makefile:3:# SPDX-FileContributor: Wojciech Ozga <woz@zurich.ibm.com>, IBM Research - Zurich
+confidential-vms/linux_vm/Makefile:4:# SPDX-License-Identifier: Apache-2.0
+confidential-vms/linux_vm/Makefile:5:MAKEFILE_PATH 						:= $(abspath $(lastword $(MAKEFILE_LIST)))
+confidential-vms/linux_vm/Makefile:6:MAKEFILE_SOURCE_DIR 				:= $(dir $(realpath $(lastword $(MAKEFILE_LIST))))
+confidential-vms/linux_vm/Makefile:7:ACE_DIR 							:= $(if $(ACE_DIR),$(ACE_DIR),$(MAKEFILE_SOURCE_DIR)../build/)
+confidential-vms/linux_vm/Makefile:8:
+confidential-vms/linux_vm/Makefile:9:CONFIDENTIAL_VMS_WORK_DIR 			?= $(ACE_DIR)/confidential_vms/
+confidential-vms/linux_vm/Makefile:10:CONFIDENTIAL_VMS_LINUX_WORK_DIR 	?= $(CONFIDENTIAL_VMS_WORK_DIR)/linux_vm/
+confidential-vms/linux_vm/Makefile:11:CONFIDENTIAL_VMS_LINUX_SOURCE_DIR 	?= $(MAKEFILE_SOURCE_DIR)
+confidential-vms/linux_vm/Makefile:12:
+confidential-vms/linux_vm/Makefile:13:LINUX_VM_ROOTFS_SOURCE_DIR			?= $(CONFIDENTIAL_VMS_LINUX_SOURCE_DIR)/hypervisor_rootfs
+confidential-vms/linux_vm/Makefile:14:LINUX_VM_BUILDROOT_SOURCE_DIR		?= $(CONFIDENTIAL_VMS_LINUX_SOURCE_DIR)/../../hypervisor/buildroot
+confidential-vms/linux_vm/Makefile:15:LINUX_VM_BUILDROOT_WORK_DIR			?= $(CONFIDENTIAL_VMS_LINUX_WORK_DIR)/buildroot
+confidential-vms/linux_vm/Makefile:16:LINUX_VM_BUILDROOT_ROOTFS			?= $(LINUX_VM_BUILDROOT_WORK_DIR)/images/rootfs.ext2
+confidential-vms/linux_vm/Makefile:17:LINUX_VM_BUILDROOT_ROOTFS_SIZE		?= "128M"
+confidential-vms/linux_vm/Makefile:18:LINUX_VM_OVERLAY_SOURCE_DIR			?= $(CONFIDENTIAL_VMS_LINUX_SOURCE_DIR)/overlay
+confidential-vms/linux_vm/Makefile:19:LINUX_VM_OVERLAY_WORK_DIR			?= $(CONFIDENTIAL_VMS_LINUX_WORK_DIR)/overlay
+confidential-vms/linux_vm/Makefile:20:LINUX_VM_OVERLAY_WORK_ROOT_DIR		?= $(LINUX_VM_OVERLAY_WORK_DIR)/root
+confidential-vms/linux_vm/Makefile:21:LINUX_VM_IMAGE						?= $(LINUX_VM_BUILDROOT_WORK_DIR)/images/Image
+confidential-vms/linux_vm/Makefile:22:LINUX_VM_COVE_TAP_QEMU				?= $(LINUX_VM_BUILDROOT_WORK_DIR)/images/cove_tap_qemu
+confidential-vms/linux_vm/Makefile:23:LINUX_VM_COVE_TAP_KVMTOOL			?= $(LINUX_VM_BUILDROOT_WORK_DIR)/images/cove_tap_kvmtool
+confidential-vms/linux_vm/Makefile:24:LINUX_VM_KERNEL_CONFIG				?= $(CONFIDENTIAL_VMS_LINUX_SOURCE_DIR)/configurations/linux64-defconfig
+confidential-vms/linux_vm/Makefile:25:LINUX_VM_BUILDROOT_CONFIG			?= $(CONFIDENTIAL_VMS_LINUX_SOURCE_DIR)/configurations/qemu_riscv64_virt_defconfig
+confidential-vms/linux_vm/Makefile:26:LINUX_VM_BUILDROOT_OVERRIDE_DIR		?= $(CONFIDENTIAL_VMS_LINUX_SOURCE_DIR)/configurations/package_override.dev
+confidential-vms/linux_vm/Makefile:27:LINUX_VM_PATCHES_DIR				?= $(CONFIDENTIAL_VMS_LINUX_SOURCE_DIR)/patches/linux/6.3-rc4
+confidential-vms/linux_vm/Makefile:28:LINUX_DIR							?= $(LINUX_VM_BUILDROOT_WORK_DIR)/build/linux-6.3-rc4/
+confidential-vms/linux_vm/Makefile:29:# overlays
+confidential-vms/linux_vm/Makefile:30:HYPERVISOR_OVERLAY_DIR				?= $(ACE_DIR)/hypervisor/overlay/
+confidential-vms/linux_vm/Makefile:31:HYPERVISOR_OVERLAY_ROOT_DIR			?= $(HYPERVISOR_OVERLAY_DIR)/root/
+confidential-vms/linux_vm/Makefile:32:HYPERVISOR_OVERLAY_LINUX_VM_DIR		?= $(HYPERVISOR_OVERLAY_ROOT_DIR)/linux_vm/
+confidential-vms/linux_vm/Makefile:33:
+confidential-vms/linux_vm/Makefile:34:RISCV_GNU_TOOLCHAIN_WORK_DIR		?= $(ACE_DIR)/riscv-gnu-toolchain/
+confidential-vms/linux_vm/Makefile:35:export PATH 						:= $(RISCV_GNU_TOOLCHAIN_WORK_DIR)/bin:$(PATH)
+confidential-vms/linux_vm/Makefile:36:
+confidential-vms/linux_vm/Makefile:37:CROSS_COMPILE						?= riscv64-unknown-linux-gnu-
+confidential-vms/linux_vm/Makefile:38:
+confidential-vms/linux_vm/Makefile:39:all: buildroot
+confidential-vms/linux_vm/Makefile:40:
+confidential-vms/linux_vm/Makefile:41:setup:
+confidential-vms/linux_vm/Makefile:42:	@mkdir -p $(ACE_DIR)
+confidential-vms/linux_vm/Makefile:43:
+confidential-vms/linux_vm/Makefile:44:buildroot: setup
+confidential-vms/linux_vm/Makefile:45:	if [ ! -f "${LINUX_VM_BUILDROOT_ROOTFS}" ]; then \
+confidential-vms/linux_vm/Makefile:46:		echo "Building buildroot"; \
+confidential-vms/linux_vm/Makefile:47:		rm -rf $(LINUX_VM_BUILDROOT_WORK_DIR); \
+confidential-vms/linux_vm/Makefile:48:		mkdir -p $(LINUX_VM_BUILDROOT_WORK_DIR); \
+confidential-vms/linux_vm/Makefile:49:		mkdir -p $(LINUX_VM_OVERLAY_WORK_ROOT_DIR); \
+confidential-vms/linux_vm/Makefile:50:		cp $(LINUX_VM_KERNEL_CONFIG) $(LINUX_VM_BUILDROOT_WORK_DIR)/linux64-config; \
+confidential-vms/linux_vm/Makefile:51:		cp $(LINUX_VM_BUILDROOT_CONFIG) $(LINUX_VM_BUILDROOT_WORK_DIR)/.config; \
+confidential-vms/linux_vm/Makefile:52:		sed "s@^BR2_ROOTFS_OVERLAY=.*@BR2_ROOTFS_OVERLAY=\"$(LINUX_VM_OVERLAY_WORK_DIR)\"@g" -i $(LINUX_VM_BUILDROOT_WORK_DIR)/.config; \
+confidential-vms/linux_vm/Makefile:53:		sed "s@^BR2_TARGET_ROOTFS_EXT2_SIZE=.*@BR2_TARGET_ROOTFS_EXT2_SIZE=\"$(LINUX_VM_BUILDROOT_ROOTFS_SIZE)\"@g" -i $(LINUX_VM_BUILDROOT_WORK_DIR)/.config; \
+confidential-vms/linux_vm/Makefile:54:		sed "s@^BR2_LINUX_KERNEL_CUSTOM_CONFIG_FILE=.*@BR2_LINUX_KERNEL_CUSTOM_CONFIG_FILE=\"$(LINUX_VM_BUILDROOT_WORK_DIR)/linux64-config\"@g" -i $(LINUX_VM_BUILDROOT_WORK_DIR)/.config; \
+confidential-vms/linux_vm/Makefile:55:		sed "s@^BR2_LINUX_KERNEL_PATCH=.*@BR2_LINUX_KERNEL_PATCH=\"$(LINUX_VM_PATCHES_DIR)\"@g" -i $(LINUX_VM_BUILDROOT_WORK_DIR)/.config; \
+confidential-vms/linux_vm/Makefile:56:		if [ ! -f "$(LINUX_VM_BUILDROOT_SOURCE_DIR)/Makefile" ]; then \
+confidential-vms/linux_vm/Makefile:57:			echo "Buildroot repository not initialized. Did you forget to run: git submodule update --init --recursive?" ;\
+confidential-vms/linux_vm/Makefile:58:			exit 1 ;\
+confidential-vms/linux_vm/Makefile:59:		fi ;\
+confidential-vms/linux_vm/Makefile:60:		$(MAKE) -s -C $(LINUX_VM_BUILDROOT_SOURCE_DIR) RISCV=$(RISCV_GNU_TOOLCHAIN_WORK_DIR) PATH=$(PATH) O=$(LINUX_VM_BUILDROOT_WORK_DIR) CROSS_COMPILE=$(CROSS_COMPILE) BR2_JLEVEL=0 olddefconfig; \
+confidential-vms/linux_vm/Makefile:61:		$(MAKE) -s -C $(LINUX_VM_BUILDROOT_SOURCE_DIR) RISCV=$(RISCV_GNU_TOOLCHAIN_WORK_DIR) PATH=$(PATH) O=$(LINUX_VM_BUILDROOT_WORK_DIR) BR2_JLEVEL=0; \
+confidential-vms/linux_vm/Makefile:62:	fi
+confidential-vms/linux_vm/Makefile:63:
+confidential-vms/linux_vm/Makefile:64:dev:
+confidential-vms/linux_vm/Makefile:65:	echo "Rebuilding buildroot"; \
+confidential-vms/linux_vm/Makefile:66:	sed "s@^BR2_ROOTFS_OVERLAY=.*@BR2_ROOTFS_OVERLAY=\"$(LINUX_VM_OVERLAY_WORK_DIR)\"@g" -i $(LINUX_VM_BUILDROOT_WORK_DIR)/.config; \
+confidential-vms/linux_vm/Makefile:67:	sed "s@^BR2_PACKAGE_OVERRIDE_FILE=.*@BR2_PACKAGE_OVERRIDE_FILE=\"$(LINUX_VM_BUILDROOT_OVERRIDE_DIR)\"@g" -i $(LINUX_VM_BUILDROOT_WORK_DIR)/.config ;\
+confidential-vms/linux_vm/Makefile:68:	sed "s@^BR2_LINUX_KERNEL_CUSTOM_CONFIG_FILE=.*@BR2_LINUX_KERNEL_CUSTOM_CONFIG_FILE=\"$(LINUX_VM_KERNEL_CONFIG)\"@g" -i $(LINUX_VM_BUILDROOT_WORK_DIR)/.config; \
+confidential-vms/linux_vm/Makefile:69:	sed "s@^BR2_TARGET_ROOTFS_EXT2_SIZE=.*@BR2_TARGET_ROOTFS_EXT2_SIZE=\"$(LINUX_VM_BUILDROOT_ROOTFS_SIZE)\"@g" -i $(LINUX_VM_BUILDROOT_WORK_DIR)/.config; \
+confidential-vms/linux_vm/Makefile:70:	$(MAKE) -s -C $(LINUX_VM_BUILDROOT_SOURCE_DIR) RISCV=$(RISCV_GNU_TOOLCHAIN_WORK_DIR) PATH=$(PATH) O=$(LINUX_VM_BUILDROOT_WORK_DIR) CROSS_COMPILE=$(CROSS_COMPILE) BR2_JLEVEL=0 linux-rebuild all
+confidential-vms/linux_vm/Makefile:71:
+confidential-vms/linux_vm/Makefile:72:overlay: setup
+confidential-vms/linux_vm/Makefile:73:	echo "Rebuilding overloay"; \
+confidential-vms/linux_vm/Makefile:74:	mkdir -p $(LINUX_VM_OVERLAY_WORK_DIR) ;\
+confidential-vms/linux_vm/Makefile:75:	mkdir -p $(LINUX_VM_OVERLAY_WORK_ROOT_DIR); \
+confidential-vms/linux_vm/Makefile:76:	cp -r $(LINUX_VM_OVERLAY_SOURCE_DIR)/* $(LINUX_VM_OVERLAY_WORK_DIR)/ ;\
+confidential-vms/linux_vm/Makefile:77:	PATH="$(RISCV_GNU_TOOLCHAIN_WORK_DIR)/bin:$(PATH)" $(MAKE) -s -C $(LINUX_VM_OVERLAY_WORK_ROOT_DIR)/ace_module/ RISCV=$(RISCV_GNU_TOOLCHAIN_WORK_DIR) PATH=$(PATH) ARCH=riscv KDIR=$(LINUX_DIR) CROSS_COMPILE=$(CROSS_COMPILE) CC="riscv64-unknown-linux-gnu-gcc" O=$(LINUX_DIR) ;\
+confidential-vms/linux_vm/Makefile:78:	mkdir -p $(HYPERVISOR_OVERLAY_ROOT_DIR) ;\
+confidential-vms/linux_vm/Makefile:79:	cp $(LINUX_VM_ROOTFS_SOURCE_DIR)/*.sh $(HYPERVISOR_OVERLAY_ROOT_DIR)/ ;\
+confidential-vms/linux_vm/Makefile:80:	rm -rf $(HYPERVISOR_OVERLAY_LINUX_VM_DIR) && mkdir -p $(HYPERVISOR_OVERLAY_LINUX_VM_DIR) ;\
+confidential-vms/linux_vm/Makefile:81:	rm -f $(LINUX_VM_COVE_TAP_QEMU) ;\
+confidential-vms/linux_vm/Makefile:82:	$(eval $@_TMP = $(shell $(TOOLS_WORK_DIR)/cove-tap-tool measure --base-address=0x80000000 --kernel-file=$(LINUX_VM_IMAGE) | cut -d' ' -f2-;) )
+confidential-vms/linux_vm/Makefile:83:	$(TOOLS_WORK_DIR)/cove-tap-tool generate --pcrs 4=$($@_TMP) --secrets 0=0xc0ffeec0ffeec0ffeec0ffee --output-file=$(LINUX_VM_COVE_TAP_QEMU)
+confidential-vms/linux_vm/Makefile:84:	cp $(LINUX_VM_COVE_TAP_QEMU) $(HYPERVISOR_OVERLAY_LINUX_VM_DIR)/
+confidential-vms/linux_vm/Makefile:85:	cp $(LINUX_VM_IMAGE) $(HYPERVISOR_OVERLAY_LINUX_VM_DIR)/
+confidential-vms/linux_vm/Makefile:86:	cp $(LINUX_VM_BUILDROOT_ROOTFS) $(HYPERVISOR_OVERLAY_LINUX_VM_DIR)
+confidential-vms/linux_vm/Makefile:87:	rm -f $(LINUX_VM_COVE_TAP_KVMTOOL)
+confidential-vms/linux_vm/Makefile:88:	$(eval $@_TMP = $(shell $(TOOLS_WORK_DIR)/cove-tap-tool measure --base-address=0x80200000 --kernel-file=$(LINUX_VM_IMAGE) | cut -d' ' -f2-;) )
+confidential-vms/linux_vm/Makefile:89:	$(TOOLS_WORK_DIR)/cove-tap-tool generate --pcrs 4=$($@_TMP) --secrets 0=0xc0ffeec0ffeec0ffeec0ffee --output-file=$(LINUX_VM_COVE_TAP_KVMTOOL)
+confidential-vms/linux_vm/Makefile:90:	cp $(LINUX_VM_COVE_TAP_KVMTOOL) $(HYPERVISOR_OVERLAY_LINUX_VM_DIR)/
+confidential-vms/linux_vm/Makefile:91:
+confidential-vms/linux_vm/Makefile:92:
+confidential-vms/linux_vm/Makefile:93:rootfs: overlay
+confidential-vms/linux_vm/Makefile:94:	PATH="$(RISCV_GNU_TOOLCHAIN_WORK_DIR)/bin:$(PATH)" $(MAKE) -s -C $(LINUX_VM_BUILDROOT_SOURCE_DIR) RISCV=$(RISCV_GNU_TOOLCHAIN_WORK_DIR) PATH=$(PATH) ARCH=riscv64 KDIR=$(LINUX_DIR) CROSS_COMPILE=$(CROSS_COMPILE) O=$(LINUX_VM_BUILDROOT_WORK_DIR) rootfs-ext2;
+confidential-vms/linux_vm/Makefile:95:	# cp -r $(LINUX_VM_BUILDROOT_WORK_DIR)/images/rootfs.cpio $(HYPERVISOR_OVERLAY_LINUX_VM_DIR);
+confidential-vms/linux_vm/Makefile:96:
+confidential-vms/linux_vm/Makefile:97:clean:
+confidential-vms/linux_vm/Makefile:98:	rm -rf $(ACE_DIR)
+confidential-vms/linux_vm/Makefile:99:
+confidential-vms/linux_vm/Makefile:100:.PHONY: all buildroot linux clean overlay
+confidential-vms/linux_vm/overlay/root/ace_module/Makefile:1:CONFIG_MODULE_SIG=n
+confidential-vms/linux_vm/overlay/root/ace_module/Makefile:2:
+confidential-vms/linux_vm/overlay/root/ace_module/Makefile:3:startstop-objs := start.o stop.o
+confidential-vms/linux_vm/overlay/root/ace_module/Makefile:4:obj-m += ace.o
+confidential-vms/linux_vm/overlay/root/ace_module/Makefile:5:
+confidential-vms/linux_vm/overlay/root/ace_module/Makefile:6:ifeq ($(CONFIG_STATUS_CHECK_GCC),y)
+confidential-vms/linux_vm/overlay/root/ace_module/Makefile:7:	CC=$(STATUS_CHECK_GCC)
+confidential-vms/linux_vm/overlay/root/ace_module/Makefile:8:	ccflags-y += -fanalyzer
+confidential-vms/linux_vm/overlay/root/ace_module/Makefile:9:endif
+confidential-vms/linux_vm/overlay/root/ace_module/Makefile:10:
+confidential-vms/linux_vm/overlay/root/ace_module/Makefile:11:KDIR ?= /lib/modules/$(shell uname -r)/build
+confidential-vms/linux_vm/overlay/root/ace_module/Makefile:12:PWD := $(CURDIR)
+confidential-vms/linux_vm/overlay/root/ace_module/Makefile:13:
+confidential-vms/linux_vm/overlay/root/ace_module/Makefile:14:default:
+confidential-vms/linux_vm/overlay/root/ace_module/Makefile:15:	$(MAKE) -C $(KDIR) CC="$(CC)" M="$(PWD)" modules
+confidential-vms/linux_vm/overlay/root/ace_module/Makefile:16:	rm -f .Module* .modules* .ace* *.symvers *.order ace.mod.* *.o *.mod
+confidential-vms/linux_vm/overlay/root/ace_module/Makefile:17:
+confidential-vms/linux_vm/overlay/root/ace_module/Makefile:18:load:
+confidential-vms/linux_vm/overlay/root/ace_module/Makefile:19:	@insmod ace.ko
+confidential-vms/linux_vm/overlay/root/ace_module/Makefile:20:
+confidential-vms/linux_vm/overlay/root/ace_module/Makefile:21:clean:
+confidential-vms/linux_vm/overlay/root/ace_module/Makefile:22:	$(MAKE) -C /lib/modules/$(shell uname -r)/build CC="$(CC)" M="$(PWD)" clean
+confidential-vms/linux_vm/overlay/root/ace_module/Makefile:23:	$(RM) other/cat_noblock *.plist
+confidential-vms/linux_vm/overlay/root/ace_module/Makefile:24:
+confidential-vms/linux_vm/overlay/root/ace_module/Makefile:25:indent:
+confidential-vms/linux_vm/overlay/root/ace_module/Makefile:26:	clang-format -i *[.ch]
+confidential-vms/linux_vm/overlay/root/ace_module/Makefile:27:	clang-format -i other/*[.ch]
+hypervisor/Makefile:1:#!/usr/bin/env bash
+hypervisor/Makefile:2:# SPDX-FileCopyrightText: 2023 IBM Corporation
+hypervisor/Makefile:3:# SPDX-FileContributor: Wojciech Ozga <woz@zurich.ibm.com>, IBM Research - Zurich
+hypervisor/Makefile:4:# SPDX-License-Identifier: Apache-2.0
+hypervisor/Makefile:5:MAKEFILE_PATH 						:= $(abspath $(lastword $(MAKEFILE_LIST)))
+hypervisor/Makefile:6:MAKEFILE_SOURCE_DIR 				:= $(dir $(realpath $(lastword $(MAKEFILE_LIST))))
+hypervisor/Makefile:7:ACE_DIR 							:= $(if $(ACE_DIR),$(ACE_DIR),$(MAKEFILE_SOURCE_DIR)../build/)
+hypervisor/Makefile:8:HYPERVISOR_WORK_DIR 				:= $(ACE_DIR)/hypervisor/
+hypervisor/Makefile:9:
+hypervisor/Makefile:10:HYPERVISOR_ROOTFS_SOURCE_DIR		?= $(MAKEFILE_SOURCE_DIR)/rootfs
+hypervisor/Makefile:11:HYPERVISOR_CONFIGURATION_DIR		?= $(MAKEFILE_SOURCE_DIR)/configurations
+hypervisor/Makefile:12:BUILDROOT_SOURCE_DIR				?= $(MAKEFILE_SOURCE_DIR)/buildroot
+hypervisor/Makefile:13:
+hypervisor/Makefile:14:HYPERVISOR_BUILDROOT_CONFIG_DIR		?= $(HYPERVISOR_CONFIGURATION_DIR)/qemu_riscv64_virt_defconfig
+hypervisor/Makefile:15:HYPERVISOR_LINUX_CONFIG				?= $(HYPERVISOR_CONFIGURATION_DIR)/linux64-defconfig
+hypervisor/Makefile:16:HYPERVISOR_BUILDROOT_OVERRIDE_DIR 	?= $(HYPERVISOR_CONFIGURATION_DIR)/package_override.dev
+hypervisor/Makefile:17:HYPERVISOR_ROOTFS_SIZE				?= "512M"
+hypervisor/Makefile:18:HYPERVISOR_OVERLAY_DIR				?= $(HYPERVISOR_WORK_DIR)/overlay
+hypervisor/Makefile:19:HYPERVISOR_OVERLAY_ROOT_DIR			?= $(HYPERVISOR_OVERLAY_DIR)/root
+hypervisor/Makefile:20:HYPERVISOR_PATCHES_DIR				?= $(MAKEFILE_SOURCE_DIR)/patches
+hypervisor/Makefile:21:HYPERVISOR_LINUX_PATCH				?= $(HYPERVISOR_PATCHES_DIR)/linux/6.3-rc4/
+hypervisor/Makefile:22:
+hypervisor/Makefile:23:KVMTOOL_WORK_DIR					?= $(HYPERVISOR_WORK_DIR)/kvmtool
+hypervisor/Makefile:24:
+hypervisor/Makefile:25:BUILDROOT_WORK_DIR					?= $(HYPERVISOR_WORK_DIR)/buildroot
+hypervisor/Makefile:26:RISCV_GNU_TOOLCHAIN_WORK_DIR		?= $(ACE_DIR)/riscv-gnu-toolchain/
+hypervisor/Makefile:27:export PATH 						:= $(RISCV_GNU_TOOLCHAIN_WORK_DIR)/bin:$(PATH)
+hypervisor/Makefile:28:
+hypervisor/Makefile:29:CROSS_COMPILE						?= riscv64-unknown-linux-gnu-
+hypervisor/Makefile:30:
+hypervisor/Makefile:31:all: setup buildroot
+hypervisor/Makefile:32:
+hypervisor/Makefile:33:setup:
+hypervisor/Makefile:34:	@mkdir -p $(ACE_DIR)
+hypervisor/Makefile:35:
+hypervisor/Makefile:36:buildroot: setup
+hypervisor/Makefile:37:	if [ ! -f "${BUILDROOT_WORK_DIR}/images/rootfs.ext2" ]; then \
+hypervisor/Makefile:38:		echo "Building the hypervisor with buildroot"; \
+hypervisor/Makefile:39:		rm -rf $(BUILDROOT_WORK_DIR); \
+hypervisor/Makefile:40:		mkdir -p $(BUILDROOT_WORK_DIR); \
+hypervisor/Makefile:41:		mkdir -p $(HYPERVISOR_OVERLAY_ROOT_DIR); \
+hypervisor/Makefile:42:		mkdir -p $(HYPERVISOR_OVERLAY_DIR); \
+hypervisor/Makefile:43:		cp $(HYPERVISOR_BUILDROOT_CONFIG_DIR) $(BUILDROOT_WORK_DIR)/.config; \
+hypervisor/Makefile:44:		echo $(BUILDROOT_WORK_DIR)/.config; \
+hypervisor/Makefile:45:		sed "s@^BR2_ROOTFS_OVERLAY=.*@BR2_ROOTFS_OVERLAY=\"$(HYPERVISOR_OVERLAY_DIR)\"@g" -i $(BUILDROOT_WORK_DIR)/.config; \
+hypervisor/Makefile:46:		sed "s@^BR2_TARGET_ROOTFS_EXT2_SIZE=.*@BR2_TARGET_ROOTFS_EXT2_SIZE=\"$(HYPERVISOR_ROOTFS_SIZE)\"@g" -i $(BUILDROOT_WORK_DIR)/.config; \
+hypervisor/Makefile:47:		sed "s@^BR2_LINUX_KERNEL_CUSTOM_CONFIG_FILE=.*@BR2_LINUX_KERNEL_CUSTOM_CONFIG_FILE=\"$(HYPERVISOR_LINUX_CONFIG)\"@g" -i $(BUILDROOT_WORK_DIR)/.config; \
+hypervisor/Makefile:48:		sed "s@^BR2_GLOBAL_PATCH_DIR=.*@BR2_GLOBAL_PATCH_DIR=\"$(HYPERVISOR_PATCHES_DIR)\"@g" -i $(BUILDROOT_WORK_DIR)/.config; \
+hypervisor/Makefile:49:		if [ ! -f "$(BUILDROOT_SOURCE_DIR)/Makefile" ]; then \
+hypervisor/Makefile:50:			echo "Buildroot repository not initialized. Did you forget to run: git submodule update --init --recursive?" ;\
+hypervisor/Makefile:51:			exit 1 ;\
+hypervisor/Makefile:52:		fi ;\
+hypervisor/Makefile:53:		$(MAKE) -s -C $(BUILDROOT_SOURCE_DIR) RISCV=$(RISCV_GNU_TOOLCHAIN_WORK_DIR) PATH=$(PATH) O=$(BUILDROOT_WORK_DIR) CROSS_COMPILE=$(CROSS_COMPILE) BR2_JLEVEL=0 olddefconfig ;\
+hypervisor/Makefile:54:		$(MAKE) -s -C $(BUILDROOT_SOURCE_DIR) RISCV=$(RISCV_GNU_TOOLCHAIN_WORK_DIR) PATH=$(PATH) O=$(BUILDROOT_WORK_DIR) BR2_JLEVEL=0 ;\
+hypervisor/Makefile:55:	fi
+hypervisor/Makefile:56:
+hypervisor/Makefile:57:overlay: kvmtool
+hypervisor/Makefile:58:	echo "Setting up the content of the hypervisor's root directory" ;\
+hypervisor/Makefile:59:	mkdir -p $(HYPERVISOR_OVERLAY_ROOT_DIR); \
+hypervisor/Makefile:60:	mkdir -p $(HYPERVISOR_OVERLAY_DIR); \
+hypervisor/Makefile:61:	cp $(HYPERVISOR_ROOTFS_SOURCE_DIR)/*.sh $(HYPERVISOR_OVERLAY_ROOT_DIR)/; \
+hypervisor/Makefile:62:	cp ${KVMTOOL_WORK_DIR}/kvmtool/lkvm-static $(HYPERVISOR_OVERLAY_ROOT_DIR)/;
+hypervisor/Makefile:63:
+hypervisor/Makefile:64:dev:
+hypervisor/Makefile:65:	sed "s@^BR2_PACKAGE_OVERRIDE_FILE=.*@BR2_PACKAGE_OVERRIDE_FILE=\"$(HYPERVISOR_BUILDROOT_OVERRIDE_DIR)\"@g" -i $(BUILDROOT_WORK_DIR)/.config; \
+hypervisor/Makefile:66:	sed "s@^BR2_LINUX_KERNEL_CUSTOM_CONFIG_FILE=.*@BR2_LINUX_KERNEL_CUSTOM_CONFIG_FILE=\"$(HYPERVISOR_LINUX_CONFIG)\"@g" -i $(BUILDROOT_WORK_DIR)/.config; \
+hypervisor/Makefile:67:	$(MAKE) -s -C $(BUILDROOT_SOURCE_DIR) RISCV=$(RISCV_GNU_TOOLCHAIN_WORK_DIR) PATH=$(PATH) O=$(BUILDROOT_WORK_DIR) BR2_JLEVEL=0 linux-rebuild all; \
+hypervisor/Makefile:68:	#$(MAKE) -s -C $(BUILDROOT_SOURCE_DIR) RISCV=$(RISCV_GNU_TOOLCHAIN_WORK_DIR) PATH=$(PATH) O=$(BUILDROOT_WORK_DIR) BR2_JLEVEL=0 qemu-rebuild all
+hypervisor/Makefile:69:
+hypervisor/Makefile:70:rootfs: overlay
+hypervisor/Makefile:71:	echo "Generating hypervisor's root filesystem" ;\
+hypervisor/Makefile:72:	$(MAKE) -s -C $(BUILDROOT_SOURCE_DIR) RISCV=$(RISCV_GNU_TOOLCHAIN_WORK_DIR) PATH=$(PATH) O=$(BUILDROOT_WORK_DIR) rootfs-ext2
+hypervisor/Makefile:73:
+hypervisor/Makefile:74:kvmtool:
+hypervisor/Makefile:75:	mkdir -p $(KVMTOOL_WORK_DIR) && cd $(KVMTOOL_WORK_DIR) ;\
+hypervisor/Makefile:76:    if [ ! -f "${KVMTOOL_WORK_DIR}/dtc/build/libfdt.so" ]; then \
+hypervisor/Makefile:77:        rm -rf ${KVMTOOL_WORK_DIR}/dtc ;\
+hypervisor/Makefile:78:        git clone git://git.kernel.org/pub/scm/utils/dtc/dtc.git ;\
+hypervisor/Makefile:79:        cd dtc ;\
+hypervisor/Makefile:80:        ARCH=riscv CC="${CROSS_COMPILE}gcc -mabi=${PLATFORM_RISCV_ABI} -march=${PLATFORM_RISCV_ISA}" make NO_PYTHON=1 NO_YAML=1 DESTDIR=$($CC -print-sysroot) PREFIX=${KVMTOOL_WORK_DIR}/dtc/build LIBDIR=${KVMTOOL_WORK_DIR}/dtc/build/$($CC -dumpmachine) install-lib install-includes ;\
+hypervisor/Makefile:81:        cp ${KVMTOOL_WORK_DIR}/dtc/build/include/* ${KVMTOOL_WORK_DIR}/dtc/build/ ;\
+hypervisor/Makefile:82:        cd .. ;\
+hypervisor/Makefile:83:    fi ;\
+hypervisor/Makefile:84:	if [ ! -f "${KVMTOOL_WORK_DIR}/kvmtool/lkvm-static" ]; then \
+hypervisor/Makefile:85:		rm -rf ${KVMTOOL_WORK_DIR}/kvmtool ;\
+hypervisor/Makefile:86:		git clone -b cove-integration-03072023 https://github.com/wojciechozga/kvmtool.git ;\
+hypervisor/Makefile:87:		rm -f $(KVMTOOL_WORK_DIR)/kvmtool/lkvm-static ;\
+hypervisor/Makefile:88:		cd $(KVMTOOL_WORK_DIR)/kvmtool ;\
+hypervisor/Makefile:89:		ARCH=riscv LIBFDT_DIR=${KVMTOOL_WORK_DIR}/dtc/build/ make lkvm-static -j$(nproc) ;\
+hypervisor/Makefile:90:		${CROSS_COMPILE}strip lkvm-static ;\
+hypervisor/Makefile:91:		cd .. ;\
+hypervisor/Makefile:92:	fi
+hypervisor/Makefile:93:
+hypervisor/Makefile:94:clean:
+hypervisor/Makefile:95:	rm -rf $(HYPERVISOR_WORK_DIR)
+hypervisor/Makefile:96:
+hypervisor/Makefile:97:.PHONY: all buildroot linux clean overlay rootfs
+security-monitor/Makefile:1:#!/usr/bin/env bash
+security-monitor/Makefile:2:# SPDX-FileCopyrightText: 2023 IBM Corporation
+security-monitor/Makefile:3:# SPDX-FileContributor: Wojciech Ozga <woz@zurich.ibm.com>, IBM Research - Zurich
+security-monitor/Makefile:4:# SPDX-License-Identifier: Apache-2.0
+security-monitor/Makefile:5:CARGO = cargo
+security-monitor/Makefile:6:RELEASE = --release
+security-monitor/Makefile:7:CHAIN=riscv64gc-unknown-none-elf
+security-monitor/Makefile:8:TARGET = --target=$(CHAIN)
+security-monitor/Makefile:9:RUSTFLAGS = -Clink-arg=-Tsrc/platform/qemu/virt.lds -Crelocation-model=pie #-Ccode-model=medium
+security-monitor/Makefile:10:EXEC_NAME = libace.a
+security-monitor/Makefile:11:MAKEFILE_PATH := $(abspath $(lastword $(MAKEFILE_LIST)))
+security-monitor/Makefile:12:MAKEFILE_SOURCE_DIR := $(dir $(realpath $(lastword $(MAKEFILE_LIST))))
+security-monitor/Makefile:13:
+security-monitor/Makefile:14:ACE_DIR := $(if $(ACE_DIR),$(ACE_DIR),$(MAKEFILE_SOURCE_DIR)../build/target/)
+security-monitor/Makefile:15:
+security-monitor/Makefile:16:SM_WORK_DIR=$(ACE_DIR)/security-monitor
+security-monitor/Makefile:17:PLATFORM_SOURCE_DIR=$(MAKEFILE_SOURCE_DIR)/platform
+security-monitor/Makefile:18:OPENSBI_SOURCE_DIR=$(MAKEFILE_SOURCE_DIR)/opensbi
+security-monitor/Makefile:19:OPENSBI_WORK_DIR=$(SM_WORK_DIR)/opensbi
+security-monitor/Makefile:20:OPENSBI_SYS_WORK_DIR=$(SM_WORK_DIR)/opensbi_bindings
+security-monitor/Makefile:21:OPENSBI_PATCH = $(PLATFORM_SOURCE_DIR)/opensbi_v1.4.patch
+security-monitor/Makefile:22:
+security-monitor/Makefile:23:PLATFORM_RISCV_ABI ?= lp64d
+security-monitor/Makefile:24:PLATFORM_RISCV_ISA ?= rv64gc
+security-monitor/Makefile:25:PLATFORM_RISCV_XLEN ?= 64
+security-monitor/Makefile:26:CROSS_COMPILE ?= riscv64-unknown-linux-gnu-
+security-monitor/Makefile:27:
+security-monitor/Makefile:28:all: opensbi_bindings build
+security-monitor/Makefile:29:
+security-monitor/Makefile:30:build: opensbi_bindings fmt
+security-monitor/Makefile:31:	echo "Generating OpenSBI bindings" ;\
+security-monitor/Makefile:32:	mkdir -p $(SM_WORK_DIR) ; \
+security-monitor/Makefile:33:	rm -f $(SM_WORK_DIR)/$(CHAIN)/release/$(EXEC_NAME); \
+security-monitor/Makefile:34:	RUSTFLAGS='$(RUSTFLAGS)' CARGO_TARGET_DIR=$(SM_WORK_DIR) INSTALL_DIR=$(ACE_DIR) $(CARGO) build $(RELEASE) $(TARGET) --features verbose ; \
+security-monitor/Makefile:35:	cp $(SM_WORK_DIR)/$(CHAIN)/release/$(EXEC_NAME) $(SM_WORK_DIR)/ ; \
+security-monitor/Makefile:36:	rm -rf $(OPENSBI_WORK_DIR)/
+security-monitor/Makefile:37:
+security-monitor/Makefile:38:refinedrust: opensbi_bindings
+security-monitor/Makefile:39:	echo "Generating RefinedRust translation" ;\
+security-monitor/Makefile:40:	mkdir -p $(SM_WORK_DIR) ; \
+security-monitor/Makefile:41:	RUSTFLAGS='$(RUSTFLAGS)' CARGO_TARGET_DIR=$(SM_WORK_DIR) INSTALL_DIR=$(ACE_DIR) $(CARGO) refinedrust -- $(RELEASE) $(TARGET) --features verbose; \
+security-monitor/Makefile:42:	rm -rf $(OPENSBI_WORK_DIR)/
+security-monitor/Makefile:43:
+security-monitor/Makefile:44:debug: opensbi_bindings
+security-monitor/Makefile:45:	echo "Compiling the security monitor in DEBUG mode" ;\
+security-monitor/Makefile:46:	mkdir -p $(SM_WORK_DIR) ; \
+security-monitor/Makefile:47:	rm -f $(SM_WORK_DIR)/$(CHAIN)/debug/$(EXEC_NAME); \
+security-monitor/Makefile:48:	RUSTFLAGS='$(RUSTFLAGS)' CARGO_TARGET_DIR=$(SM_WORK_DIR) INSTALL_DIR=$(ACE_DIR) $(CARGO) build $(TARGET) --features verbose ; \
+security-monitor/Makefile:49:	cp $(SM_WORK_DIR)/$(CHAIN)/debug/$(EXEC_NAME) $(SM_WORK_DIR)/ ; \
+security-monitor/Makefile:50:	rm -rf $(OPENSBI_WORK_DIR)/
+security-monitor/Makefile:51:
+security-monitor/Makefile:52:opensbi: build
+security-monitor/Makefile:53:	echo "Compiling OpenSBI" ;\
+security-monitor/Makefile:54:	if ! grep -q ace_setup_this_hart "$(OPENSBI_SOURCE_DIR)/lib/sbi/sbi_hsm.c"; then \
+security-monitor/Makefile:55:		echo "Applying patches to OpenSBI" ;\
+security-monitor/Makefile:56:		cd $(OPENSBI_SOURCE_DIR); git apply --whitespace=fix $(OPENSBI_PATCH); cd $(MAKEFILE_SOURCE_DIR);\
+security-monitor/Makefile:57:	fi ;\
+security-monitor/Makefile:58:	if [ -f "$(SM_WORK_DIR)/$(CHAIN)/release/$(EXEC_NAME)" ]; then \
+security-monitor/Makefile:59:		mkdir -p $(OPENSBI_WORK_DIR) ;\
+security-monitor/Makefile:60:		SM_WORK_DIR=$(SM_WORK_DIR) $(MAKE) -j$(nproc) -C $(OPENSBI_SOURCE_DIR) O=$(OPENSBI_WORK_DIR) PLATFORM_DIR="$(PLATFORM_SOURCE_DIR)" PLATFORM="generic" CROSS_COMPILE=$(CROSS_COMPILE) FW_PAYLOAD_PATH=$(LINUX_IMAGE) FW_PAYLOAD=y PLATFORM_RISCV_XLEN=$(PLATFORM_RISCV_XLEN) PLATFORM_RISCV_ISA=$(PLATFORM_RISCV_ISA) PLATFORM_RISCV_ABI=$(PLATFORM_RISCV_ABI); \
+security-monitor/Makefile:61:	fi
+security-monitor/Makefile:62:
+security-monitor/Makefile:63:opensbi_bindings:
+security-monitor/Makefile:64:	echo "Compiling OpenSBI bindings" ;\
+security-monitor/Makefile:65:	if grep -q ace_setup_this_hart "$(OPENSBI_SOURCE_DIR)/lib/sbi/sbi_hsm.c"; then \
+security-monitor/Makefile:66:		echo "Applying patches to OpenSBI bindings" ;\
+security-monitor/Makefile:67:		cd $(OPENSBI_SOURCE_DIR); git apply -R --whitespace=fix $(OPENSBI_PATCH); cd $(MAKEFILE_SOURCE_DIR); \
+security-monitor/Makefile:68:	fi; \
+security-monitor/Makefile:69:	INSTALL_DIR=$(ACE_DIR) OPENSBI_SOURCE_DIR=$(OPENSBI_SOURCE_DIR) CROSS_COMPILE=$(CROSS_COMPILE) ./rust-crates/opensbi.sh
+security-monitor/Makefile:70:
+security-monitor/Makefile:71:doc:
+security-monitor/Makefile:72:	@$(CARGO) doc
+security-monitor/Makefile:73:
+security-monitor/Makefile:74:check: build test
+security-monitor/Makefile:75:
+security-monitor/Makefile:76:clippy:
+security-monitor/Makefile:77:	@$(CARGO) clippy
+security-monitor/Makefile:78:
+security-monitor/Makefile:79:fmt:
+security-monitor/Makefile:80:	@$(CARGO) fmt
+security-monitor/Makefile:81:
+security-monitor/Makefile:82:bench:
+security-monitor/Makefile:83:	@$(CARGO) bench
+security-monitor/Makefile:84:
+security-monitor/Makefile:85:clean:
+security-monitor/Makefile:86:	@$(CARGO) clean
+security-monitor/Makefile:87:	rm -f bin/$(EXEC_NAME)
+security-monitor/Makefile:88:
+security-monitor/Makefile:89:.PHONY: all build hack opensbi doc check test bench clean
+security-monitor/platform/generic/objects.mk:1:#
+security-monitor/platform/generic/objects.mk:2:# SPDX-License-Identifier: BSD-2-Clause
+security-monitor/platform/generic/objects.mk:3:#
+security-monitor/platform/generic/objects.mk:4:# Copyright (c) 2020 Western Digital Corporation or its affiliates.
+security-monitor/platform/generic/objects.mk:5:#
+security-monitor/platform/generic/objects.mk:6:# Authors:
+security-monitor/platform/generic/objects.mk:7:#   Anup Patel <anup.patel@wdc.com>
+security-monitor/platform/generic/objects.mk:8:#
+security-monitor/platform/generic/objects.mk:9:
+security-monitor/platform/generic/objects.mk:10:# Compiler flags
+security-monitor/platform/generic/objects.mk:11:platform-cppflags-y =
+security-monitor/platform/generic/objects.mk:12:platform-cflags-y =
+security-monitor/platform/generic/objects.mk:13:platform-asflags-y =
+security-monitor/platform/generic/objects.mk:14:platform-ldflags-y = -L$(SM_WORK_DIR) -lace
+security-monitor/platform/generic/objects.mk:15:
+security-monitor/platform/generic/objects.mk:16:# Command for platform specific "make run"
+security-monitor/platform/generic/objects.mk:17:platform-runcmd = qemu-system-riscv$(PLATFORM_RISCV_XLEN) -M virt -m 256M \
+security-monitor/platform/generic/objects.mk:18:  -nographic -bios $(build_dir)/platform/generic/firmware/fw_payload.elf
+security-monitor/platform/generic/objects.mk:19:
+security-monitor/platform/generic/objects.mk:20:# Objects to build
+security-monitor/platform/generic/objects.mk:21:platform-objs-y += platform.o
+security-monitor/platform/generic/objects.mk:22:platform-objs-y += platform_override_modules.o
+security-monitor/platform/generic/objects.mk:23:
+security-monitor/platform/generic/objects.mk:24:# Blobs to build
+security-monitor/platform/generic/objects.mk:25:FW_TEXT_START=0x80000000
+security-monitor/platform/generic/objects.mk:26:FW_DYNAMIC=y
+security-monitor/platform/generic/objects.mk:27:FW_JUMP=y
+security-monitor/platform/generic/objects.mk:28:ifeq ($(PLATFORM_RISCV_XLEN), 32)
+security-monitor/platform/generic/objects.mk:29:  # This needs to be 4MB aligned for 32-bit system
+security-monitor/platform/generic/objects.mk:30:  FW_JUMP_ADDR=$(shell printf "0x%X" $$(($(FW_TEXT_START) + 0x400000)))
+security-monitor/platform/generic/objects.mk:31:else
+security-monitor/platform/generic/objects.mk:32:  # This needs to be 2MB aligned for 64-bit system
+security-monitor/platform/generic/objects.mk:33:  FW_JUMP_ADDR=$(shell printf "0x%X" $$(($(FW_TEXT_START) + 0x200000)))
+security-monitor/platform/generic/objects.mk:34:endif
+security-monitor/platform/generic/objects.mk:35:FW_JUMP_FDT_ADDR=$(shell printf "0x%X" $$(($(FW_TEXT_START) + 0x2200000)))
+security-monitor/platform/generic/objects.mk:36:FW_PAYLOAD=y
+security-monitor/platform/generic/objects.mk:37:ifeq ($(PLATFORM_RISCV_XLEN), 32)
+security-monitor/platform/generic/objects.mk:38:  # This needs to be 4MB aligned for 32-bit system
+security-monitor/platform/generic/objects.mk:39:  FW_PAYLOAD_OFFSET=0x400000
+security-monitor/platform/generic/objects.mk:40:else
+security-monitor/platform/generic/objects.mk:41:  # This needs to be 2MB aligned for 64-bit system
+security-monitor/platform/generic/objects.mk:42:  FW_PAYLOAD_OFFSET=0x200000
+security-monitor/platform/generic/objects.mk:43:endif
+security-monitor/platform/generic/objects.mk:44:FW_PAYLOAD_FDT_ADDR=$(FW_JUMP_FDT_ADDR)
+tools/cove_tap_tool/Makefile:1:#!/usr/bin/env bash
+tools/cove_tap_tool/Makefile:2:# SPDX-FileCopyrightText: 2023 IBM Corporation
+tools/cove_tap_tool/Makefile:3:# SPDX-FileContributor: Wojciech Ozga <woz@zurich.ibm.com>, IBM Research - Zurich
+tools/cove_tap_tool/Makefile:4:# SPDX-License-Identifier: Apache-2.0
+tools/cove_tap_tool/Makefile:5:CARGO = cargo
+tools/cove_tap_tool/Makefile:6:RELEASE = --release
+tools/cove_tap_tool/Makefile:7:EXEC_NAME = cove-tap-tool
+tools/cove_tap_tool/Makefile:8:MAKEFILE_PATH := $(abspath $(lastword $(MAKEFILE_LIST)))
+tools/cove_tap_tool/Makefile:9:MAKEFILE_SOURCE_DIR := $(dir $(realpath $(lastword $(MAKEFILE_LIST))))
+tools/cove_tap_tool/Makefile:10:
+tools/cove_tap_tool/Makefile:11:ACE_DIR := $(if $(ACE_DIR),$(ACE_DIR),$(MAKEFILE_SOURCE_DIR)../build/target/)
+tools/cove_tap_tool/Makefile:12:
+tools/cove_tap_tool/Makefile:13:WORK_DIR					=  $(ACE_DIR)/cove_tap_tool
+tools/cove_tap_tool/Makefile:14:TOOLS_WORK_DIR				?=  $(ACE_DIR)/tools
+tools/cove_tap_tool/Makefile:15:
+tools/cove_tap_tool/Makefile:16:PLATFORM_RISCV_ABI 			?= lp64d
+tools/cove_tap_tool/Makefile:17:PLATFORM_RISCV_ISA 			?= rv64gc
+tools/cove_tap_tool/Makefile:18:PLATFORM_RISCV_XLEN 		?= 64
+tools/cove_tap_tool/Makefile:19:CROSS_COMPILE 				?= riscv64-unknown-linux-gnu-
+tools/cove_tap_tool/Makefile:20:
+tools/cove_tap_tool/Makefile:21:all: build
+tools/cove_tap_tool/Makefile:22:
+tools/cove_tap_tool/Makefile:23:build: fmt
+tools/cove_tap_tool/Makefile:24:	echo "Building Local Attestation utility" ;\
+tools/cove_tap_tool/Makefile:25:	mkdir -p $(WORK_DIR) ; \
+tools/cove_tap_tool/Makefile:26:	rm -f $(WORK_DIR)/release/$(EXEC_NAME); \
+tools/cove_tap_tool/Makefile:27:	RUSTFLAGS='$(RUSTFLAGS)' CARGO_TARGET_DIR=$(WORK_DIR) INSTALL_DIR=$(ACE_DIR)/ $(CARGO) build $(RELEASE) ; \
+tools/cove_tap_tool/Makefile:28:	cp $(WORK_DIR)/release/$(EXEC_NAME) $(TOOLS_WORK_DIR)/ ;
+tools/cove_tap_tool/Makefile:29:
+tools/cove_tap_tool/Makefile:30:doc:
+tools/cove_tap_tool/Makefile:31:	@$(CARGO) doc
+tools/cove_tap_tool/Makefile:32:
+tools/cove_tap_tool/Makefile:33:check: build test
+tools/cove_tap_tool/Makefile:34:
+tools/cove_tap_tool/Makefile:35:audit:
+tools/cove_tap_tool/Makefile:36:	@$(CARGO) audit
+tools/cove_tap_tool/Makefile:37:
+tools/cove_tap_tool/Makefile:38:clippy:
+tools/cove_tap_tool/Makefile:39:	@$(CARGO) clippy
+tools/cove_tap_tool/Makefile:40:
+tools/cove_tap_tool/Makefile:41:fmt:
+tools/cove_tap_tool/Makefile:42:	@$(CARGO) fmt
+tools/cove_tap_tool/Makefile:43:
+tools/cove_tap_tool/Makefile:44:bench:
+tools/cove_tap_tool/Makefile:45:	@$(CARGO) bench
+tools/cove_tap_tool/Makefile:46:
+tools/cove_tap_tool/Makefile:47:clean:
+tools/cove_tap_tool/Makefile:48:	@$(CARGO) clean
+tools/cove_tap_tool/Makefile:49:	rm -f bin/$(EXEC_NAME)
+tools/cove_tap_tool/Makefile:50:
+tools/cove_tap_tool/Makefile:51:.PHONY: all build hack opensbi doc check test bench clean
+$ section '6. Record the run scripts and tools with line numbers'
+
+===== 6. Record the run scripts and tools with line numbers =====
+$ git ls-files -z -- tools ':(exclude)tools/cove_tap_tool/src'
+$ xargs -0 -r grep -IHn ''
+tools/ace:1:#!/usr/bin/env bash
+tools/ace:2:# SPDX-FileCopyrightText: 2023 IBM Corporation
+tools/ace:3:# SPDX-FileContributor: Wojciech Ozga <woz@zurich.ibm.com>, IBM Research - Zurich
+tools/ace:4:# SPDX-License-Identifier: Apache-2.0
+tools/ace:5:
+tools/ace:6:if [ -z ${ACE_DIR} ]; then
+tools/ace:7:    echo "ACE_DIR must point to the directory where ACE is installed"
+tools/ace:8:    exit 1
+tools/ace:9:fi
+tools/ace:10:
+tools/ace:11:if [ "$1" == "test" ]; then
+tools/ace:12:    ${ACE_DIR}/tools/ace_test.sh
+tools/ace:13:elif [ "$1" == "start" ]; then
+tools/ace:14:    ${ACE_DIR}/tools/ace_start.sh $@
+tools/ace:15:elif [ "$1" == "stop" ]; then
+tools/ace:16:    ${ACE_DIR}/tools/ace_stop.sh
+tools/ace:17:elif [ "$1" == "connect" ]; then
+tools/ace:18:    ${ACE_DIR}/tools/ace_connect.sh $@
+tools/ace:19:elif [ "$1" == "run" ]; then
+tools/ace:20:    ${ACE_DIR}/tools/ace_run_hypervisor.sh $@
+tools/ace:21:else
+tools/ace:22:    echo "Usage: ./ace [start|stop|connect|test]"
+tools/ace:23:fi
+tools/ace_connect.sh:1:#!/usr/bin/env bash
+tools/ace_connect.sh:2:# SPDX-FileCopyrightText: 2023 IBM Corporation
+tools/ace_connect.sh:3:# SPDX-FileContributor: Wojciech Ozga <woz@zurich.ibm.com>, IBM Research - Zurich
+tools/ace_connect.sh:4:# SPDX-License-Identifier: Apache-2.0
+tools/ace_connect.sh:5:
+tools/ace_connect.sh:6:if [ -z ${ACE_DIR} ]; then
+tools/ace_connect.sh:7:    echo "ACE_DIR must point to the directory where ACE is installed"
+tools/ace_connect.sh:8:    exit 1
+tools/ace_connect.sh:9:fi
+tools/ace_connect.sh:10:
+tools/ace_connect.sh:11:# load common configuration
+tools/ace_connect.sh:12:. ${ACE_DIR}/tools/common.sh
+tools/ace_connect.sh:13:
+tools/ace_connect.sh:14:HYPERVISOR_TEST_PORT=$2
+tools/ace_connect.sh:15:
+tools/ace_connect.sh:16:${SSH_CMD} -p${HYPERVISOR_TEST_PORT} ${HYPERVISOR_TEST_LOGIN}@${HYPERVISOR_TEST_HOSTNAME}
+tools/ace_run_hypervisor.sh:1:#!/usr/bin/env bash
+tools/ace_run_hypervisor.sh:2:# SPDX-FileCopyrightText: 2023 IBM Corporation
+tools/ace_run_hypervisor.sh:3:# SPDX-FileContributor: Wojciech Ozga <woz@zurich.ibm.com>, IBM Research - Zurich
+tools/ace_run_hypervisor.sh:4:# SPDX-License-Identifier: Apache-2.0
+tools/ace_run_hypervisor.sh:5:
+tools/ace_run_hypervisor.sh:6:if [ -z ${ACE_DIR} ]; then
+tools/ace_run_hypervisor.sh:7:    echo "ACE_DIR must point to the directory where ACE is installed"
+tools/ace_run_hypervisor.sh:8:    exit 1
+tools/ace_run_hypervisor.sh:9:fi
+tools/ace_run_hypervisor.sh:10:
+tools/ace_run_hypervisor.sh:11:QEMU_CMD=${ACE_DIR}/qemu/bin/qemu-system-riscv64
+tools/ace_run_hypervisor.sh:12:KERNEL=${ACE_DIR}/security-monitor/opensbi/platform/generic/firmware/fw_payload.elf
+tools/ace_run_hypervisor.sh:13:DRIVE=${ACE_DIR}/hypervisor/buildroot/images/rootfs.ext4
+tools/ace_run_hypervisor.sh:14:
+tools/ace_run_hypervisor.sh:15:HOST_PORT="$((3000 + RANDOM % 3000))"
+tools/ace_run_hypervisor.sh:16:INTERACTIVE="-nographic"
+tools/ace_run_hypervisor.sh:17:SMP=4
+tools/ace_run_hypervisor.sh:18:MEMORY=4G
+tools/ace_run_hypervisor.sh:19:
+tools/ace_run_hypervisor.sh:20:for i in "$@"; do
+tools/ace_run_hypervisor.sh:21:  case $i in
+tools/ace_run_hypervisor.sh:22:    -e=*|--debug-port=*)
+tools/ace_run_hypervisor.sh:23:      DEBUG_PORT="${i#*=}"
+tools/ace_run_hypervisor.sh:24:      DEBUG_OPTIONS="-gdb tcp::${DEBUG_PORT} -S -d in_asm -D debug.log"
+tools/ace_run_hypervisor.sh:25:      echo ${DEBUG_OPTIONS}
+tools/ace_run_hypervisor.sh:26:      shift
+tools/ace_run_hypervisor.sh:27:      ;;
+tools/ace_run_hypervisor.sh:28:    --host-port=*)
+tools/ace_run_hypervisor.sh:29:      HOST_PORT="${i#*=}"
+tools/ace_run_hypervisor.sh:30:      shift
+tools/ace_run_hypervisor.sh:31:      ;;
+tools/ace_run_hypervisor.sh:32:    -s=*|--smp=*)
+tools/ace_run_hypervisor.sh:33:      SMP="${i#*=}"
+tools/ace_run_hypervisor.sh:34:      shift
+tools/ace_run_hypervisor.sh:35:      ;;
+tools/ace_run_hypervisor.sh:36:    -m=*|--memory=*)
+tools/ace_run_hypervisor.sh:37:      MEMORY="${i#*=}"
+tools/ace_run_hypervisor.sh:38:      shift
+tools/ace_run_hypervisor.sh:39:      ;;
+tools/ace_run_hypervisor.sh:40:    --daemonize*)
+tools/ace_run_hypervisor.sh:41:      INTERACTIVE="-daemonize"
+tools/ace_run_hypervisor.sh:42:      shift
+tools/ace_run_hypervisor.sh:43:      ;;
+tools/ace_run_hypervisor.sh:44:    -*|--*)
+tools/ace_run_hypervisor.sh:45:      echo "Unknown option $i"
+tools/ace_run_hypervisor.sh:46:      exit 1
+tools/ace_run_hypervisor.sh:47:      ;;
+tools/ace_run_hypervisor.sh:48:    *)
+tools/ace_run_hypervisor.sh:49:      ;;
+tools/ace_run_hypervisor.sh:50:  esac
+tools/ace_run_hypervisor.sh:51:done
+tools/ace_run_hypervisor.sh:52:
+tools/ace_run_hypervisor.sh:53:echo "SSH port: ${HOST_PORT}"
+tools/ace_run_hypervisor.sh:54:echo "Number of cores assigned to the guest: ${SMP}"
+tools/ace_run_hypervisor.sh:55:
+tools/ace_run_hypervisor.sh:56:${QEMU_CMD} ${DEBUG_OPTIONS} \
+tools/ace_run_hypervisor.sh:57:    -m ${MEMORY} \
+tools/ace_run_hypervisor.sh:58:    ${INTERACTIVE} \
+tools/ace_run_hypervisor.sh:59:    -machine virt -cpu rv64 \
+tools/ace_run_hypervisor.sh:60:    -bios none \
+tools/ace_run_hypervisor.sh:61:    -kernel ${KERNEL} \
+tools/ace_run_hypervisor.sh:62:    -global virtio-mmio.force-legacy=false \
+tools/ace_run_hypervisor.sh:63:    -append "console=ttyS0 ro root=/dev/vda" \
+tools/ace_run_hypervisor.sh:64:    -drive if=none,format=raw,file=${DRIVE},id=hd0 \
+tools/ace_run_hypervisor.sh:65:    -device virtio-blk-device,scsi=off,drive=hd0 \
+tools/ace_run_hypervisor.sh:66:    -netdev user,id=net0,net=192.168.100.1/24,dhcpstart=192.168.100.128,hostfwd=tcp::${HOST_PORT}-:22 \
+tools/ace_run_hypervisor.sh:67:    -device virtio-net-device,netdev=net0 \
+tools/ace_run_hypervisor.sh:68:    -device virtio-rng-pci \
+tools/ace_run_hypervisor.sh:69:    -smp ${SMP}
+tools/ace_start.sh:1:#!/usr/bin/env bash
+tools/ace_start.sh:2:# SPDX-FileCopyrightText: 2023 IBM Corporation
+tools/ace_start.sh:3:# SPDX-FileContributor: Wojciech Ozga <woz@zurich.ibm.com>, IBM Research - Zurich
+tools/ace_start.sh:4:# SPDX-License-Identifier: Apache-2.0
+tools/ace_start.sh:5:
+tools/ace_start.sh:6:if [ -z ${ACE_DIR} ]; then
+tools/ace_start.sh:7:    echo "ACE_DIR must point to the directory where ACE is installed"
+tools/ace_start.sh:8:    exit 1
+tools/ace_start.sh:9:fi
+tools/ace_start.sh:10:
+tools/ace_start.sh:11:# load common configuration
+tools/ace_start.sh:12:. ${ACE_DIR}/tools/common.sh
+tools/ace_start.sh:13:
+tools/ace_start.sh:14:# start the VM
+tools/ace_start.sh:15:${ACE_DIR}/tools/ace_run_hypervisor.sh --daemonize > .run_tests.log
+tools/ace_start.sh:16:
+tools/ace_start.sh:17:# find out on which port its ssh server is listening
+tools/ace_start.sh:18:HYPERVISOR_TEST_PORT="$(grep 'SSH port' .run_tests.log | awk -F': ' '{ print $2 }' )"
+tools/ace_start.sh:19:echo "Hypervisor's SSH is listening on port: $HYPERVISOR_TEST_PORT"
+tools/ace_start.sh:20:
+tools/ace_start.sh:21:# wait until the VM is up and running
+tools/ace_start.sh:22:wait_for_ssh ${HYPERVISOR_TEST_LOGIN} ${HYPERVISOR_TEST_HOSTNAME} ${HYPERVISOR_TEST_PORT}
+tools/ace_start.sh:23:
+tools/ace_start.sh:24:# execute tests remotely over ssh
+tools/ace_start.sh:25:${SSH_CMD} -p${HYPERVISOR_TEST_PORT} ${HYPERVISOR_TEST_LOGIN}@${HYPERVISOR_TEST_HOSTNAME}
+tools/ace_start.sh:26:
+tools/ace_start.sh:27:# kill the VM
+tools/ace_start.sh:28:kill_qemu ${HYPERVISOR_TEST_PORT}
+tools/ace_stop.sh:1:#!/usr/bin/env bash
+tools/ace_stop.sh:2:# SPDX-FileCopyrightText: 2023 IBM Corporation
+tools/ace_stop.sh:3:# SPDX-FileContributor: Wojciech Ozga <woz@zurich.ibm.com>, IBM Research - Zurich
+tools/ace_stop.sh:4:# SPDX-License-Identifier: Apache-2.0
+tools/ace_stop.sh:5:
+tools/ace_stop.sh:6:if [ -z ${ACE_DIR} ]; then
+tools/ace_stop.sh:7:    echo "ACE_DIR must point to the directory where ACE is installed"
+tools/ace_stop.sh:8:    exit 1
+tools/ace_stop.sh:9:fi
+tools/ace_stop.sh:10:
+tools/ace_stop.sh:11:# load common configuration
+tools/ace_stop.sh:12:. ${ACE_DIR}/tools/common.sh
+tools/ace_stop.sh:13:
+tools/ace_stop.sh:14:kill_users_qemu
+tools/ace_test.sh:1:#!/usr/bin/env bash
+tools/ace_test.sh:2:# SPDX-FileCopyrightText: 2023 IBM Corporation
+tools/ace_test.sh:3:# SPDX-FileContributor: Wojciech Ozga <woz@zurich.ibm.com>, IBM Research - Zurich
+tools/ace_test.sh:4:# SPDX-License-Identifier: Apache-2.0
+tools/ace_test.sh:5:
+tools/ace_test.sh:6:if [ -z ${ACE_DIR} ]; then
+tools/ace_test.sh:7:    echo "ACE_DIR must point to the directory where ACE is installed"
+tools/ace_test.sh:8:    exit 1
+tools/ace_test.sh:9:fi
+tools/ace_test.sh:10:
+tools/ace_test.sh:11:# load common configuration
+tools/ace_test.sh:12:. ${ACE_DIR}/tools/common.sh
+tools/ace_test.sh:13:
+tools/ace_test.sh:14:# start the VM
+tools/ace_test.sh:15:${ACE_DIR}/tools/ace_run_hypervisor.sh --daemonize > .run_tests.log
+tools/ace_test.sh:16:
+tools/ace_test.sh:17:# find out on which port its ssh server is listening
+tools/ace_test.sh:18:HYPERVISOR_TEST_PORT="$(grep 'SSH port' .run_tests.log | awk -F': ' '{ print $2 }' )"
+tools/ace_test.sh:19:echo "Hypervisor's SSH is listening on port: $HYPERVISOR_TEST_PORT"
+tools/ace_test.sh:20:
+tools/ace_test.sh:21:# wait until the VM is up and running
+tools/ace_test.sh:22:wait_for_ssh ${HYPERVISOR_TEST_LOGIN} ${HYPERVISOR_TEST_HOSTNAME} ${HYPERVISOR_TEST_PORT}
+tools/ace_test.sh:23:
+tools/ace_test.sh:24:# execute tests remotely over ssh
+tools/ace_test.sh:25:${SSH_CMD} -p${HYPERVISOR_TEST_PORT} ${HYPERVISOR_TEST_LOGIN}@${HYPERVISOR_TEST_HOSTNAME} './selftest.sh' > ace_test_results
+tools/ace_test.sh:26:
+tools/ace_test.sh:27:# kill the VM
+tools/ace_test.sh:28:kill_qemu ${HYPERVISOR_TEST_PORT}
+tools/ace_test.sh:29:
+tools/ace_test.sh:30:FAILED="$( grep ': failed' ace_test_results | wc -l)"
+tools/ace_test.sh:31:cat ace_test_results
+tools/ace_test.sh:32:
+tools/ace_test.sh:33:if [[ $FAILED -gt 0 ]]; then
+tools/ace_test.sh:34:    exit 1
+tools/ace_test.sh:35:fi
+tools/ace_test.sh:36:exit 0
+tools/common.sh:1:#!/usr/bin/env bash
+tools/common.sh:2:# SPDX-FileCopyrightText: 2023 IBM Corporation
+tools/common.sh:3:# SPDX-FileContributor: Wojciech Ozga <woz@zurich.ibm.com>, IBM Research - Zurich
+tools/common.sh:4:# SPDX-License-Identifier: Apache-2.0
+tools/common.sh:5:
+tools/common.sh:6:# ssh utilities
+tools/common.sh:7:export HYPERVISOR_TEST_LOGIN="root"
+tools/common.sh:8:export HYPERVISOR_TEST_PASSWD="passwd"
+tools/common.sh:9:export HYPERVISOR_TEST_HOSTNAME="localhost"
+tools/common.sh:10:
+tools/common.sh:11:export SSH_PASSWD_PARAMS="-o PasswordAuthentication=yes -o PreferredAuthentications=keyboard-interactive,password -o PubkeyAuthentication=no -o StrictHostKeyChecking=no"
+tools/common.sh:12:export SSH_CMD="sshpass -p ${HYPERVISOR_TEST_PASSWD} ssh ${SSH_PASSWD_PARAMS}"
+tools/common.sh:13:
+tools/common.sh:14:# Usage: wait_for_ssh "root", "localhost", "22"
+tools/common.sh:15:function wait_for_ssh () {
+tools/common.sh:16:    while [ "$( $SSH_CMD -p$3 $1@$2 'whoami' )" != "root" ]; do
+tools/common.sh:17:        echo "waiting for the hypervisor's ssh ..."
+tools/common.sh:18:        sleep 1
+tools/common.sh:19:    done
+tools/common.sh:20:}
+tools/common.sh:21:
+tools/common.sh:22:function kill_users_qemu () {
+tools/common.sh:23:    USER="$(whoami)"
+tools/common.sh:24:    PID="$(ps aux | grep qemu | grep ${USER} | awk -F' ' '{ print $2  }')"
+tools/common.sh:25:    if [ "$PID" != "" ]; then
+tools/common.sh:26:        kill -9 $PID
+tools/common.sh:27:        wait $PID 2>/dev/null
+tools/common.sh:28:    fi
+tools/common.sh:29:}
+tools/common.sh:30:
+tools/common.sh:31:# Usage: kill_qemu "22"
+tools/common.sh:32:function kill_qemu () {
+tools/common.sh:33:    PORT=$1
+tools/common.sh:34:    PID="$(ps aux | grep qemu | grep ${PORT} | awk -F' ' '{ print $2  }')"
+tools/common.sh:35:    if [ "$PID" != "" ]; then
+tools/common.sh:36:        kill -9 $PID
+tools/common.sh:37:        wait $PID 2>/dev/null
+tools/common.sh:38:    fi
+tools/common.sh:39:}
+tools/cove_tap_tool/Cargo.lock:1:# This file is automatically @generated by Cargo.
+tools/cove_tap_tool/Cargo.lock:2:# It is not intended for manual editing.
+tools/cove_tap_tool/Cargo.lock:3:version = 4
+tools/cove_tap_tool/Cargo.lock:4:
+tools/cove_tap_tool/Cargo.lock:5:[[package]]
+tools/cove_tap_tool/Cargo.lock:6:name = "aead"
+tools/cove_tap_tool/Cargo.lock:7:version = "0.6.1"
+tools/cove_tap_tool/Cargo.lock:8:source = "registry+https://github.com/rust-lang/crates.io-index"
+tools/cove_tap_tool/Cargo.lock:9:checksum = "1973cfbc1a2daf9cf550e74e1f088c28e7f7d8c1e1418fb6c9dc5184b7e84c99"
+tools/cove_tap_tool/Cargo.lock:10:dependencies = [
+tools/cove_tap_tool/Cargo.lock:11: "crypto-common",
+tools/cove_tap_tool/Cargo.lock:12: "inout",
+tools/cove_tap_tool/Cargo.lock:13:]
+tools/cove_tap_tool/Cargo.lock:14:
+tools/cove_tap_tool/Cargo.lock:15:[[package]]
+tools/cove_tap_tool/Cargo.lock:16:name = "aes"
+tools/cove_tap_tool/Cargo.lock:17:version = "0.9.3"
+tools/cove_tap_tool/Cargo.lock:18:source = "registry+https://github.com/rust-lang/crates.io-index"
+tools/cove_tap_tool/Cargo.lock:19:checksum = "35f0f96ce78e38c3dc6d8948aa8163d06385be74000f3c7a95bf1eef35d3ea32"
+tools/cove_tap_tool/Cargo.lock:20:dependencies = [
+tools/cove_tap_tool/Cargo.lock:21: "cipher",
+tools/cove_tap_tool/Cargo.lock:22: "cpubits",
+tools/cove_tap_tool/Cargo.lock:23: "cpufeatures",
+tools/cove_tap_tool/Cargo.lock:24:]
+tools/cove_tap_tool/Cargo.lock:25:
+tools/cove_tap_tool/Cargo.lock:26:[[package]]
+tools/cove_tap_tool/Cargo.lock:27:name = "aes-gcm"
+tools/cove_tap_tool/Cargo.lock:28:version = "0.11.1"
+tools/cove_tap_tool/Cargo.lock:29:source = "registry+https://github.com/rust-lang/crates.io-index"
+tools/cove_tap_tool/Cargo.lock:30:checksum = "7f2b8006a0c83f52b62ba44a97b58bf76fe2f70a329e588f67f89691d93d498f"
+tools/cove_tap_tool/Cargo.lock:31:dependencies = [
+tools/cove_tap_tool/Cargo.lock:32: "aead",
+tools/cove_tap_tool/Cargo.lock:33: "aes",
+tools/cove_tap_tool/Cargo.lock:34: "cipher",
+tools/cove_tap_tool/Cargo.lock:35: "ctr",
+tools/cove_tap_tool/Cargo.lock:36: "ctutils",
+tools/cove_tap_tool/Cargo.lock:37: "ghash",
+tools/cove_tap_tool/Cargo.lock:38:]
+tools/cove_tap_tool/Cargo.lock:39:
+tools/cove_tap_tool/Cargo.lock:40:[[package]]
+tools/cove_tap_tool/Cargo.lock:41:name = "anstream"
+tools/cove_tap_tool/Cargo.lock:42:version = "1.0.0"
+tools/cove_tap_tool/Cargo.lock:43:source = "registry+https://github.com/rust-lang/crates.io-index"
+tools/cove_tap_tool/Cargo.lock:44:checksum = "824a212faf96e9acacdbd09febd34438f8f711fb84e09a8916013cd7815ca28d"
+tools/cove_tap_tool/Cargo.lock:45:dependencies = [
+tools/cove_tap_tool/Cargo.lock:46: "anstyle",
+tools/cove_tap_tool/Cargo.lock:47: "anstyle-parse",
+tools/cove_tap_tool/Cargo.lock:48: "anstyle-query",
+tools/cove_tap_tool/Cargo.lock:49: "anstyle-wincon",
+tools/cove_tap_tool/Cargo.lock:50: "colorchoice",
+tools/cove_tap_tool/Cargo.lock:51: "is_terminal_polyfill",
+tools/cove_tap_tool/Cargo.lock:52: "utf8parse",
+tools/cove_tap_tool/Cargo.lock:53:]
+tools/cove_tap_tool/Cargo.lock:54:
+tools/cove_tap_tool/Cargo.lock:55:[[package]]
+tools/cove_tap_tool/Cargo.lock:56:name = "anstyle"
+tools/cove_tap_tool/Cargo.lock:57:version = "1.0.14"
+tools/cove_tap_tool/Cargo.lock:58:source = "registry+https://github.com/rust-lang/crates.io-index"
+tools/cove_tap_tool/Cargo.lock:59:checksum = "940b3a0ca603d1eade50a4846a2afffd5ef57a9feac2c0e2ec2e14f9ead76000"
+tools/cove_tap_tool/Cargo.lock:60:
+tools/cove_tap_tool/Cargo.lock:61:[[package]]
+tools/cove_tap_tool/Cargo.lock:62:name = "anstyle-parse"
+tools/cove_tap_tool/Cargo.lock:63:version = "1.0.0"
+tools/cove_tap_tool/Cargo.lock:64:source = "registry+https://github.com/rust-lang/crates.io-index"
+tools/cove_tap_tool/Cargo.lock:65:checksum = "52ce7f38b242319f7cabaa6813055467063ecdc9d355bbb4ce0c68908cd8130e"
+tools/cove_tap_tool/Cargo.lock:66:dependencies = [
+tools/cove_tap_tool/Cargo.lock:67: "utf8parse",
+tools/cove_tap_tool/Cargo.lock:68:]
+tools/cove_tap_tool/Cargo.lock:69:
+tools/cove_tap_tool/Cargo.lock:70:[[package]]
+tools/cove_tap_tool/Cargo.lock:71:name = "anstyle-query"
+tools/cove_tap_tool/Cargo.lock:72:version = "1.1.5"
+tools/cove_tap_tool/Cargo.lock:73:source = "registry+https://github.com/rust-lang/crates.io-index"
+tools/cove_tap_tool/Cargo.lock:74:checksum = "40c48f72fd53cd289104fc64099abca73db4166ad86ea0b4341abe65af83dadc"
+tools/cove_tap_tool/Cargo.lock:75:dependencies = [
+tools/cove_tap_tool/Cargo.lock:76: "windows-sys",
+tools/cove_tap_tool/Cargo.lock:77:]
+tools/cove_tap_tool/Cargo.lock:78:
+tools/cove_tap_tool/Cargo.lock:79:[[package]]
+tools/cove_tap_tool/Cargo.lock:80:name = "anstyle-wincon"
+tools/cove_tap_tool/Cargo.lock:81:version = "3.0.11"
+tools/cove_tap_tool/Cargo.lock:82:source = "registry+https://github.com/rust-lang/crates.io-index"
+tools/cove_tap_tool/Cargo.lock:83:checksum = "291e6a250ff86cd4a820112fb8898808a366d8f9f58ce16d1f538353ad55747d"
+tools/cove_tap_tool/Cargo.lock:84:dependencies = [
+tools/cove_tap_tool/Cargo.lock:85: "anstyle",
+tools/cove_tap_tool/Cargo.lock:86: "once_cell_polyfill",
+tools/cove_tap_tool/Cargo.lock:87: "windows-sys",
+tools/cove_tap_tool/Cargo.lock:88:]
+tools/cove_tap_tool/Cargo.lock:89:
+tools/cove_tap_tool/Cargo.lock:90:[[package]]
+tools/cove_tap_tool/Cargo.lock:91:name = "autocfg"
+tools/cove_tap_tool/Cargo.lock:92:version = "1.5.1"
+tools/cove_tap_tool/Cargo.lock:93:source = "registry+https://github.com/rust-lang/crates.io-index"
+tools/cove_tap_tool/Cargo.lock:94:checksum = "f2032f911046de80f0a198e0901378627c33f59ea0ac00e363d481118bd70a53"
+tools/cove_tap_tool/Cargo.lock:95:
+tools/cove_tap_tool/Cargo.lock:96:[[package]]
+tools/cove_tap_tool/Cargo.lock:97:name = "block-buffer"
+tools/cove_tap_tool/Cargo.lock:98:version = "0.12.1"
+tools/cove_tap_tool/Cargo.lock:99:source = "registry+https://github.com/rust-lang/crates.io-index"
+tools/cove_tap_tool/Cargo.lock:100:checksum = "d2f6c7dbe95a6ed67ad9f18e57daf93a2f034c524b99fd2b76d18fdfeb6660aa"
+tools/cove_tap_tool/Cargo.lock:101:dependencies = [
+tools/cove_tap_tool/Cargo.lock:102: "hybrid-array",
+tools/cove_tap_tool/Cargo.lock:103:]
+tools/cove_tap_tool/Cargo.lock:104:
+tools/cove_tap_tool/Cargo.lock:105:[[package]]
+tools/cove_tap_tool/Cargo.lock:106:name = "byteorder"
+tools/cove_tap_tool/Cargo.lock:107:version = "1.5.0"
+tools/cove_tap_tool/Cargo.lock:108:source = "registry+https://github.com/rust-lang/crates.io-index"
+tools/cove_tap_tool/Cargo.lock:109:checksum = "1fd0f2584146f6f2ef48085050886acf353beff7305ebd1ae69500e27c67f64b"
+tools/cove_tap_tool/Cargo.lock:110:
+tools/cove_tap_tool/Cargo.lock:111:[[package]]
+tools/cove_tap_tool/Cargo.lock:112:name = "cfg-if"
+tools/cove_tap_tool/Cargo.lock:113:version = "1.0.5"
+tools/cove_tap_tool/Cargo.lock:114:source = "registry+https://github.com/rust-lang/crates.io-index"
+tools/cove_tap_tool/Cargo.lock:115:checksum = "4e7648175b45a9a48536d676f68d918270699102aa8dab5496df06904c914600"
+tools/cove_tap_tool/Cargo.lock:116:
+tools/cove_tap_tool/Cargo.lock:117:[[package]]
+tools/cove_tap_tool/Cargo.lock:118:name = "chacha20"
+tools/cove_tap_tool/Cargo.lock:119:version = "0.10.2"
+tools/cove_tap_tool/Cargo.lock:120:source = "registry+https://github.com/rust-lang/crates.io-index"
+tools/cove_tap_tool/Cargo.lock:121:checksum = "65c35e4b699c7e15ccbe7ee35c005e4fc0a278d22238a2857e6ce2dadeda1b06"
+tools/cove_tap_tool/Cargo.lock:122:dependencies = [
+tools/cove_tap_tool/Cargo.lock:123: "cfg-if",
+tools/cove_tap_tool/Cargo.lock:124: "cpufeatures",
+tools/cove_tap_tool/Cargo.lock:125: "rand_core",
+tools/cove_tap_tool/Cargo.lock:126:]
+tools/cove_tap_tool/Cargo.lock:127:
+tools/cove_tap_tool/Cargo.lock:128:[[package]]
+tools/cove_tap_tool/Cargo.lock:129:name = "cipher"
+tools/cove_tap_tool/Cargo.lock:130:version = "0.5.2"
+tools/cove_tap_tool/Cargo.lock:131:source = "registry+https://github.com/rust-lang/crates.io-index"
+tools/cove_tap_tool/Cargo.lock:132:checksum = "e8cf2a2c93cd704877c0858356ed03480ff301ee950b43f1cbe4573b088bfa6c"
+tools/cove_tap_tool/Cargo.lock:133:dependencies = [
+tools/cove_tap_tool/Cargo.lock:134: "block-buffer",
+tools/cove_tap_tool/Cargo.lock:135: "crypto-common",
+tools/cove_tap_tool/Cargo.lock:136: "inout",
+tools/cove_tap_tool/Cargo.lock:137:]
+tools/cove_tap_tool/Cargo.lock:138:
+tools/cove_tap_tool/Cargo.lock:139:[[package]]
+tools/cove_tap_tool/Cargo.lock:140:name = "clap"
+tools/cove_tap_tool/Cargo.lock:141:version = "4.6.7"
+tools/cove_tap_tool/Cargo.lock:142:source = "registry+https://github.com/rust-lang/crates.io-index"
+tools/cove_tap_tool/Cargo.lock:143:checksum = "aa8876b300ab35ba921adea3dfd70157a46249b33f95c9084ae5709785478946"
+tools/cove_tap_tool/Cargo.lock:144:dependencies = [
+tools/cove_tap_tool/Cargo.lock:145: "clap_builder",
+tools/cove_tap_tool/Cargo.lock:146: "clap_derive",
+tools/cove_tap_tool/Cargo.lock:147:]
+tools/cove_tap_tool/Cargo.lock:148:
+tools/cove_tap_tool/Cargo.lock:149:[[package]]
+tools/cove_tap_tool/Cargo.lock:150:name = "clap-num"
+tools/cove_tap_tool/Cargo.lock:151:version = "1.2.0"
+tools/cove_tap_tool/Cargo.lock:152:source = "registry+https://github.com/rust-lang/crates.io-index"
+tools/cove_tap_tool/Cargo.lock:153:checksum = "822c4000301ac390e65995c62207501e3ef800a1fc441df913a5e8e4dc374816"
+tools/cove_tap_tool/Cargo.lock:154:dependencies = [
+tools/cove_tap_tool/Cargo.lock:155: "num-traits",
+tools/cove_tap_tool/Cargo.lock:156:]
+tools/cove_tap_tool/Cargo.lock:157:
+tools/cove_tap_tool/Cargo.lock:158:[[package]]
+tools/cove_tap_tool/Cargo.lock:159:name = "clap_builder"
+tools/cove_tap_tool/Cargo.lock:160:version = "4.6.7"
+tools/cove_tap_tool/Cargo.lock:161:source = "registry+https://github.com/rust-lang/crates.io-index"
+tools/cove_tap_tool/Cargo.lock:162:checksum = "ec0797fb7aeb1406c84efac526901f7ec3ead2124f946b494e72879d4b54704d"
+tools/cove_tap_tool/Cargo.lock:163:dependencies = [
+tools/cove_tap_tool/Cargo.lock:164: "anstream",
+tools/cove_tap_tool/Cargo.lock:165: "anstyle",
+tools/cove_tap_tool/Cargo.lock:166: "clap_lex",
+tools/cove_tap_tool/Cargo.lock:167: "strsim",
+tools/cove_tap_tool/Cargo.lock:168:]
+tools/cove_tap_tool/Cargo.lock:169:
+tools/cove_tap_tool/Cargo.lock:170:[[package]]
+tools/cove_tap_tool/Cargo.lock:171:name = "clap_derive"
+tools/cove_tap_tool/Cargo.lock:172:version = "4.6.7"
+tools/cove_tap_tool/Cargo.lock:173:source = "registry+https://github.com/rust-lang/crates.io-index"
+tools/cove_tap_tool/Cargo.lock:174:checksum = "f9c751b79415d4e559e3d1fcf128e09e720eb673a06d26cf6f392d37d75b66e0"
+tools/cove_tap_tool/Cargo.lock:175:dependencies = [
+tools/cove_tap_tool/Cargo.lock:176: "heck",
+tools/cove_tap_tool/Cargo.lock:177: "proc-macro2",
+tools/cove_tap_tool/Cargo.lock:178: "quote",
+tools/cove_tap_tool/Cargo.lock:179: "syn 3.0.6",
+tools/cove_tap_tool/Cargo.lock:180:]
+tools/cove_tap_tool/Cargo.lock:181:
+tools/cove_tap_tool/Cargo.lock:182:[[package]]
+tools/cove_tap_tool/Cargo.lock:183:name = "clap_lex"
+tools/cove_tap_tool/Cargo.lock:184:version = "1.1.1"
+tools/cove_tap_tool/Cargo.lock:185:source = "registry+https://github.com/rust-lang/crates.io-index"
+tools/cove_tap_tool/Cargo.lock:186:checksum = "1c133bc6a41be0d194c306b5506d15e6feeea7b1d6604bd3f8310dfb2ca96486"
+tools/cove_tap_tool/Cargo.lock:187:
+tools/cove_tap_tool/Cargo.lock:188:[[package]]
+tools/cove_tap_tool/Cargo.lock:189:name = "cmov"
+tools/cove_tap_tool/Cargo.lock:190:version = "0.5.4"
+tools/cove_tap_tool/Cargo.lock:191:source = "registry+https://github.com/rust-lang/crates.io-index"
+tools/cove_tap_tool/Cargo.lock:192:checksum = "0c9ea0ac24bc397ab3c98583a3c9ba74fa56b09a4449bbe172b9b1ddb016027a"
+tools/cove_tap_tool/Cargo.lock:193:
+tools/cove_tap_tool/Cargo.lock:194:[[package]]
+tools/cove_tap_tool/Cargo.lock:195:name = "colorchoice"
+tools/cove_tap_tool/Cargo.lock:196:version = "1.0.5"
+tools/cove_tap_tool/Cargo.lock:197:source = "registry+https://github.com/rust-lang/crates.io-index"
+tools/cove_tap_tool/Cargo.lock:198:checksum = "1d07550c9036bf2ae0c684c4297d503f838287c83c53686d05370d0e139ae570"
+tools/cove_tap_tool/Cargo.lock:199:
+tools/cove_tap_tool/Cargo.lock:200:[[package]]
+tools/cove_tap_tool/Cargo.lock:201:name = "cove-tap-tool"
+tools/cove_tap_tool/Cargo.lock:202:version = "0.1.0"
+tools/cove_tap_tool/Cargo.lock:203:dependencies = [
+tools/cove_tap_tool/Cargo.lock:204: "aes-gcm",
+tools/cove_tap_tool/Cargo.lock:205: "byteorder",
+tools/cove_tap_tool/Cargo.lock:206: "clap",
+tools/cove_tap_tool/Cargo.lock:207: "clap-num",
+tools/cove_tap_tool/Cargo.lock:208: "hybrid-array",
+tools/cove_tap_tool/Cargo.lock:209: "ml-kem",
+tools/cove_tap_tool/Cargo.lock:210: "rand",
+tools/cove_tap_tool/Cargo.lock:211: "riscv_cove_tap",
+tools/cove_tap_tool/Cargo.lock:212: "sha3 0.12.0",
+tools/cove_tap_tool/Cargo.lock:213: "thiserror",
+tools/cove_tap_tool/Cargo.lock:214:]
+tools/cove_tap_tool/Cargo.lock:215:
+tools/cove_tap_tool/Cargo.lock:216:[[package]]
+tools/cove_tap_tool/Cargo.lock:217:name = "cpubits"
+tools/cove_tap_tool/Cargo.lock:218:version = "0.1.1"
+tools/cove_tap_tool/Cargo.lock:219:source = "registry+https://github.com/rust-lang/crates.io-index"
+tools/cove_tap_tool/Cargo.lock:220:checksum = "15b85f9c39137c3a891689859392b1bd49812121d0d61c9caf00d46ed5ce06ae"
+tools/cove_tap_tool/Cargo.lock:221:
+tools/cove_tap_tool/Cargo.lock:222:[[package]]
+tools/cove_tap_tool/Cargo.lock:223:name = "cpufeatures"
+tools/cove_tap_tool/Cargo.lock:224:version = "0.3.1"
+tools/cove_tap_tool/Cargo.lock:225:source = "registry+https://github.com/rust-lang/crates.io-index"
+tools/cove_tap_tool/Cargo.lock:226:checksum = "5ca28b0ae3115b884660db4118d803791fd6756b6e88f39c0f3f7859060d7566"
+tools/cove_tap_tool/Cargo.lock:227:dependencies = [
+tools/cove_tap_tool/Cargo.lock:228: "libc",
+tools/cove_tap_tool/Cargo.lock:229:]
+tools/cove_tap_tool/Cargo.lock:230:
+tools/cove_tap_tool/Cargo.lock:231:[[package]]
+tools/cove_tap_tool/Cargo.lock:232:name = "crypto-common"
+tools/cove_tap_tool/Cargo.lock:233:version = "0.2.2"
+tools/cove_tap_tool/Cargo.lock:234:source = "registry+https://github.com/rust-lang/crates.io-index"
+tools/cove_tap_tool/Cargo.lock:235:checksum = "ce6e4c961d6cd6c9a86db418387425e8bdeaf05b3c8bc1411e6dca4c252f1453"
+tools/cove_tap_tool/Cargo.lock:236:dependencies = [
+tools/cove_tap_tool/Cargo.lock:237: "getrandom",
+tools/cove_tap_tool/Cargo.lock:238: "hybrid-array",
+tools/cove_tap_tool/Cargo.lock:239: "rand_core",
+tools/cove_tap_tool/Cargo.lock:240:]
+tools/cove_tap_tool/Cargo.lock:241:
+tools/cove_tap_tool/Cargo.lock:242:[[package]]
+tools/cove_tap_tool/Cargo.lock:243:name = "ctr"
+tools/cove_tap_tool/Cargo.lock:244:version = "0.10.1"
+tools/cove_tap_tool/Cargo.lock:245:source = "registry+https://github.com/rust-lang/crates.io-index"
+tools/cove_tap_tool/Cargo.lock:246:checksum = "baaca1c4b237092596f64d571e9db6ce4109c4ef9742e27590f1709594461f21"
+tools/cove_tap_tool/Cargo.lock:247:dependencies = [
+tools/cove_tap_tool/Cargo.lock:248: "cipher",
+tools/cove_tap_tool/Cargo.lock:249:]
+tools/cove_tap_tool/Cargo.lock:250:
+tools/cove_tap_tool/Cargo.lock:251:[[package]]
+tools/cove_tap_tool/Cargo.lock:252:name = "ctutils"
+tools/cove_tap_tool/Cargo.lock:253:version = "0.4.2"
+tools/cove_tap_tool/Cargo.lock:254:source = "registry+https://github.com/rust-lang/crates.io-index"
+tools/cove_tap_tool/Cargo.lock:255:checksum = "7d5515a3834141de9eafb9717ad39eea8247b5674e6066c404e8c4b365d2a29e"
+tools/cove_tap_tool/Cargo.lock:256:dependencies = [
+tools/cove_tap_tool/Cargo.lock:257: "cmov",
+tools/cove_tap_tool/Cargo.lock:258:]
+tools/cove_tap_tool/Cargo.lock:259:
+tools/cove_tap_tool/Cargo.lock:260:[[package]]
+tools/cove_tap_tool/Cargo.lock:261:name = "digest"
+tools/cove_tap_tool/Cargo.lock:262:version = "0.11.3"
+tools/cove_tap_tool/Cargo.lock:263:source = "registry+https://github.com/rust-lang/crates.io-index"
+tools/cove_tap_tool/Cargo.lock:264:checksum = "f1dd6dbb5841937940781866fa1281a1ff7bd3bf827091440879f9994983d5c2"
+tools/cove_tap_tool/Cargo.lock:265:dependencies = [
+tools/cove_tap_tool/Cargo.lock:266: "block-buffer",
+tools/cove_tap_tool/Cargo.lock:267: "crypto-common",
+tools/cove_tap_tool/Cargo.lock:268:]
+tools/cove_tap_tool/Cargo.lock:269:
+tools/cove_tap_tool/Cargo.lock:270:[[package]]
+tools/cove_tap_tool/Cargo.lock:271:name = "getrandom"
+tools/cove_tap_tool/Cargo.lock:272:version = "0.4.3"
+tools/cove_tap_tool/Cargo.lock:273:source = "registry+https://github.com/rust-lang/crates.io-index"
+tools/cove_tap_tool/Cargo.lock:274:checksum = "300e883d756b2e4ec94e02791f39b04b522276138852cfc41d9fb7e904106099"
+tools/cove_tap_tool/Cargo.lock:275:dependencies = [
+tools/cove_tap_tool/Cargo.lock:276: "cfg-if",
+tools/cove_tap_tool/Cargo.lock:277: "libc",
+tools/cove_tap_tool/Cargo.lock:278: "r-efi",
+tools/cove_tap_tool/Cargo.lock:279: "rand_core",
+tools/cove_tap_tool/Cargo.lock:280:]
+tools/cove_tap_tool/Cargo.lock:281:
+tools/cove_tap_tool/Cargo.lock:282:[[package]]
+tools/cove_tap_tool/Cargo.lock:283:name = "ghash"
+tools/cove_tap_tool/Cargo.lock:284:version = "0.6.0"
+tools/cove_tap_tool/Cargo.lock:285:source = "registry+https://github.com/rust-lang/crates.io-index"
+tools/cove_tap_tool/Cargo.lock:286:checksum = "2eecf2d5dc9b66b732b97707a0210906b1d30523eb773193ab777c0c84b3e8d5"
+tools/cove_tap_tool/Cargo.lock:287:dependencies = [
+tools/cove_tap_tool/Cargo.lock:288: "polyval",
+tools/cove_tap_tool/Cargo.lock:289:]
+tools/cove_tap_tool/Cargo.lock:290:
+tools/cove_tap_tool/Cargo.lock:291:[[package]]
+tools/cove_tap_tool/Cargo.lock:292:name = "heck"
+tools/cove_tap_tool/Cargo.lock:293:version = "0.5.0"
+tools/cove_tap_tool/Cargo.lock:294:source = "registry+https://github.com/rust-lang/crates.io-index"
+tools/cove_tap_tool/Cargo.lock:295:checksum = "2304e00983f87ffb38b55b444b5e3b60a884b5d30c0fca7d82fe33449bbe55ea"
+tools/cove_tap_tool/Cargo.lock:296:
+tools/cove_tap_tool/Cargo.lock:297:[[package]]
+tools/cove_tap_tool/Cargo.lock:298:name = "hybrid-array"
+tools/cove_tap_tool/Cargo.lock:299:version = "0.4.15"
+tools/cove_tap_tool/Cargo.lock:300:source = "registry+https://github.com/rust-lang/crates.io-index"
+tools/cove_tap_tool/Cargo.lock:301:checksum = "27f864f10dfb56725ce5ce5472bc52252c8f93a4ab86327122cebf62c5f59a17"
+tools/cove_tap_tool/Cargo.lock:302:dependencies = [
+tools/cove_tap_tool/Cargo.lock:303: "ctutils",
+tools/cove_tap_tool/Cargo.lock:304: "typenum",
+tools/cove_tap_tool/Cargo.lock:305:]
+tools/cove_tap_tool/Cargo.lock:306:
+tools/cove_tap_tool/Cargo.lock:307:[[package]]
+tools/cove_tap_tool/Cargo.lock:308:name = "inout"
+tools/cove_tap_tool/Cargo.lock:309:version = "0.2.2"
+tools/cove_tap_tool/Cargo.lock:310:source = "registry+https://github.com/rust-lang/crates.io-index"
+tools/cove_tap_tool/Cargo.lock:311:checksum = "4250ce6452e92010fdf7268ccc5d14faa80bb12fc741938534c58f16804e03c7"
+tools/cove_tap_tool/Cargo.lock:312:dependencies = [
+tools/cove_tap_tool/Cargo.lock:313: "hybrid-array",
+tools/cove_tap_tool/Cargo.lock:314:]
+tools/cove_tap_tool/Cargo.lock:315:
+tools/cove_tap_tool/Cargo.lock:316:[[package]]
+tools/cove_tap_tool/Cargo.lock:317:name = "is_terminal_polyfill"
+tools/cove_tap_tool/Cargo.lock:318:version = "1.70.2"
+tools/cove_tap_tool/Cargo.lock:319:source = "registry+https://github.com/rust-lang/crates.io-index"
+tools/cove_tap_tool/Cargo.lock:320:checksum = "a6cb138bb79a146c1bd460005623e142ef0181e3d0219cb493e02f7d08a35695"
+tools/cove_tap_tool/Cargo.lock:321:
+tools/cove_tap_tool/Cargo.lock:322:[[package]]
+tools/cove_tap_tool/Cargo.lock:323:name = "keccak"
+tools/cove_tap_tool/Cargo.lock:324:version = "0.2.2"
+tools/cove_tap_tool/Cargo.lock:325:source = "registry+https://github.com/rust-lang/crates.io-index"
+tools/cove_tap_tool/Cargo.lock:326:checksum = "d8f198d1db720e4940b5a493201d199d9f24f568f8f746bd13706243a2f71598"
+tools/cove_tap_tool/Cargo.lock:327:dependencies = [
+tools/cove_tap_tool/Cargo.lock:328: "cfg-if",
+tools/cove_tap_tool/Cargo.lock:329: "cpufeatures",
+tools/cove_tap_tool/Cargo.lock:330:]
+tools/cove_tap_tool/Cargo.lock:331:
+tools/cove_tap_tool/Cargo.lock:332:[[package]]
+tools/cove_tap_tool/Cargo.lock:333:name = "kem"
+tools/cove_tap_tool/Cargo.lock:334:version = "0.3.0"
+tools/cove_tap_tool/Cargo.lock:335:source = "registry+https://github.com/rust-lang/crates.io-index"
+tools/cove_tap_tool/Cargo.lock:336:checksum = "01737161ba802849cfd486b5bd209d38ba4943494c249a8126005170c7621edd"
+tools/cove_tap_tool/Cargo.lock:337:dependencies = [
+tools/cove_tap_tool/Cargo.lock:338: "crypto-common",
+tools/cove_tap_tool/Cargo.lock:339: "rand_core",
+tools/cove_tap_tool/Cargo.lock:340:]
+tools/cove_tap_tool/Cargo.lock:341:
+tools/cove_tap_tool/Cargo.lock:342:[[package]]
+tools/cove_tap_tool/Cargo.lock:343:name = "libc"
+tools/cove_tap_tool/Cargo.lock:344:version = "0.2.189"
+tools/cove_tap_tool/Cargo.lock:345:source = "registry+https://github.com/rust-lang/crates.io-index"
+tools/cove_tap_tool/Cargo.lock:346:checksum = "3eaf3ede3fee6db1a4c2ee091bf8a8b4dccdc6d17f656fb07896ee72867612f2"
+tools/cove_tap_tool/Cargo.lock:347:
+tools/cove_tap_tool/Cargo.lock:348:[[package]]
+tools/cove_tap_tool/Cargo.lock:349:name = "ml-kem"
+tools/cove_tap_tool/Cargo.lock:350:version = "0.3.2"
+tools/cove_tap_tool/Cargo.lock:351:source = "registry+https://github.com/rust-lang/crates.io-index"
+tools/cove_tap_tool/Cargo.lock:352:checksum = "5e15f3e5b957493873e396a66914e83e616b6afe335cdef7efe5c6e1216aba66"
+tools/cove_tap_tool/Cargo.lock:353:dependencies = [
+tools/cove_tap_tool/Cargo.lock:354: "hybrid-array",
+tools/cove_tap_tool/Cargo.lock:355: "kem",
+tools/cove_tap_tool/Cargo.lock:356: "module-lattice",
+tools/cove_tap_tool/Cargo.lock:357: "rand_core",
+tools/cove_tap_tool/Cargo.lock:358: "sha3 0.11.0",
+tools/cove_tap_tool/Cargo.lock:359:]
+tools/cove_tap_tool/Cargo.lock:360:
+tools/cove_tap_tool/Cargo.lock:361:[[package]]
+tools/cove_tap_tool/Cargo.lock:362:name = "module-lattice"
+tools/cove_tap_tool/Cargo.lock:363:version = "0.2.3"
+tools/cove_tap_tool/Cargo.lock:364:source = "registry+https://github.com/rust-lang/crates.io-index"
+tools/cove_tap_tool/Cargo.lock:365:checksum = "0c61b87c9683ab7cb1c6871d261ad5479b6b10ceb52c4352aaca3b5d35a8febe"
+tools/cove_tap_tool/Cargo.lock:366:dependencies = [
+tools/cove_tap_tool/Cargo.lock:367: "ctutils",
+tools/cove_tap_tool/Cargo.lock:368: "hybrid-array",
+tools/cove_tap_tool/Cargo.lock:369: "num-traits",
+tools/cove_tap_tool/Cargo.lock:370:]
+tools/cove_tap_tool/Cargo.lock:371:
+tools/cove_tap_tool/Cargo.lock:372:[[package]]
+tools/cove_tap_tool/Cargo.lock:373:name = "num-traits"
+tools/cove_tap_tool/Cargo.lock:374:version = "0.2.19"
+tools/cove_tap_tool/Cargo.lock:375:source = "registry+https://github.com/rust-lang/crates.io-index"
+tools/cove_tap_tool/Cargo.lock:376:checksum = "071dfc062690e90b734c0b2273ce72ad0ffa95f0c74596bc250dcfd960262841"
+tools/cove_tap_tool/Cargo.lock:377:dependencies = [
+tools/cove_tap_tool/Cargo.lock:378: "autocfg",
+tools/cove_tap_tool/Cargo.lock:379:]
+tools/cove_tap_tool/Cargo.lock:380:
+tools/cove_tap_tool/Cargo.lock:381:[[package]]
+tools/cove_tap_tool/Cargo.lock:382:name = "once_cell_polyfill"
+tools/cove_tap_tool/Cargo.lock:383:version = "1.70.2"
+tools/cove_tap_tool/Cargo.lock:384:source = "registry+https://github.com/rust-lang/crates.io-index"
+tools/cove_tap_tool/Cargo.lock:385:checksum = "384b8ab6d37215f3c5301a95a4accb5d64aa607f1fcb26a11b5303878451b4fe"
+tools/cove_tap_tool/Cargo.lock:386:
+tools/cove_tap_tool/Cargo.lock:387:[[package]]
+tools/cove_tap_tool/Cargo.lock:388:name = "polyval"
+tools/cove_tap_tool/Cargo.lock:389:version = "0.7.3"
+tools/cove_tap_tool/Cargo.lock:390:source = "registry+https://github.com/rust-lang/crates.io-index"
+tools/cove_tap_tool/Cargo.lock:391:checksum = "f0fa31d631f2b2cb2a544d0aa321ce847a94764d701ca2becc411138b93d49cd"
+tools/cove_tap_tool/Cargo.lock:392:dependencies = [
+tools/cove_tap_tool/Cargo.lock:393: "cpubits",
+tools/cove_tap_tool/Cargo.lock:394: "cpufeatures",
+tools/cove_tap_tool/Cargo.lock:395: "universal-hash",
+tools/cove_tap_tool/Cargo.lock:396:]
+tools/cove_tap_tool/Cargo.lock:397:
+tools/cove_tap_tool/Cargo.lock:398:[[package]]
+tools/cove_tap_tool/Cargo.lock:399:name = "proc-macro2"
+tools/cove_tap_tool/Cargo.lock:400:version = "1.0.107"
+tools/cove_tap_tool/Cargo.lock:401:source = "registry+https://github.com/rust-lang/crates.io-index"
+tools/cove_tap_tool/Cargo.lock:402:checksum = "985e7ec9bb745e6ce6535b544d84d6cd6f7ad8bd711c398938ae983b91a766d9"
+tools/cove_tap_tool/Cargo.lock:403:dependencies = [
+tools/cove_tap_tool/Cargo.lock:404: "unicode-ident",
+tools/cove_tap_tool/Cargo.lock:405:]
+tools/cove_tap_tool/Cargo.lock:406:
+tools/cove_tap_tool/Cargo.lock:407:[[package]]
+tools/cove_tap_tool/Cargo.lock:408:name = "quote"
+tools/cove_tap_tool/Cargo.lock:409:version = "1.0.47"
+tools/cove_tap_tool/Cargo.lock:410:source = "registry+https://github.com/rust-lang/crates.io-index"
+tools/cove_tap_tool/Cargo.lock:411:checksum = "1fbf4db142a473a8d80c26bbf18454ed458bf8d26c8219c331daecfdbd079001"
+tools/cove_tap_tool/Cargo.lock:412:dependencies = [
+tools/cove_tap_tool/Cargo.lock:413: "proc-macro2",
+tools/cove_tap_tool/Cargo.lock:414:]
+tools/cove_tap_tool/Cargo.lock:415:
+tools/cove_tap_tool/Cargo.lock:416:[[package]]
+tools/cove_tap_tool/Cargo.lock:417:name = "r-efi"
+tools/cove_tap_tool/Cargo.lock:418:version = "6.0.0"
+tools/cove_tap_tool/Cargo.lock:419:source = "registry+https://github.com/rust-lang/crates.io-index"
+tools/cove_tap_tool/Cargo.lock:420:checksum = "f8dcc9c7d52a811697d2151c701e0d08956f92b0e24136cf4cf27b57a6a0d9bf"
+tools/cove_tap_tool/Cargo.lock:421:
+tools/cove_tap_tool/Cargo.lock:422:[[package]]
+tools/cove_tap_tool/Cargo.lock:423:name = "rand"
+tools/cove_tap_tool/Cargo.lock:424:version = "0.10.3"
+tools/cove_tap_tool/Cargo.lock:425:source = "registry+https://github.com/rust-lang/crates.io-index"
+tools/cove_tap_tool/Cargo.lock:426:checksum = "65c9fb96cbc91e3478eaae79a69fcd3f1ae4ad052e471fe6732fff548984b4af"
+tools/cove_tap_tool/Cargo.lock:427:dependencies = [
+tools/cove_tap_tool/Cargo.lock:428: "chacha20",
+tools/cove_tap_tool/Cargo.lock:429: "getrandom",
+tools/cove_tap_tool/Cargo.lock:430: "rand_core",
+tools/cove_tap_tool/Cargo.lock:431:]
+tools/cove_tap_tool/Cargo.lock:432:
+tools/cove_tap_tool/Cargo.lock:433:[[package]]
+tools/cove_tap_tool/Cargo.lock:434:name = "rand_core"
+tools/cove_tap_tool/Cargo.lock:435:version = "0.10.1"
+tools/cove_tap_tool/Cargo.lock:436:source = "registry+https://github.com/rust-lang/crates.io-index"
+tools/cove_tap_tool/Cargo.lock:437:checksum = "63b8176103e19a2643978565ca18b50549f6101881c443590420e4dc998a3c69"
+tools/cove_tap_tool/Cargo.lock:438:
+tools/cove_tap_tool/Cargo.lock:439:[[package]]
+tools/cove_tap_tool/Cargo.lock:440:name = "riscv_cove_tap"
+tools/cove_tap_tool/Cargo.lock:441:version = "0.2.0"
+tools/cove_tap_tool/Cargo.lock:442:dependencies = [
+tools/cove_tap_tool/Cargo.lock:443: "aes-gcm",
+tools/cove_tap_tool/Cargo.lock:444: "hybrid-array",
+tools/cove_tap_tool/Cargo.lock:445: "ml-kem",
+tools/cove_tap_tool/Cargo.lock:446: "rand",
+tools/cove_tap_tool/Cargo.lock:447: "thiserror-no-std",
+tools/cove_tap_tool/Cargo.lock:448:]
+tools/cove_tap_tool/Cargo.lock:449:
+tools/cove_tap_tool/Cargo.lock:450:[[package]]
+tools/cove_tap_tool/Cargo.lock:451:name = "sha3"
+tools/cove_tap_tool/Cargo.lock:452:version = "0.11.0"
+tools/cove_tap_tool/Cargo.lock:453:source = "registry+https://github.com/rust-lang/crates.io-index"
+tools/cove_tap_tool/Cargo.lock:454:checksum = "be176f1a57ce4e3d31c1a166222d9768de5954f811601fb7ca06fc8203905ce1"
+tools/cove_tap_tool/Cargo.lock:455:dependencies = [
+tools/cove_tap_tool/Cargo.lock:456: "digest",
+tools/cove_tap_tool/Cargo.lock:457: "keccak",
+tools/cove_tap_tool/Cargo.lock:458:]
+tools/cove_tap_tool/Cargo.lock:459:
+tools/cove_tap_tool/Cargo.lock:460:[[package]]
+tools/cove_tap_tool/Cargo.lock:461:name = "sha3"
+tools/cove_tap_tool/Cargo.lock:462:version = "0.12.0"
+tools/cove_tap_tool/Cargo.lock:463:source = "registry+https://github.com/rust-lang/crates.io-index"
+tools/cove_tap_tool/Cargo.lock:464:checksum = "bc9bad02c26382724b2d2692c6f179285e4b54eeecd7968f52a50059c3c11759"
+tools/cove_tap_tool/Cargo.lock:465:dependencies = [
+tools/cove_tap_tool/Cargo.lock:466: "digest",
+tools/cove_tap_tool/Cargo.lock:467: "keccak",
+tools/cove_tap_tool/Cargo.lock:468: "sponge-cursor",
+tools/cove_tap_tool/Cargo.lock:469:]
+tools/cove_tap_tool/Cargo.lock:470:
+tools/cove_tap_tool/Cargo.lock:471:[[package]]
+tools/cove_tap_tool/Cargo.lock:472:name = "sponge-cursor"
+tools/cove_tap_tool/Cargo.lock:473:version = "0.1.0"
+tools/cove_tap_tool/Cargo.lock:474:source = "registry+https://github.com/rust-lang/crates.io-index"
+tools/cove_tap_tool/Cargo.lock:475:checksum = "3a0219bd7d979d58245a4f41f695e1ac9f8befdffadd7f61f1bae9e39abc6620"
+tools/cove_tap_tool/Cargo.lock:476:
+tools/cove_tap_tool/Cargo.lock:477:[[package]]
+tools/cove_tap_tool/Cargo.lock:478:name = "strsim"
+tools/cove_tap_tool/Cargo.lock:479:version = "0.11.1"
+tools/cove_tap_tool/Cargo.lock:480:source = "registry+https://github.com/rust-lang/crates.io-index"
+tools/cove_tap_tool/Cargo.lock:481:checksum = "7da8b5736845d9f2fcb837ea5d9e2628564b3b043a70948a3f0b778838c5fb4f"
+tools/cove_tap_tool/Cargo.lock:482:
+tools/cove_tap_tool/Cargo.lock:483:[[package]]
+tools/cove_tap_tool/Cargo.lock:484:name = "syn"
+tools/cove_tap_tool/Cargo.lock:485:version = "1.0.109"
+tools/cove_tap_tool/Cargo.lock:486:source = "registry+https://github.com/rust-lang/crates.io-index"
+tools/cove_tap_tool/Cargo.lock:487:checksum = "72b64191b275b66ffe2469e8af2c1cfe3bafa67b529ead792a6d0160888b4237"
+tools/cove_tap_tool/Cargo.lock:488:dependencies = [
+tools/cove_tap_tool/Cargo.lock:489: "proc-macro2",
+tools/cove_tap_tool/Cargo.lock:490: "quote",
+tools/cove_tap_tool/Cargo.lock:491: "unicode-ident",
+tools/cove_tap_tool/Cargo.lock:492:]
+tools/cove_tap_tool/Cargo.lock:493:
+tools/cove_tap_tool/Cargo.lock:494:[[package]]
+tools/cove_tap_tool/Cargo.lock:495:name = "syn"
+tools/cove_tap_tool/Cargo.lock:496:version = "3.0.6"
+tools/cove_tap_tool/Cargo.lock:497:source = "registry+https://github.com/rust-lang/crates.io-index"
+tools/cove_tap_tool/Cargo.lock:498:checksum = "8593e8e72159ed2257d083c7a454a85cbf854f37a0966d8d483aff8c8a3ebcee"
+tools/cove_tap_tool/Cargo.lock:499:dependencies = [
+tools/cove_tap_tool/Cargo.lock:500: "proc-macro2",
+tools/cove_tap_tool/Cargo.lock:501: "quote",
+tools/cove_tap_tool/Cargo.lock:502: "unicode-ident",
+tools/cove_tap_tool/Cargo.lock:503:]
+tools/cove_tap_tool/Cargo.lock:504:
+tools/cove_tap_tool/Cargo.lock:505:[[package]]
+tools/cove_tap_tool/Cargo.lock:506:name = "thiserror"
+tools/cove_tap_tool/Cargo.lock:507:version = "2.0.21"
+tools/cove_tap_tool/Cargo.lock:508:source = "registry+https://github.com/rust-lang/crates.io-index"
+tools/cove_tap_tool/Cargo.lock:509:checksum = "09e52cb86a36cede5cb101bf8908837b3e4c6e5e59fe7fd85c23fb56200d189e"
+tools/cove_tap_tool/Cargo.lock:510:dependencies = [
+tools/cove_tap_tool/Cargo.lock:511: "thiserror-impl",
+tools/cove_tap_tool/Cargo.lock:512:]
+tools/cove_tap_tool/Cargo.lock:513:
+tools/cove_tap_tool/Cargo.lock:514:[[package]]
+tools/cove_tap_tool/Cargo.lock:515:name = "thiserror-impl"
+tools/cove_tap_tool/Cargo.lock:516:version = "2.0.21"
+tools/cove_tap_tool/Cargo.lock:517:source = "registry+https://github.com/rust-lang/crates.io-index"
+tools/cove_tap_tool/Cargo.lock:518:checksum = "fe5197923287db20a58125f0bc85c062f7f2c892de97b18c356f9efb14b28524"
+tools/cove_tap_tool/Cargo.lock:519:dependencies = [
+tools/cove_tap_tool/Cargo.lock:520: "proc-macro2",
+tools/cove_tap_tool/Cargo.lock:521: "quote",
+tools/cove_tap_tool/Cargo.lock:522: "syn 3.0.6",
+tools/cove_tap_tool/Cargo.lock:523:]
+tools/cove_tap_tool/Cargo.lock:524:
+tools/cove_tap_tool/Cargo.lock:525:[[package]]
+tools/cove_tap_tool/Cargo.lock:526:name = "thiserror-impl-no-std"
+tools/cove_tap_tool/Cargo.lock:527:version = "2.0.2"
+tools/cove_tap_tool/Cargo.lock:528:source = "registry+https://github.com/rust-lang/crates.io-index"
+tools/cove_tap_tool/Cargo.lock:529:checksum = "58e6318948b519ba6dc2b442a6d0b904ebfb8d411a3ad3e07843615a72249758"
+tools/cove_tap_tool/Cargo.lock:530:dependencies = [
+tools/cove_tap_tool/Cargo.lock:531: "proc-macro2",
+tools/cove_tap_tool/Cargo.lock:532: "quote",
+tools/cove_tap_tool/Cargo.lock:533: "syn 1.0.109",
+tools/cove_tap_tool/Cargo.lock:534:]
+tools/cove_tap_tool/Cargo.lock:535:
+tools/cove_tap_tool/Cargo.lock:536:[[package]]
+tools/cove_tap_tool/Cargo.lock:537:name = "thiserror-no-std"
+tools/cove_tap_tool/Cargo.lock:538:version = "2.0.2"
+tools/cove_tap_tool/Cargo.lock:539:source = "registry+https://github.com/rust-lang/crates.io-index"
+tools/cove_tap_tool/Cargo.lock:540:checksum = "a3ad459d94dd517257cc96add8a43190ee620011bb6e6cdc82dafd97dfafafea"
+tools/cove_tap_tool/Cargo.lock:541:dependencies = [
+tools/cove_tap_tool/Cargo.lock:542: "thiserror-impl-no-std",
+tools/cove_tap_tool/Cargo.lock:543:]
+tools/cove_tap_tool/Cargo.lock:544:
+tools/cove_tap_tool/Cargo.lock:545:[[package]]
+tools/cove_tap_tool/Cargo.lock:546:name = "typenum"
+tools/cove_tap_tool/Cargo.lock:547:version = "1.20.1"
+tools/cove_tap_tool/Cargo.lock:548:source = "registry+https://github.com/rust-lang/crates.io-index"
+tools/cove_tap_tool/Cargo.lock:549:checksum = "b6f5e870be6c3b371b77fe0ee0bafb859fa4964b4404c27de1d380043c4dda20"
+tools/cove_tap_tool/Cargo.lock:550:
+tools/cove_tap_tool/Cargo.lock:551:[[package]]
+tools/cove_tap_tool/Cargo.lock:552:name = "unicode-ident"
+tools/cove_tap_tool/Cargo.lock:553:version = "1.0.26"
+tools/cove_tap_tool/Cargo.lock:554:source = "registry+https://github.com/rust-lang/crates.io-index"
+tools/cove_tap_tool/Cargo.lock:555:checksum = "d245f478577f809a851594d02313b640fb437e0bb33866753cff937863096954"
+tools/cove_tap_tool/Cargo.lock:556:
+tools/cove_tap_tool/Cargo.lock:557:[[package]]
+tools/cove_tap_tool/Cargo.lock:558:name = "universal-hash"
+tools/cove_tap_tool/Cargo.lock:559:version = "0.6.1"
+tools/cove_tap_tool/Cargo.lock:560:source = "registry+https://github.com/rust-lang/crates.io-index"
+tools/cove_tap_tool/Cargo.lock:561:checksum = "f4987bdc12753382e0bec4a65c50738ffaabc998b9cdd1f952fb5f39b0048a96"
+tools/cove_tap_tool/Cargo.lock:562:dependencies = [
+tools/cove_tap_tool/Cargo.lock:563: "crypto-common",
+tools/cove_tap_tool/Cargo.lock:564: "ctutils",
+tools/cove_tap_tool/Cargo.lock:565:]
+tools/cove_tap_tool/Cargo.lock:566:
+tools/cove_tap_tool/Cargo.lock:567:[[package]]
+tools/cove_tap_tool/Cargo.lock:568:name = "utf8parse"
+tools/cove_tap_tool/Cargo.lock:569:version = "0.2.2"
+tools/cove_tap_tool/Cargo.lock:570:source = "registry+https://github.com/rust-lang/crates.io-index"
+tools/cove_tap_tool/Cargo.lock:571:checksum = "06abde3611657adf66d383f00b093d7faecc7fa57071cce2578660c9f1010821"
+tools/cove_tap_tool/Cargo.lock:572:
+tools/cove_tap_tool/Cargo.lock:573:[[package]]
+tools/cove_tap_tool/Cargo.lock:574:name = "windows-link"
+tools/cove_tap_tool/Cargo.lock:575:version = "0.2.1"
+tools/cove_tap_tool/Cargo.lock:576:source = "registry+https://github.com/rust-lang/crates.io-index"
+tools/cove_tap_tool/Cargo.lock:577:checksum = "f0805222e57f7521d6a62e36fa9163bc891acd422f971defe97d64e70d0a4fe5"
+tools/cove_tap_tool/Cargo.lock:578:
+tools/cove_tap_tool/Cargo.lock:579:[[package]]
+tools/cove_tap_tool/Cargo.lock:580:name = "windows-sys"
+tools/cove_tap_tool/Cargo.lock:581:version = "0.61.2"
+tools/cove_tap_tool/Cargo.lock:582:source = "registry+https://github.com/rust-lang/crates.io-index"
+tools/cove_tap_tool/Cargo.lock:583:checksum = "ae137229bcbd6cdf0f7b80a31df61766145077ddf49416a728b02cb3921ff3fc"
+tools/cove_tap_tool/Cargo.lock:584:dependencies = [
+tools/cove_tap_tool/Cargo.lock:585: "windows-link",
+tools/cove_tap_tool/Cargo.lock:586:]
+tools/cove_tap_tool/Cargo.toml:1:[package]
+tools/cove_tap_tool/Cargo.toml:2:name = "cove-tap-tool"
+tools/cove_tap_tool/Cargo.toml:3:version = "0.1.0"
+tools/cove_tap_tool/Cargo.toml:4:authors = ["Wojciech Ozga <woz@zurich.ibm.com>"]
+tools/cove_tap_tool/Cargo.toml:5:description = "Tool to create TVM attestation payload for CoVE's confidential VM"
+tools/cove_tap_tool/Cargo.toml:6:edition = "2021"
+tools/cove_tap_tool/Cargo.toml:7:
+tools/cove_tap_tool/Cargo.toml:8:[dependencies]
+tools/cove_tap_tool/Cargo.toml:9:clap = { version="4.6", features = ["derive"] } # for command line argument parsing
+tools/cove_tap_tool/Cargo.toml:10:clap-num = {version = "1.2", default-features=false }
+tools/cove_tap_tool/Cargo.toml:11:byteorder = {version = "1.5", default-features=false, features = ["std"] } # to serialize numbers using little/big endianness
+tools/cove_tap_tool/Cargo.toml:12:rand = {version = "0.10", default-features=false, features = ["std"] }
+tools/cove_tap_tool/Cargo.toml:13:sha3 = {version = "0.12", default-features=false } # to calculate integrity measurements of kernel, initramfs etc.
+tools/cove_tap_tool/Cargo.toml:14:hybrid-array = {version = "0.4", default-features=false }
+tools/cove_tap_tool/Cargo.toml:15:ml-kem = {version = "0.3", default-features=false }
+tools/cove_tap_tool/Cargo.toml:16:aes-gcm = {version="0.11", features=["aes", "alloc", "rand_core"]}
+tools/cove_tap_tool/Cargo.toml:17:
+tools/cove_tap_tool/Cargo.toml:18:riscv_cove_tap = {path="../../security-monitor/rust-crates/riscv_cove_tap", features=["parser", "serializer"]}
+tools/cove_tap_tool/Cargo.toml:19:
+tools/cove_tap_tool/Cargo.toml:20:thiserror = "2.0"  # provides macros that help removing boilerplate code in the rust error handling
+tools/cove_tap_tool/Makefile:1:#!/usr/bin/env bash
+tools/cove_tap_tool/Makefile:2:# SPDX-FileCopyrightText: 2023 IBM Corporation
+tools/cove_tap_tool/Makefile:3:# SPDX-FileContributor: Wojciech Ozga <woz@zurich.ibm.com>, IBM Research - Zurich
+tools/cove_tap_tool/Makefile:4:# SPDX-License-Identifier: Apache-2.0
+tools/cove_tap_tool/Makefile:5:CARGO = cargo
+tools/cove_tap_tool/Makefile:6:RELEASE = --release
+tools/cove_tap_tool/Makefile:7:EXEC_NAME = cove-tap-tool
+tools/cove_tap_tool/Makefile:8:MAKEFILE_PATH := $(abspath $(lastword $(MAKEFILE_LIST)))
+tools/cove_tap_tool/Makefile:9:MAKEFILE_SOURCE_DIR := $(dir $(realpath $(lastword $(MAKEFILE_LIST))))
+tools/cove_tap_tool/Makefile:10:
+tools/cove_tap_tool/Makefile:11:ACE_DIR := $(if $(ACE_DIR),$(ACE_DIR),$(MAKEFILE_SOURCE_DIR)../build/target/)
+tools/cove_tap_tool/Makefile:12:
+tools/cove_tap_tool/Makefile:13:WORK_DIR					=  $(ACE_DIR)/cove_tap_tool
+tools/cove_tap_tool/Makefile:14:TOOLS_WORK_DIR				?=  $(ACE_DIR)/tools
+tools/cove_tap_tool/Makefile:15:
+tools/cove_tap_tool/Makefile:16:PLATFORM_RISCV_ABI 			?= lp64d
+tools/cove_tap_tool/Makefile:17:PLATFORM_RISCV_ISA 			?= rv64gc
+tools/cove_tap_tool/Makefile:18:PLATFORM_RISCV_XLEN 		?= 64
+tools/cove_tap_tool/Makefile:19:CROSS_COMPILE 				?= riscv64-unknown-linux-gnu-
+tools/cove_tap_tool/Makefile:20:
+tools/cove_tap_tool/Makefile:21:all: build
+tools/cove_tap_tool/Makefile:22:
+tools/cove_tap_tool/Makefile:23:build: fmt
+tools/cove_tap_tool/Makefile:24:	echo "Building Local Attestation utility" ;\
+tools/cove_tap_tool/Makefile:25:	mkdir -p $(WORK_DIR) ; \
+tools/cove_tap_tool/Makefile:26:	rm -f $(WORK_DIR)/release/$(EXEC_NAME); \
+tools/cove_tap_tool/Makefile:27:	RUSTFLAGS='$(RUSTFLAGS)' CARGO_TARGET_DIR=$(WORK_DIR) INSTALL_DIR=$(ACE_DIR)/ $(CARGO) build $(RELEASE) ; \
+tools/cove_tap_tool/Makefile:28:	cp $(WORK_DIR)/release/$(EXEC_NAME) $(TOOLS_WORK_DIR)/ ;
+tools/cove_tap_tool/Makefile:29:
+tools/cove_tap_tool/Makefile:30:doc:
+tools/cove_tap_tool/Makefile:31:	@$(CARGO) doc
+tools/cove_tap_tool/Makefile:32:
+tools/cove_tap_tool/Makefile:33:check: build test
+tools/cove_tap_tool/Makefile:34:
+tools/cove_tap_tool/Makefile:35:audit:
+tools/cove_tap_tool/Makefile:36:	@$(CARGO) audit
+tools/cove_tap_tool/Makefile:37:
+tools/cove_tap_tool/Makefile:38:clippy:
+tools/cove_tap_tool/Makefile:39:	@$(CARGO) clippy
+tools/cove_tap_tool/Makefile:40:
+tools/cove_tap_tool/Makefile:41:fmt:
+tools/cove_tap_tool/Makefile:42:	@$(CARGO) fmt
+tools/cove_tap_tool/Makefile:43:
+tools/cove_tap_tool/Makefile:44:bench:
+tools/cove_tap_tool/Makefile:45:	@$(CARGO) bench
+tools/cove_tap_tool/Makefile:46:
+tools/cove_tap_tool/Makefile:47:clean:
+tools/cove_tap_tool/Makefile:48:	@$(CARGO) clean
+tools/cove_tap_tool/Makefile:49:	rm -f bin/$(EXEC_NAME)
+tools/cove_tap_tool/Makefile:50:
+tools/cove_tap_tool/Makefile:51:.PHONY: all build hack opensbi doc check test bench clean
+tools/cove_tap_tool/README.md:1:# Usage
+tools/cove_tap_tool/README.md:2:
+tools/cove_tap_tool/README.md:3:Generate symmetric key
+tools/cove_tap_tool/rust-toolchain.toml:1:[toolchain]
+tools/cove_tap_tool/rust-toolchain.toml:2:channel = "stable"
+tools/objdump_baremetal.sh:1:#!/bin/bash
+tools/objdump_baremetal.sh:2:# SPDX-FileCopyrightText: 2023 IBM Corporation
+tools/objdump_baremetal.sh:3:# SPDX-FileContributor: Wojciech Ozga <woz@zurich.ibm.com>, IBM Research - Zurich
+tools/objdump_baremetal.sh:4:# SPDX-License-Identifier: Apache-2.0
+tools/objdump_baremetal.sh:5:
+tools/objdump_baremetal.sh:6:if [ -z ${ACE_DIR} ]; then
+tools/objdump_baremetal.sh:7:    echo "ACE_DIR must point to the directory where ACE is installed"
+tools/objdump_baremetal.sh:8:    exit 1
+tools/objdump_baremetal.sh:9:fi
+tools/objdump_baremetal.sh:10:
+tools/objdump_baremetal.sh:11:riscv64-linux-gnu-objdump -S ${ACE_DIR}/security-monitor/opensbi/platform/generic/firmware/fw_payload.elf
+$ section '7. Index the operations that need review'
+
+===== 7. Index the operations that need review =====
+$ git grep -nE 'rm -rf|kill|sudo|hostfwd|git apply|patch |\$\(CARGO\)|cargo fmt|nproc|JLEVEL|-j ?[0-9]' -- ':(exclude)verification' ':(exclude)*.rs' ':(exclude)*.md'
+.github/workflows/build.yml:20:      run: sudo apt-get update -y && sudo apt-get -qq -y install autoconf automake autotools-dev curl python3 libmpc-dev libmpfr-dev libgmp-dev gawk build-essential bison flex texinfo gperf libtool patchutils bc zlib1g-dev libexpat-dev
+.github/workflows/build.yml:22:      run: sudo apt-get update -y && sudo apt-get -qq -y install clang libclang-dev llvm-dev
+.github/workflows/build.yml:24:      run: sudo apt-get update -y && sudo apt-get -qq -y install git libglib2.0-dev libfdt-dev libpixman-1-dev zlib1g-dev ninja-build python3-venv libslirp-dev xz-utils
+.github/workflows/build.yml:26:      run: sudo apt-get update -y && sudo apt-get -qq -y install unzip sed binutils diffutils build-essential bash patch gzip bzip2 perl tar cpio unzip rsync file bc findutils
+.github/workflows/build.yml:28:      run: sudo apt-get update -y && sudo apt-get -qq install -y sshpass
+.github/workflows/build.yml:38:      run: ACE_DIR=$(pwd)/build/ make --silent -j8 devtools
+.github/workflows/build.yml:40:      run: ACE_DIR=$(pwd)/build/ make --silent -j8 emulator
+.github/workflows/build.yml:42:      run: ACE_DIR=$(pwd)/build/ make --silent -j8 tools
+.github/workflows/build.yml:44:      run: ACE_DIR=$(pwd)/build/ make --silent -j8 hypervisor
+.github/workflows/build.yml:46:      run: ACE_DIR=$(pwd)/build/ make --silent -j8 firmware
+.github/workflows/build.yml:48:      run: ACE_DIR=$(pwd)/build/ make --silent -j8 confidential_vms
+.github/workflows/build.yml:50:      run: ACE_DIR=$(pwd)/build/ make --silent -j8
+.github/workflows/verify.yml:20:      run: sudo apt update -y && sudo apt install -y pkg-config git rsync tar unzip m4 time curl ocaml build-essential bubblewrap gawk libgmp-dev python3 python-is-python3 libmpfr-dev && python3 -m pip install setuptools
+.github/workflows/verify.yml:30:      run: sudo apt update && sudo apt install libssl-dev -y
+.github/workflows/verify.yml:50:      run: sudo apt -qq -y install wget autoconf automake autotools-dev curl python3 libmpc-dev libmpfr-dev libgmp-dev gawk build-essential bison flex texinfo gperf libtool patchutils bc zlib1g-dev libexpat-dev xz-utils
+.github/workflows/verify.yml:52:      run: sudo apt -qq -y install clang libclang-dev llvm-dev
+.github/workflows/verify.yml:54:      run: sudo apt -qq -y install unzip sed binutils diffutils build-essential bash patch gzip bzip2 perl tar cpio unzip rsync file bc findutils
+.github/workflows/verify.yml:84:            DUNEFLAGS="-j 1 --display verbose" dune build
+Makefile:43:		rm -rf $(RISCV_GNU_TOOLCHAIN_WORK_DIR); \
+Makefile:79:		rm -rf $(QEMU_SOURCE_DIR); \
+Makefile:97:	rm -rf $(ACE_DIR)/security_monitor/verify/
+Makefile:100:	rm -rf $(ACE_DIR)/security_monitor/verify/
+Makefile:104:	rm -rf $(ACE_DIR)
+confidential-vms/linux_vm/Makefile:47:		rm -rf $(LINUX_VM_BUILDROOT_WORK_DIR); \
+confidential-vms/linux_vm/Makefile:60:		$(MAKE) -s -C $(LINUX_VM_BUILDROOT_SOURCE_DIR) RISCV=$(RISCV_GNU_TOOLCHAIN_WORK_DIR) PATH=$(PATH) O=$(LINUX_VM_BUILDROOT_WORK_DIR) CROSS_COMPILE=$(CROSS_COMPILE) BR2_JLEVEL=0 olddefconfig; \
+confidential-vms/linux_vm/Makefile:61:		$(MAKE) -s -C $(LINUX_VM_BUILDROOT_SOURCE_DIR) RISCV=$(RISCV_GNU_TOOLCHAIN_WORK_DIR) PATH=$(PATH) O=$(LINUX_VM_BUILDROOT_WORK_DIR) BR2_JLEVEL=0; \
+confidential-vms/linux_vm/Makefile:70:	$(MAKE) -s -C $(LINUX_VM_BUILDROOT_SOURCE_DIR) RISCV=$(RISCV_GNU_TOOLCHAIN_WORK_DIR) PATH=$(PATH) O=$(LINUX_VM_BUILDROOT_WORK_DIR) CROSS_COMPILE=$(CROSS_COMPILE) BR2_JLEVEL=0 linux-rebuild all
+confidential-vms/linux_vm/Makefile:80:	rm -rf $(HYPERVISOR_OVERLAY_LINUX_VM_DIR) && mkdir -p $(HYPERVISOR_OVERLAY_LINUX_VM_DIR) ;\
+confidential-vms/linux_vm/Makefile:98:	rm -rf $(ACE_DIR)
+confidential-vms/linux_vm/hypervisor_rootfs/run_linux_vm_qemu.sh:74:    -netdev user,id=net0,net=192.168.100.1/24,dhcpstart=192.168.100.128,hostfwd=tcp::${HOST_PORT}-:22
+hypervisor/Makefile:39:		rm -rf $(BUILDROOT_WORK_DIR); \
+hypervisor/Makefile:53:		$(MAKE) -s -C $(BUILDROOT_SOURCE_DIR) RISCV=$(RISCV_GNU_TOOLCHAIN_WORK_DIR) PATH=$(PATH) O=$(BUILDROOT_WORK_DIR) CROSS_COMPILE=$(CROSS_COMPILE) BR2_JLEVEL=0 olddefconfig ;\
+hypervisor/Makefile:54:		$(MAKE) -s -C $(BUILDROOT_SOURCE_DIR) RISCV=$(RISCV_GNU_TOOLCHAIN_WORK_DIR) PATH=$(PATH) O=$(BUILDROOT_WORK_DIR) BR2_JLEVEL=0 ;\
+hypervisor/Makefile:67:	$(MAKE) -s -C $(BUILDROOT_SOURCE_DIR) RISCV=$(RISCV_GNU_TOOLCHAIN_WORK_DIR) PATH=$(PATH) O=$(BUILDROOT_WORK_DIR) BR2_JLEVEL=0 linux-rebuild all; \
+hypervisor/Makefile:68:	#$(MAKE) -s -C $(BUILDROOT_SOURCE_DIR) RISCV=$(RISCV_GNU_TOOLCHAIN_WORK_DIR) PATH=$(PATH) O=$(BUILDROOT_WORK_DIR) BR2_JLEVEL=0 qemu-rebuild all
+hypervisor/Makefile:77:        rm -rf ${KVMTOOL_WORK_DIR}/dtc ;\
+hypervisor/Makefile:85:		rm -rf ${KVMTOOL_WORK_DIR}/kvmtool ;\
+hypervisor/Makefile:89:		ARCH=riscv LIBFDT_DIR=${KVMTOOL_WORK_DIR}/dtc/build/ make lkvm-static -j$(nproc) ;\
+hypervisor/Makefile:95:	rm -rf $(HYPERVISOR_WORK_DIR)
+hypervisor/patches/linux/6.3-rc4/0001-cove.patch:11666:+This patch series adds the RISC-V Confidential VM Extension (CoVE) support to
+hypervisor/patches/linux/6.3-rc4/0001-cove.patch:11784:+This patch series implements the APIs defined by CoVE. The current TSM implementation
+hypervisor/rootfs/common.sh:8:function kill_confidential_vm() {
+hypervisor/rootfs/common.sh:10:    kill -9 $PID
+hypervisor/rootfs/test_attestation.sh:22:kill_confidential_vm
+hypervisor/rootfs/test_smp.sh:20:kill_confidential_vm
+security-monitor/Makefile:34:	RUSTFLAGS='$(RUSTFLAGS)' CARGO_TARGET_DIR=$(SM_WORK_DIR) INSTALL_DIR=$(ACE_DIR) $(CARGO) build $(RELEASE) $(TARGET) --features verbose ; \
+security-monitor/Makefile:36:	rm -rf $(OPENSBI_WORK_DIR)/
+security-monitor/Makefile:41:	RUSTFLAGS='$(RUSTFLAGS)' CARGO_TARGET_DIR=$(SM_WORK_DIR) INSTALL_DIR=$(ACE_DIR) $(CARGO) refinedrust -- $(RELEASE) $(TARGET) --features verbose; \
+security-monitor/Makefile:42:	rm -rf $(OPENSBI_WORK_DIR)/
+security-monitor/Makefile:48:	RUSTFLAGS='$(RUSTFLAGS)' CARGO_TARGET_DIR=$(SM_WORK_DIR) INSTALL_DIR=$(ACE_DIR) $(CARGO) build $(TARGET) --features verbose ; \
+security-monitor/Makefile:50:	rm -rf $(OPENSBI_WORK_DIR)/
+security-monitor/Makefile:56:		cd $(OPENSBI_SOURCE_DIR); git apply --whitespace=fix $(OPENSBI_PATCH); cd $(MAKEFILE_SOURCE_DIR);\
+security-monitor/Makefile:60:		SM_WORK_DIR=$(SM_WORK_DIR) $(MAKE) -j$(nproc) -C $(OPENSBI_SOURCE_DIR) O=$(OPENSBI_WORK_DIR) PLATFORM_DIR="$(PLATFORM_SOURCE_DIR)" PLATFORM="generic" CROSS_COMPILE=$(CROSS_COMPILE) FW_PAYLOAD_PATH=$(LINUX_IMAGE) FW_PAYLOAD=y PLATFORM_RISCV_XLEN=$(PLATFORM_RISCV_XLEN) PLATFORM_RISCV_ISA=$(PLATFORM_RISCV_ISA) PLATFORM_RISCV_ABI=$(PLATFORM_RISCV_ABI); \
+security-monitor/Makefile:67:		cd $(OPENSBI_SOURCE_DIR); git apply -R --whitespace=fix $(OPENSBI_PATCH); cd $(MAKEFILE_SOURCE_DIR); \
+security-monitor/Makefile:72:	@$(CARGO) doc
+security-monitor/Makefile:77:	@$(CARGO) clippy
+security-monitor/Makefile:80:	@$(CARGO) fmt
+security-monitor/Makefile:83:	@$(CARGO) bench
+security-monitor/Makefile:86:	@$(CARGO) clean
+security-monitor/platform/p550/patches/meta-sifive/ace.patch:1:diff --git a/recipes-bsp/opensbi/opensbi-sifive-hf-prem/0009-ace.patch b/recipes-bsp/opensbi/opensbi-sifive-hf-prem/0009-ace.patch
+security-monitor/platform/p550/patches/meta-sifive/ace.patch:161: 	file://0005-lib-sbi-Configure-CSR-registers.patch \
+security-monitor/platform/p550/patches/meta-sifive/ace.patch:162: 	file://0006-lib-sbi-eic770x-Add-PMP-for-TOR-region.patch \
+security-monitor/platform/p550/patches/meta-sifive/ace.patch:163: 	file://0007-sbi-init-Modify-CSR-values.patch \
+security-monitor/platform/p550/patches/meta-sifive/ace.patch:164:+	file://0009-ace.patch \
+security-monitor/platform/p550/patches/meta-sifive/ace.patch:177:diff --git a/recipes-bsp/u-boot/files/0002-ace-p550.patch b/recipes-bsp/u-boot/files/0002-ace-p550.patch
+security-monitor/platform/p550/patches/meta-sifive/ace.patch:205:+           file://0001-riscv-hifive_premier_p550-defined-boot-media-sequenc.patch \
+security-monitor/platform/p550/patches/meta-sifive/ace.patch:206:+           file://0002-ace-p550.patch \
+security-monitor/platform/p550/patches/openembedded-core/qemu_ace.patch:6:            file://0003-linux-user-Add-strace-for-shmat.patch \
+security-monitor/platform/p550/patches/openembedded-core/qemu_ace.patch:7:            file://0004-linux-user-Rewrite-target_shmat.patch \
+security-monitor/platform/p550/patches/openembedded-core/qemu_ace.patch:8:            file://0005-tests-tcg-Check-that-shmat-does-not-break-proc-self-.patch \
+security-monitor/platform/p550/patches/openembedded-core/qemu_ace.patch:9:+           file://0013-ace_cove.patch \
+security-monitor/platform/p550/patches/openembedded-core/qemu_ace.patch:10:            file://CVE-2023-6683.patch \
+security-monitor/platform/p550/patches/openembedded-core/qemu_ace.patch:13:diff --git a/meta/recipes-devtools/qemu/qemu/0013-ace_cove.patch b/meta/recipes-devtools/qemu/qemu/0013-ace_cove.patch
+security-monitor/rust-crates/opensbi.sh:30:rm -rf ${WORK_DIR}
+security-monitor/rust-crates/opensbi.sh:35:make PLATFORM_RISCV_XLEN=${PLATFORM_RISCV_XLEN} PLATFORM_RISCV_ISA=${PLATFORM_RISCV_ISA} PLATFORM_RISCV_ABI=${PLATFORM_RISCV_ABI} CROSS_COMPILE=${CROSS_COMPILE} O=${WORK_DIR} PLATFORM=generic -j$(nproc)
+security-monitor/rust-crates/opensbi.sh:36:make PLATFORM_RISCV_XLEN=${PLATFORM_RISCV_XLEN} PLATFORM_RISCV_ISA=${PLATFORM_RISCV_ISA} PLATFORM_RISCV_ABI=${PLATFORM_RISCV_ABI} CROSS_COMPILE=${CROSS_COMPILE} I=${WORK_DIR} PLATFORM=generic install  -j$(nproc)
+tools/ace_run_hypervisor.sh:66:    -netdev user,id=net0,net=192.168.100.1/24,dhcpstart=192.168.100.128,hostfwd=tcp::${HOST_PORT}-:22 \
+tools/ace_start.sh:27:# kill the VM
+tools/ace_start.sh:28:kill_qemu ${HYPERVISOR_TEST_PORT}
+tools/ace_stop.sh:14:kill_users_qemu
+tools/ace_test.sh:27:# kill the VM
+tools/ace_test.sh:28:kill_qemu ${HYPERVISOR_TEST_PORT}
+tools/common.sh:22:function kill_users_qemu () {
+tools/common.sh:26:        kill -9 $PID
+tools/common.sh:31:# Usage: kill_qemu "22"
+tools/common.sh:32:function kill_qemu () {
+tools/common.sh:36:        kill -9 $PID
+tools/cove_tap_tool/Makefile:27:	RUSTFLAGS='$(RUSTFLAGS)' CARGO_TARGET_DIR=$(WORK_DIR) INSTALL_DIR=$(ACE_DIR)/ $(CARGO) build $(RELEASE) ; \
+tools/cove_tap_tool/Makefile:31:	@$(CARGO) doc
+tools/cove_tap_tool/Makefile:36:	@$(CARGO) audit
+tools/cove_tap_tool/Makefile:39:	@$(CARGO) clippy
+tools/cove_tap_tool/Makefile:42:	@$(CARGO) fmt
+tools/cove_tap_tool/Makefile:45:	@$(CARGO) bench
+tools/cove_tap_tool/Makefile:48:	@$(CARGO) clean
+$ git grep -nE 'https?://|git://' -- ':(exclude)verification' ':(exclude)*.rs' ':(exclude)*.md' ':(exclude)*Makefile*'
+.github/workflows/build.yml:30:      run: curl https://sh.rustup.rs -sSf | sh -s -- -y
+.github/workflows/verify.yml:22:      run: curl "https://github.com/ocaml/opam/releases/download/2.5.0/opam-2.5.0-x86_64-linux" -Lo /usr/local/bin/opam && chmod +x /usr/local/bin/opam
+.github/workflows/verify.yml:32:      run: curl --proto "=https" --tlsv1.2 -sSf https://sh.rustup.rs | bash /dev/stdin "-y"
+.gitignore:15:# More information here https://doc.rust-lang.org/cargo/guide/cargo-toml-vs-cargo-lock.html
+.gitmodules:3:	url = https://github.com/buildroot/buildroot.git
+.gitmodules:6:	url = https://github.com/riscv-software-src/opensbi.git
+.gitmodules:9:	url = https://gitlab.mpi-sws.org/lgaeher/refinedrust-dev.git
+LICENSE:3:                        http://www.apache.org/licenses/
+LICENSE:195:       http://www.apache.org/licenses/LICENSE-2.0
+hypervisor/patches/linux/6.3-rc4/0001-cove.patch:36:+$id: http://devicetree.org/schemas/interrupt-controller/riscv,aplic.yaml#
+hypervisor/patches/linux/6.3-rc4/0001-cove.patch:37:+$schema: http://devicetree.org/meta-schemas/core.yaml#
+hypervisor/patches/linux/6.3-rc4/0001-cove.patch:48:+  https://github.com/riscv/riscv-aia.
+hypervisor/patches/linux/6.3-rc4/0001-cove.patch:201:+$id: http://devicetree.org/schemas/interrupt-controller/riscv,imsics.yaml#
+hypervisor/patches/linux/6.3-rc4/0001-cove.patch:202:+$schema: http://devicetree.org/meta-schemas/core.yaml#
+hypervisor/patches/linux/6.3-rc4/0001-cove.patch:212:+  AIA specification can be found at https://github.com/riscv/riscv-aia.
+hypervisor/patches/linux/6.3-rc4/0001-cove.patch:11885:+https://github.com/rivosinc/salus
+hypervisor/patches/linux/6.3-rc4/0001-cove.patch:11909:+   https://lkml.org/lkml/2022/1/18/395
+hypervisor/patches/linux/6.3-rc4/0001-cove.patch:11928:+    https://github.com/riscv-non-isa/riscv-ap-tee/blob/main/specification/riscv-aptee-spec.pdf
+hypervisor/patches/linux/6.3-rc4/0001-cove.patch:11929:+[1] https://lists.riscv.org/g/sig-hypervisors/message/260 
+hypervisor/patches/linux/6.3-rc4/0001-cove.patch:11930:+[2] https://github.com/riscv/riscv-aia/releases/download/1.0-RC2/riscv-interrupts-1.0-RC2.pdf 
+hypervisor/patches/linux/6.3-rc4/0001-cove.patch:11931:+[3] https://github.com/rivosinc/linux/tree/cove_integration_device_filtering1
+hypervisor/patches/linux/6.3-rc4/0001-cove.patch:11932:+[4] https://github.com/intel/tdx/commits/guest-filter-upstream 
+hypervisor/patches/linux/6.3-rc4/0001-cove.patch:11933:+[5] https://lists.riscv.org/g/tech-ap-tee/message/83
+hypervisor/patches/linux/6.3-rc4/0001-cove.patch:11934:+[6] https://github.com/rivosinc/cove/wiki/CoVE-KVM-RISCV64-on-QEMU
+hypervisor/patches/linux/6.3-rc4/0001-cove.patch:11935:+[7] https://github.com/rivosinc/linux/commits/cove-integration
+hypervisor/patches/linux/6.3-rc4/0001-cove.patch:11936:+[8] https://github.com/rivosinc/kvmtool/tree/cove-integration-03072023
+hypervisor/patches/qemu/8.1.1/cove.patch:25:  * this program.  If not, see <http://www.gnu.org/licenses/>.
+hypervisor/patches/qemu/8.1.1/cove.patch:131:  * this program.  If not, see <http://www.gnu.org/licenses/>.
+renovate.json:2:  "$schema": "https://docs.renovatebot.com/renovate-schema.json",
+security-monitor/.rustfmt.toml:1:# check: https://rust-lang.github.io/rustfmt/
+security-monitor/Cargo.lock:8:source = "registry+https://github.com/rust-lang/crates.io-index"
+security-monitor/Cargo.lock:18:source = "registry+https://github.com/rust-lang/crates.io-index"
+security-monitor/Cargo.lock:29:source = "registry+https://github.com/rust-lang/crates.io-index"
+security-monitor/Cargo.lock:43:source = "registry+https://github.com/rust-lang/crates.io-index"
+security-monitor/Cargo.lock:52:source = "registry+https://github.com/rust-lang/crates.io-index"
+security-monitor/Cargo.lock:58:source = "registry+https://github.com/rust-lang/crates.io-index"
+security-monitor/Cargo.lock:75:source = "registry+https://github.com/rust-lang/crates.io-index"
+security-monitor/Cargo.lock:81:source = "registry+https://github.com/rust-lang/crates.io-index"
+security-monitor/Cargo.lock:90:source = "registry+https://github.com/rust-lang/crates.io-index"
+security-monitor/Cargo.lock:99:source = "registry+https://github.com/rust-lang/crates.io-index"
+security-monitor/Cargo.lock:105:source = "registry+https://github.com/rust-lang/crates.io-index"
+security-monitor/Cargo.lock:116:source = "registry+https://github.com/rust-lang/crates.io-index"
+security-monitor/Cargo.lock:126:source = "registry+https://github.com/rust-lang/crates.io-index"
+security-monitor/Cargo.lock:132:source = "registry+https://github.com/rust-lang/crates.io-index"
+security-monitor/Cargo.lock:138:source = "registry+https://github.com/rust-lang/crates.io-index"
+security-monitor/Cargo.lock:147:source = "registry+https://github.com/rust-lang/crates.io-index"
+security-monitor/Cargo.lock:157:source = "registry+https://github.com/rust-lang/crates.io-index"
+security-monitor/Cargo.lock:166:source = "registry+https://github.com/rust-lang/crates.io-index"
+security-monitor/Cargo.lock:175:source = "registry+https://github.com/rust-lang/crates.io-index"
+security-monitor/Cargo.lock:185:source = "registry+https://github.com/rust-lang/crates.io-index"
+security-monitor/Cargo.lock:191:source = "registry+https://github.com/rust-lang/crates.io-index"
+security-monitor/Cargo.lock:197:source = "registry+https://github.com/rust-lang/crates.io-index"
+security-monitor/Cargo.lock:221:source = "registry+https://github.com/rust-lang/crates.io-index"
+security-monitor/Cargo.lock:230:source = "registry+https://github.com/rust-lang/crates.io-index"
+security-monitor/Cargo.lock:236:source = "registry+https://github.com/rust-lang/crates.io-index"
+security-monitor/Cargo.lock:246:source = "registry+https://github.com/rust-lang/crates.io-index"
+security-monitor/Cargo.lock:255:source = "registry+https://github.com/rust-lang/crates.io-index"
+security-monitor/Cargo.lock:265:source = "registry+https://github.com/rust-lang/crates.io-index"
+security-monitor/Cargo.lock:275:source = "registry+https://github.com/rust-lang/crates.io-index"
+security-monitor/Cargo.lock:281:source = "registry+https://github.com/rust-lang/crates.io-index"
+security-monitor/Cargo.lock:287:source = "registry+https://github.com/rust-lang/crates.io-index"
+security-monitor/Cargo.lock:296:source = "registry+https://github.com/rust-lang/crates.io-index"
+security-monitor/Cargo.lock:305:source = "registry+https://github.com/rust-lang/crates.io-index"
+security-monitor/Cargo.lock:311:source = "registry+https://github.com/rust-lang/crates.io-index"
+security-monitor/Cargo.lock:324:source = "registry+https://github.com/rust-lang/crates.io-index"
+security-monitor/Cargo.lock:335:source = "registry+https://github.com/rust-lang/crates.io-index"
+security-monitor/Cargo.lock:345:source = "registry+https://github.com/rust-lang/crates.io-index"
+security-monitor/Cargo.lock:356:source = "registry+https://github.com/rust-lang/crates.io-index"
+security-monitor/Cargo.lock:379:source = "registry+https://github.com/rust-lang/crates.io-index"
+security-monitor/Cargo.lock:390:source = "registry+https://github.com/rust-lang/crates.io-index"
+security-monitor/Cargo.lock:399:source = "registry+https://github.com/rust-lang/crates.io-index"
+security-monitor/Cargo.lock:408:source = "registry+https://github.com/rust-lang/crates.io-index"
+security-monitor/Cargo.lock:414:source = "registry+https://github.com/rust-lang/crates.io-index"
+security-monitor/Cargo.lock:426:source = "registry+https://github.com/rust-lang/crates.io-index"
+security-monitor/Cargo.lock:437:source = "registry+https://github.com/rust-lang/crates.io-index"
+security-monitor/Cargo.lock:443:source = "registry+https://github.com/rust-lang/crates.io-index"
+security-monitor/Cargo.lock:459:source = "registry+https://github.com/rust-lang/crates.io-index"
+security-monitor/Cargo.lock:465:source = "registry+https://github.com/rust-lang/crates.io-index"
+security-monitor/Cargo.lock:490:source = "registry+https://github.com/rust-lang/crates.io-index"
+security-monitor/Cargo.lock:499:source = "registry+https://github.com/rust-lang/crates.io-index"
+security-monitor/Cargo.lock:505:source = "registry+https://github.com/rust-lang/crates.io-index"
+security-monitor/Cargo.lock:515:source = "registry+https://github.com/rust-lang/crates.io-index"
+security-monitor/Cargo.lock:521:source = "registry+https://github.com/rust-lang/crates.io-index"
+security-monitor/Cargo.lock:527:source = "registry+https://github.com/rust-lang/crates.io-index"
+security-monitor/Cargo.lock:533:source = "registry+https://github.com/rust-lang/crates.io-index"
+security-monitor/Cargo.lock:544:source = "registry+https://github.com/rust-lang/crates.io-index"
+security-monitor/Cargo.lock:555:source = "registry+https://github.com/rust-lang/crates.io-index"
+security-monitor/Cargo.lock:566:source = "registry+https://github.com/rust-lang/crates.io-index"
+security-monitor/Cargo.lock:575:source = "registry+https://github.com/rust-lang/crates.io-index"
+security-monitor/Cargo.lock:581:source = "registry+https://github.com/rust-lang/crates.io-index"
+security-monitor/Cargo.lock:587:source = "registry+https://github.com/rust-lang/crates.io-index"
+security-monitor/Cargo.lock:597:source = "registry+https://github.com/rust-lang/crates.io-index"
+security-monitor/Cargo.toml:49:# required by https://crates.io/crates/cargo-call-stack
+security-monitor/platform/p550/patches/meta-sifive/ace.patch:203: SRC_URI = "git://github.com/eswincomputing/u-boot.git;protocol=https;branch=u-boot-2024.01-EIC7X \
+security-monitor/platform/p550/patches/openembedded-core/qemu_ace.patch:5:@@ -39,6 +39,7 @@ SRC_URI = "https://download.qemu.org/${BPN}-${PV}.tar.xz \
+security-monitor/platform/p550/patches/openembedded-core/qemu_ace.patch:20:+Upstream-Status: Submitted [https://lore.kernel.org/qemu-devel/20220403095234.2210-1-yuval.shaia.ml@gmail.com/]
+security-monitor/platform/p550/patches/openembedded-core/qemu_ace.patch:67:+  * this program.  If not, see <http://www.gnu.org/licenses/>.
+security-monitor/platform/p550/patches/openembedded-core/qemu_ace.patch:206:+  * this program.  If not, see <http://www.gnu.org/licenses/>.
+tools/cove_tap_tool/Cargo.lock:8:source = "registry+https://github.com/rust-lang/crates.io-index"
+tools/cove_tap_tool/Cargo.lock:18:source = "registry+https://github.com/rust-lang/crates.io-index"
+tools/cove_tap_tool/Cargo.lock:29:source = "registry+https://github.com/rust-lang/crates.io-index"
+tools/cove_tap_tool/Cargo.lock:43:source = "registry+https://github.com/rust-lang/crates.io-index"
+tools/cove_tap_tool/Cargo.lock:58:source = "registry+https://github.com/rust-lang/crates.io-index"
+tools/cove_tap_tool/Cargo.lock:64:source = "registry+https://github.com/rust-lang/crates.io-index"
+tools/cove_tap_tool/Cargo.lock:73:source = "registry+https://github.com/rust-lang/crates.io-index"
+tools/cove_tap_tool/Cargo.lock:82:source = "registry+https://github.com/rust-lang/crates.io-index"
+tools/cove_tap_tool/Cargo.lock:93:source = "registry+https://github.com/rust-lang/crates.io-index"
+tools/cove_tap_tool/Cargo.lock:99:source = "registry+https://github.com/rust-lang/crates.io-index"
+tools/cove_tap_tool/Cargo.lock:108:source = "registry+https://github.com/rust-lang/crates.io-index"
+tools/cove_tap_tool/Cargo.lock:114:source = "registry+https://github.com/rust-lang/crates.io-index"
+tools/cove_tap_tool/Cargo.lock:120:source = "registry+https://github.com/rust-lang/crates.io-index"
+tools/cove_tap_tool/Cargo.lock:131:source = "registry+https://github.com/rust-lang/crates.io-index"
+tools/cove_tap_tool/Cargo.lock:142:source = "registry+https://github.com/rust-lang/crates.io-index"
+tools/cove_tap_tool/Cargo.lock:152:source = "registry+https://github.com/rust-lang/crates.io-index"
+tools/cove_tap_tool/Cargo.lock:161:source = "registry+https://github.com/rust-lang/crates.io-index"
+tools/cove_tap_tool/Cargo.lock:173:source = "registry+https://github.com/rust-lang/crates.io-index"
+tools/cove_tap_tool/Cargo.lock:185:source = "registry+https://github.com/rust-lang/crates.io-index"
+tools/cove_tap_tool/Cargo.lock:191:source = "registry+https://github.com/rust-lang/crates.io-index"
+tools/cove_tap_tool/Cargo.lock:197:source = "registry+https://github.com/rust-lang/crates.io-index"
+tools/cove_tap_tool/Cargo.lock:219:source = "registry+https://github.com/rust-lang/crates.io-index"
+tools/cove_tap_tool/Cargo.lock:225:source = "registry+https://github.com/rust-lang/crates.io-index"
+tools/cove_tap_tool/Cargo.lock:234:source = "registry+https://github.com/rust-lang/crates.io-index"
+tools/cove_tap_tool/Cargo.lock:245:source = "registry+https://github.com/rust-lang/crates.io-index"
+tools/cove_tap_tool/Cargo.lock:254:source = "registry+https://github.com/rust-lang/crates.io-index"
+tools/cove_tap_tool/Cargo.lock:263:source = "registry+https://github.com/rust-lang/crates.io-index"
+tools/cove_tap_tool/Cargo.lock:273:source = "registry+https://github.com/rust-lang/crates.io-index"
+tools/cove_tap_tool/Cargo.lock:285:source = "registry+https://github.com/rust-lang/crates.io-index"
+tools/cove_tap_tool/Cargo.lock:294:source = "registry+https://github.com/rust-lang/crates.io-index"
+tools/cove_tap_tool/Cargo.lock:300:source = "registry+https://github.com/rust-lang/crates.io-index"
+tools/cove_tap_tool/Cargo.lock:310:source = "registry+https://github.com/rust-lang/crates.io-index"
+tools/cove_tap_tool/Cargo.lock:319:source = "registry+https://github.com/rust-lang/crates.io-index"
+tools/cove_tap_tool/Cargo.lock:325:source = "registry+https://github.com/rust-lang/crates.io-index"
+tools/cove_tap_tool/Cargo.lock:335:source = "registry+https://github.com/rust-lang/crates.io-index"
+tools/cove_tap_tool/Cargo.lock:345:source = "registry+https://github.com/rust-lang/crates.io-index"
+tools/cove_tap_tool/Cargo.lock:351:source = "registry+https://github.com/rust-lang/crates.io-index"
+tools/cove_tap_tool/Cargo.lock:364:source = "registry+https://github.com/rust-lang/crates.io-index"
+tools/cove_tap_tool/Cargo.lock:375:source = "registry+https://github.com/rust-lang/crates.io-index"
+tools/cove_tap_tool/Cargo.lock:384:source = "registry+https://github.com/rust-lang/crates.io-index"
+tools/cove_tap_tool/Cargo.lock:390:source = "registry+https://github.com/rust-lang/crates.io-index"
+tools/cove_tap_tool/Cargo.lock:401:source = "registry+https://github.com/rust-lang/crates.io-index"
+tools/cove_tap_tool/Cargo.lock:410:source = "registry+https://github.com/rust-lang/crates.io-index"
+tools/cove_tap_tool/Cargo.lock:419:source = "registry+https://github.com/rust-lang/crates.io-index"
+tools/cove_tap_tool/Cargo.lock:425:source = "registry+https://github.com/rust-lang/crates.io-index"
+tools/cove_tap_tool/Cargo.lock:436:source = "registry+https://github.com/rust-lang/crates.io-index"
+tools/cove_tap_tool/Cargo.lock:453:source = "registry+https://github.com/rust-lang/crates.io-index"
+tools/cove_tap_tool/Cargo.lock:463:source = "registry+https://github.com/rust-lang/crates.io-index"
+tools/cove_tap_tool/Cargo.lock:474:source = "registry+https://github.com/rust-lang/crates.io-index"
+tools/cove_tap_tool/Cargo.lock:480:source = "registry+https://github.com/rust-lang/crates.io-index"
+tools/cove_tap_tool/Cargo.lock:486:source = "registry+https://github.com/rust-lang/crates.io-index"
+tools/cove_tap_tool/Cargo.lock:497:source = "registry+https://github.com/rust-lang/crates.io-index"
+tools/cove_tap_tool/Cargo.lock:508:source = "registry+https://github.com/rust-lang/crates.io-index"
+tools/cove_tap_tool/Cargo.lock:517:source = "registry+https://github.com/rust-lang/crates.io-index"
+tools/cove_tap_tool/Cargo.lock:528:source = "registry+https://github.com/rust-lang/crates.io-index"
+tools/cove_tap_tool/Cargo.lock:539:source = "registry+https://github.com/rust-lang/crates.io-index"
+tools/cove_tap_tool/Cargo.lock:548:source = "registry+https://github.com/rust-lang/crates.io-index"
+tools/cove_tap_tool/Cargo.lock:554:source = "registry+https://github.com/rust-lang/crates.io-index"
+tools/cove_tap_tool/Cargo.lock:560:source = "registry+https://github.com/rust-lang/crates.io-index"
+tools/cove_tap_tool/Cargo.lock:570:source = "registry+https://github.com/rust-lang/crates.io-index"
+tools/cove_tap_tool/Cargo.lock:576:source = "registry+https://github.com/rust-lang/crates.io-index"
+tools/cove_tap_tool/Cargo.lock:582:source = "registry+https://github.com/rust-lang/crates.io-index"
+$ section '8. Check that the build-time Git sources are reachable'
+
+===== 8. Check that the build-time Git sources are reachable =====
+$ GIT_TERMINAL_PROMPT=0
+$ timeout 30 git ls-remote git://git.kernel.org/pub/scm/utils/dtc/dtc.git HEAD
+c22868416b8db8354ce5db29d3494dda688a2ae3	HEAD
+$ GIT_TERMINAL_PROMPT=0
+$ timeout 30 git ls-remote https://git.kernel.org/pub/scm/utils/dtc/dtc.git HEAD
+c22868416b8db8354ce5db29d3494dda688a2ae3	HEAD
+$ GIT_TERMINAL_PROMPT=0
+$ timeout 30 git ls-remote https://github.com/wojciechozga/kvmtool.git refs/heads/cove-integration-03072023
+177a4df3a0ffed726d709e8bdeeec4bd4cc8239e	refs/heads/cove-integration-03072023
+$ section '9. Check that nothing was modified'
+
+===== 9. Check that nothing was modified =====
+$ git status --short
+$ cd ~/projects/IBM-ACE-On-QEMU-Reproduction
+$ git status --short
+?? docs/G05_audit_build_scripts.md
+?? scripts/G05_audit_build_scripts.sh
+$ finish completed
+
+===== SUMMARY =====
+failed_commands=0  completed
+# masked_from_raw_sha256=f4ba11326cd0cd629e55d1d85cd80558a4f396b1cff481f98936f87b65ac95bc

@@ -1,0 +1,888 @@
+# G08 Emulator | run=G08_20261102T112702Z_6hnn8n | input_sha256=d93a60b04dfdf92ae489167d4a4aeb7a3cc2655eb792612568a4ae125c6285bf
+# previous gate: G07 PASS (see logs/review/G07_review.md)
+$ section '1. Verify the downloaded files and all sealed evidence'
+
+===== 1. Verify the downloaded files and all sealed evidence =====
+$ cd ~/download
+$ sha256sum G08_emulator.sh G08_emulator.md
+d93a60b04dfdf92ae489167d4a4aeb7a3cc2655eb792612568a4ae125c6285bf  G08_emulator.sh
+3d06c1d028abc05960e17c867f3ee947924dc825efaa170d02905dd10ee0eb2c  G08_emulator.md
+$ echo '1c4b151f9e3512fe3a437ebd061d2d18d2e1b5e21da759c5a69c5bc77e70df63  G07_review.md'
+$ sha256sum -c -
+G07_review.md: OK
+$ echo '6a353adb19ed00865c6e5b29bfe46098ccab0d045200aa41a78396465cb490bb  SAFETY_AUDIT.md'
+$ sha256sum -c -
+SAFETY_AUDIT.md: OK
+$ sha256sum -c -
+$ echo '30c33c4311e42358850c421265e6613770ab85a9971f189710fc6c4917c731b2  SOURCE_PROVENANCE.md'
+SOURCE_PROVENANCE.md: OK
+$ echo 'dd8de984968d097bc882ab5f3dd47286c9fb71652864e0ec0db00a5260f90de8  build_env.sh'
+$ sha256sum -c -
+build_env.sh: OK
+$ echo 'ce1fecda74befd6a4c8d5bdcd3738434099975aa4ff8bc25a6cfeb577315e96f  wgetrc'
+$ sha256sum -c -
+wgetrc: OK
+$ cd ~/projects/IBM-ACE-On-QEMU-Reproduction/logs
+$ sha256sum -c ACE-G00-Host-Baseline-20261030T115047Z-a1SbSFY1.raw.log.sha256 G00_20261030T122505Z_7St35c.sha256 G01_20261030T125107Z_P3Dw1C.sha256 G02_20261030T130813Z_vP2nrT.sha256 G03_20261030T132027Z_gN9Ntr.sha256 G04_20261102T023215Z_DtsO6K.sha256 G05_20261102T025456Z_lCG0ac.sha256 G05b_20261102T035410Z_z0g7ji.sha256 G06_20261102T040430Z_BPbdDC.sha256 G07_20261102T041114Z_vzwQUZ.sha256 G07_20261102T084900Z_ZTrxqN.sha256 G08_20261102T091256Z_nnjq89.sha256 G08_20261102T112611Z_dl5kmx.sha256
+ACE-G00-Host-Baseline-20261030T115047Z-a1SbSFY1.raw.log: OK
+G00_20261030T122505Z_7St35c.raw.log: OK
+G00_20261030T122505Z_7St35c.input.sh: OK
+G01_20261030T125107Z_P3Dw1C.raw.log: OK
+G01_20261030T125107Z_P3Dw1C.input.sh: OK
+G02_20261030T130813Z_vP2nrT.raw.log: OK
+G02_20261030T130813Z_vP2nrT.input.sh: OK
+G03_20261030T132027Z_gN9Ntr.raw.log: OK
+G03_20261030T132027Z_gN9Ntr.input.sh: OK
+G04_20261102T023215Z_DtsO6K.raw.log: OK
+G04_20261102T023215Z_DtsO6K.input.sh: OK
+G05_20261102T025456Z_lCG0ac.raw.log: OK
+G05_20261102T025456Z_lCG0ac.input.sh: OK
+G05b_20261102T035410Z_z0g7ji.raw.log: OK
+G05b_20261102T035410Z_z0g7ji.input.sh: OK
+G06_20261102T040430Z_BPbdDC.raw.log: OK
+G06_20261102T040430Z_BPbdDC.input.sh: OK
+G07_20261102T041114Z_vzwQUZ.raw.log: OK
+G07_20261102T041114Z_vzwQUZ.input.sh: OK
+G07_20261102T084900Z_ZTrxqN.raw.log: OK
+G07_20261102T084900Z_ZTrxqN.input.sh: OK
+G08_20261102T091256Z_nnjq89.raw.log: OK
+G08_20261102T091256Z_nnjq89.input.sh: OK
+G08_20261102T112611Z_dl5kmx.raw.log: OK
+G08_20261102T112611Z_dl5kmx.input.sh: OK
+$ stop_if_failed 'step 1'
+$ section '2. Commit the reviewed G07 work (local only, UTC)'
+
+===== 2. Commit the reviewed G07 work (local only, UTC) =====
+$ cd ~/projects/IBM-ACE-On-QEMU-Reproduction
+$ cp ~/download/G07_review.md logs/review/
+$ cp ~/download/SAFETY_AUDIT.md docs/
+$ cp ~/download/SOURCE_PROVENANCE.md docs/
+$ cp ~/download/build_env.sh scripts/
+$ cp ~/download/wgetrc scripts/
+$ git add scripts/G07_tools.sh docs/G07_tools.md docs/SAFETY_AUDIT.md docs/SOURCE_PROVENANCE.md scripts/build_env.sh scripts/wgetrc
+$ git status --short
+A  docs/G07_tools.md
+M  docs/SAFETY_AUDIT.md
+M  docs/SOURCE_PROVENANCE.md
+A  scripts/G07_tools.sh
+M  scripts/build_env.sh
+A  scripts/wgetrc
+$ git diff --cached --quiet
+$ TZ=UTC0
+$ git commit -m 'G07: ACE tools and TAP tool (make tools)'
+[main 968706f] G07: ACE tools and TAP tool (make tools)
+ 6 files changed, 387 insertions(+), 5 deletions(-)
+ create mode 100644 docs/G07_tools.md
+ create mode 100644 scripts/G07_tools.sh
+ create mode 100644 scripts/wgetrc
+$ git log -1 '--format=%h  %aI  %an <%ae>  %s'
+968706f  2026-11-02T11:27:02+00:00  junlinh12 <238169016+junlinh12@users.noreply.github.com>  G07: ACE tools and TAP tool (make tools)
+$ git show --stat --format= HEAD
+ docs/G07_tools.md         | 173 ++++++++++++++++++++++++++++++++++++++++++
+ docs/SAFETY_AUDIT.md      |  16 +++-
+ docs/SOURCE_PROVENANCE.md |  10 ++-
+ scripts/G07_tools.sh      | 189 ++++++++++++++++++++++++++++++++++++++++++++++
+ scripts/build_env.sh      |   1 +
+ scripts/wgetrc            |   3 +
+ 6 files changed, 387 insertions(+), 5 deletions(-)
+$ cp ~/download/G08_emulator.sh scripts/
+$ cp ~/download/G08_emulator.md docs/
+$ stop_if_failed 'step 2'
+$ section '3. Record the host and source state, and check the free memory'
+
+===== 3. Record the host and source state, and check the free memory =====
+$ uname -r
+7.0.0-38-generic
+$ free -h
+               total        used        free      shared  buff/cache   available
+Mem:            30Gi        23Gi       2.4Gi       3.8Gi       8.7Gi       7.4Gi
+Swap:          8.0Gi        22Mi       8.0Gi
+$ df -h ~/projects/IBM-ACE-On-QEMU-Reproduction
+Filesystem      Size  Used Avail Use% Mounted on
+/dev/nvme0n1p2  915G  394G  475G  46% /
+$ cd ~/projects/IBM-ACE-On-QEMU-Reproduction/upstream/ACE-RISCV
+$ git status --short
+ M confidential-vms/linux_vm/Makefile
+ M hypervisor/Makefile
+ M security-monitor/Makefile
+ M tools/ace_run_hypervisor.sh
+ M tools/common.sh
+$$ awk '/^MemAvailable:/ {print $2}' /proc/meminfo
+$ test 7755632 -ge 4194304
+$ stop_if_failed 'step 3'
+$ section '4. Set the build environment'
+
+===== 4. Set the build environment =====
+$ source ~/projects/IBM-ACE-On-QEMU-Reproduction/scripts/build_env.sh
+$$ export ACE_DIR=~/projects/IBM-ACE-On-QEMU-Reproduction/build/ace/
+$$ ACE_DIR=~/projects/IBM-ACE-On-QEMU-Reproduction/build/ace/
+$$ export QEMU_SOURCE_DIR=~/projects/IBM-ACE-On-QEMU-Reproduction/build/qemu-source/
+$$ QEMU_SOURCE_DIR=~/projects/IBM-ACE-On-QEMU-Reproduction/build/qemu-source/
+$$ export BR2_DL_DIR=~/projects/IBM-ACE-On-QEMU-Reproduction/build/dl
+$$ BR2_DL_DIR=~/projects/IBM-ACE-On-QEMU-Reproduction/build/dl
+$$ export CARGO_HOME=~/projects/IBM-ACE-On-QEMU-Reproduction/build/cargo-home
+$$ CARGO_HOME=~/projects/IBM-ACE-On-QEMU-Reproduction/build/cargo-home
+$$ export BR2_JLEVEL=2
+$$ BR2_JLEVEL=2
+$$ export OMP_NUM_THREADS=2
+$$ OMP_NUM_THREADS=2
+$$ export CARGO_BUILD_JOBS=2
+$$ CARGO_BUILD_JOBS=2
+$$ export WGETRC=~/projects/IBM-ACE-On-QEMU-Reproduction/scripts/wgetrc
+$$ WGETRC=~/projects/IBM-ACE-On-QEMU-Reproduction/scripts/wgetrc
+$ env
+$ grep -E '^(ACE_DIR|QEMU_SOURCE_DIR|BR2_DL_DIR|CARGO_HOME|BR2_JLEVEL|OMP_NUM_THREADS|CARGO_BUILD_JOBS|WGETRC)='
+$ sort
+ACE_DIR=~/projects/IBM-ACE-On-QEMU-Reproduction/build/ace/
+BR2_DL_DIR=~/projects/IBM-ACE-On-QEMU-Reproduction/build/dl
+BR2_JLEVEL=2
+CARGO_BUILD_JOBS=2
+CARGO_HOME=~/projects/IBM-ACE-On-QEMU-Reproduction/build/cargo-home
+OMP_NUM_THREADS=2
+QEMU_SOURCE_DIR=~/projects/IBM-ACE-On-QEMU-Reproduction/build/qemu-source/
+WGETRC=~/projects/IBM-ACE-On-QEMU-Reproduction/scripts/wgetrc
+$ stop_if_failed 'step 4'
+$ section '5. Build QEMU with the upstream Makefile'
+
+===== 5. Build QEMU with the upstream Makefile =====
+$ cd ~/projects/IBM-ACE-On-QEMU-Reproduction/upstream/ACE-RISCV
+$ date -u
+Mon Nov  2 11:27:02 UTC 2026
+$ make -j2 emulator
+echo ~/projects/IBM-ACE-On-QEMU-Reproduction/build/ace/
+~/projects/IBM-ACE-On-QEMU-Reproduction/build/ace/
+if [ ! -f "~/projects/IBM-ACE-On-QEMU-Reproduction/build/ace//riscv-gnu-toolchain//bin/riscv64-unknown-linux-gnu-gcc" ]; then \
+	rm -rf ~/projects/IBM-ACE-On-QEMU-Reproduction/build/ace//riscv-gnu-toolchain/; \
+	mkdir -p ~/projects/IBM-ACE-On-QEMU-Reproduction/build/ace//riscv-gnu-toolchain/; \
+	wget -q https://github.com/riscv-collab/riscv-gnu-toolchain/releases/download/2023.09.27/riscv64-glibc-ubuntu-22.04-gcc-nightly-2023.09.27-nightly.tar.gz ; \
+	tar -zxf riscv64-glibc-ubuntu-22.04-gcc-nightly-2023.09.27-nightly.tar.gz --directory ~/projects/IBM-ACE-On-QEMU-Reproduction/build/ace//riscv-gnu-toolchain// ; \
+	mv ~/projects/IBM-ACE-On-QEMU-Reproduction/build/ace//riscv-gnu-toolchain//riscv/* ~/projects/IBM-ACE-On-QEMU-Reproduction/build/ace//riscv-gnu-toolchain// ; \
+	rm -f riscv64-glibc-ubuntu-22.04-gcc-nightly-2023.09.27-nightly.tar.gz ; \
+fi
+if [ ! -f "~/projects/IBM-ACE-On-QEMU-Reproduction/build/ace//qemu//bin/qemu-system-riscv64" ]; then \
+	mkdir -p ~/projects/IBM-ACE-On-QEMU-Reproduction/build/ace//qemu/; \
+	rm -rf ~/projects/IBM-ACE-On-QEMU-Reproduction/build/qemu-source/; \
+	mkdir -p ~/projects/IBM-ACE-On-QEMU-Reproduction/build/qemu-source/; \
+	cd ~/projects/IBM-ACE-On-QEMU-Reproduction/build/qemu-source/; \
+	wget https://download.qemu.org/qemu-8.2.1.tar.xz; \
+	tar xJf qemu-8.2.1.tar.xz; \
+	mv qemu-8.2.1/* ~/projects/IBM-ACE-On-QEMU-Reproduction/build/qemu-source//; \
+	./configure --prefix=~/projects/IBM-ACE-On-QEMU-Reproduction/build/ace//qemu/ --enable-slirp --enable-kvm --target-list=riscv64-softmmu; \
+	PATH="~/projects/IBM-ACE-On-QEMU-Reproduction/build/ace//riscv-gnu-toolchain//bin:~/projects/IBM-ACE-On-QEMU-Reproduction/build/ace//riscv-gnu-toolchain//bin:~/bin:~/.cargo/bin:~/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin:/snap/bin" make -C ~/projects/IBM-ACE-On-QEMU-Reproduction/build/qemu-source/ >/dev/null; \
+	PATH="~/projects/IBM-ACE-On-QEMU-Reproduction/build/ace//riscv-gnu-toolchain//bin:~/projects/IBM-ACE-On-QEMU-Reproduction/build/ace//riscv-gnu-toolchain//bin:~/bin:~/.cargo/bin:~/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin:/snap/bin" make -C ~/projects/IBM-ACE-On-QEMU-Reproduction/build/qemu-source/ install; \
+fi
+2026-11-02 11:27:03 URL:https://download.qemu.org/qemu-8.2.1.tar.xz [129848448/129848448] -> "qemu-8.2.1.tar.xz" [1]
+Using './build' as the directory for build output
+python determined to be '/usr/bin/python3'
+python version: Python 3.12.3
+mkvenv: Creating non-isolated virtual environment at 'pyvenv'
+mkvenv: checking for meson>=0.63.0
+mkvenv: checking for sphinx>=1.6
+mkvenv: checking for sphinx_rtd_theme>=0.5
+
+'sphinx==5.3.0' not found:
+ • Python package 'sphinx' was not found nor installed.
+ • mkvenv was configured to operate offline and did not check PyPI.
+
+
+Sphinx not found/usable, disabling docs.
+The Meson build system
+Version: 1.3.2
+Source dir: ~/projects/IBM-ACE-On-QEMU-Reproduction/build/qemu-source
+Build dir: ~/projects/IBM-ACE-On-QEMU-Reproduction/build/qemu-source/build
+Build type: native build
+Project name: qemu
+Project version: 8.2.1
+C compiler for the host machine: cc -m64 -mcx16 (gcc 13.3.0 "cc (Ubuntu 13.3.0-6ubuntu2~24.04.1) 13.3.0")
+C linker for the host machine: cc -m64 -mcx16 ld.bfd 2.42
+Host machine cpu family: x86_64
+Host machine cpu: x86_64
+Program scripts/symlink-install-tree.py found: YES (~/projects/IBM-ACE-On-QEMU-Reproduction/build/qemu-source/build/pyvenv/bin/python3 ~/projects/IBM-ACE-On-QEMU-Reproduction/build/qemu-source/scripts/symlink-install-tree.py)
+Program sh found: YES (/usr/bin/sh)
+Program python3 found: YES (~/projects/IBM-ACE-On-QEMU-Reproduction/build/qemu-source/build/pyvenv/bin/python3)
+Program iasl found: NO
+Compiler for C supports link arguments -Wl,-z,relro: YES 
+Compiler for C supports link arguments -Wl,-z,now: YES 
+Compiler for C supports link arguments -Wl,--warn-common: YES 
+Compiler for C supports arguments -Wundef: YES 
+Compiler for C supports arguments -Wwrite-strings: YES 
+Compiler for C supports arguments -Wmissing-prototypes: YES 
+Compiler for C supports arguments -Wstrict-prototypes: YES 
+Compiler for C supports arguments -Wredundant-decls: YES 
+Compiler for C supports arguments -Wold-style-declaration: YES 
+Compiler for C supports arguments -Wold-style-definition: YES 
+Compiler for C supports arguments -Wtype-limits: YES 
+Compiler for C supports arguments -Wformat-security: YES 
+Compiler for C supports arguments -Wformat-y2k: YES 
+Compiler for C supports arguments -Winit-self: YES 
+Compiler for C supports arguments -Wignored-qualifiers: YES 
+Compiler for C supports arguments -Wempty-body: YES 
+Compiler for C supports arguments -Wnested-externs: YES 
+Compiler for C supports arguments -Wendif-labels: YES 
+Compiler for C supports arguments -Wexpansion-to-defined: YES 
+Compiler for C supports arguments -Wimplicit-fallthrough=2: YES 
+Compiler for C supports arguments -Wmissing-format-attribute: YES 
+Compiler for C supports arguments -Wno-initializer-overrides: NO 
+Compiler for C supports arguments -Wno-missing-include-dirs: YES 
+Compiler for C supports arguments -Wno-shift-negative-value: YES 
+Compiler for C supports arguments -Wno-string-plus-int: NO 
+Compiler for C supports arguments -Wno-typedef-redefinition: NO 
+Compiler for C supports arguments -Wno-tautological-type-limit-compare: NO 
+Compiler for C supports arguments -Wno-psabi: YES 
+Compiler for C supports arguments -Wno-gnu-variable-sized-type-not-at-end: NO 
+Compiler for C supports arguments -Wshadow=local: YES 
+Compiler for C supports arguments -Wthread-safety: NO 
+Program cgcc found: NO
+Library m found: YES
+Run-time dependency threads found: YES
+Library util found: YES
+Run-time dependency appleframeworks found: NO (tried framework)
+Found pkg-config: YES (/usr/bin/pkg-config) 1.8.1
+Run-time dependency glib-2.0 found: YES 2.80.0
+Run-time dependency gmodule-no-export-2.0 found: YES 2.80.0
+Run-time dependency gio-2.0 found: YES 2.80.0
+Program /usr/bin/gdbus-codegen found: YES (/usr/bin/gdbus-codegen)
+Run-time dependency gio-unix-2.0 found: YES 2.80.0
+Program scripts/xml-preprocess.py found: YES (~/projects/IBM-ACE-On-QEMU-Reproduction/build/qemu-source/build/pyvenv/bin/python3 ~/projects/IBM-ACE-On-QEMU-Reproduction/build/qemu-source/scripts/xml-preprocess.py)
+Run-time dependency pixman-1 found: YES 0.42.2
+Run-time dependency zlib found: YES 1.3
+Has header "libaio.h" : NO 
+Run-time dependency liburing found: NO (tried pkgconfig)
+Run-time dependency libnfs found: NO (tried pkgconfig)
+Run-time dependency appleframeworks found: NO (tried framework)
+Run-time dependency appleframeworks found: NO (tried framework)
+Run-time dependency libseccomp found: NO (tried pkgconfig)
+Has header "cap-ng.h" : YES 
+Library cap-ng found: YES
+Run-time dependency xkbcommon found: NO (tried pkgconfig)
+Run-time dependency slirp found: YES 4.7.0
+Has header "libvdeplug.h" : NO 
+Run-time dependency libpulse found: NO (tried pkgconfig)
+Run-time dependency alsa found: NO (tried pkgconfig)
+Run-time dependency jack found: NO (tried pkgconfig)
+Run-time dependency libpipewire-0.3 found: NO (tried pkgconfig)
+Run-time dependency sndio found: NO (tried pkgconfig)
+Run-time dependency spice-protocol found: NO (tried pkgconfig)
+Run-time dependency spice-server found: NO (tried pkgconfig)
+Library rt found: YES
+Run-time dependency libiscsi found: NO (tried pkgconfig)
+Run-time dependency libzstd found: YES 1.5.5
+Run-time dependency virglrenderer found: NO (tried pkgconfig)
+Run-time dependency rutabaga_gfx_ffi found: NO (tried pkgconfig)
+Run-time dependency blkio found: NO (tried pkgconfig)
+Run-time dependency libcurl found: NO (tried pkgconfig)
+Run-time dependency libudev found: NO (tried pkgconfig)
+Library mpathpersist found: NO
+Run-time dependency ncursesw found: YES 6.4.20240113
+Has header "brlapi.h" : NO 
+sdl2-config found: NO
+Found CMake: /usr/bin/cmake (3.28.3)
+Run-time dependency sdl2 found: NO (tried pkgconfig, config-tool and cmake)
+Library rados found: NO
+Has header "rbd/librbd.h" : NO 
+Run-time dependency glusterfs-api found: NO (tried pkgconfig)
+Run-time dependency libssh found: NO (tried pkgconfig)
+Has header "bzlib.h" : NO 
+Has header "lzfse.h" : NO 
+Has header "sys/soundcard.h" : YES 
+Run-time dependency epoxy found: NO (tried pkgconfig)
+Has header "epoxy/egl.h" with dependency epoxy: NO 
+Run-time dependency gnutls found: YES 3.8.3
+Run-time dependency gmp found: YES 6.3.0
+Run-time dependency gtk+-3.0 found: NO (tried pkgconfig)
+Run-time dependency libpng found: NO (tried pkgconfig)
+Run-time dependency libjpeg found: NO (tried pkgconfig)
+Has header "sasl/sasl.h" : NO 
+Has header "security/pam_appl.h" : NO 
+Has header "snappy-c.h" : NO 
+Has header "lzo/lzo1x.h" : NO 
+Has header "numa.h" : NO 
+Library ibumad found: NO
+Has header "rdma/rdma_cma.h" : NO 
+Library ibverbs found: NO
+Run-time dependency xencontrol found: NO (tried pkgconfig)
+Library xenstore found: NO
+Library xenctrl found: NO
+Library xendevicemodel found: NO
+Library xenforeignmemory found: NO
+Library xengnttab found: NO
+Library xenevtchn found: NO
+Library xentoolcore found: NO
+Run-time dependency libcacard found: NO (tried pkgconfig)
+Run-time dependency u2f-emu found: NO (tried pkgconfig)
+Run-time dependency canokey-qemu found: NO (tried pkgconfig)
+Run-time dependency libusbredirparser-0.5 found: NO (tried pkgconfig)
+Run-time dependency libusb-1.0 found: NO (tried pkgconfig)
+Run-time dependency libpmem found: NO (tried pkgconfig)
+Run-time dependency libdaxctl found: NO (tried pkgconfig)
+Run-time dependency libtasn1 found: YES 4.19.0
+Run-time dependency libkeyutils found: NO (tried pkgconfig)
+Checking for function "gettid" : YES 
+Run-time dependency libselinux found: YES 3.5
+Checking for function "malloc_trim" : YES 
+Header "sys/stat.h" has symbol "STATX_BASIC_STATS" : YES 
+Header "sys/stat.h" has symbol "STATX_MNT_ID" : YES 
+Run-time dependency fuse3 found: NO (tried pkgconfig)
+Run-time dependency libbpf found: NO (tried pkgconfig)
+Run-time dependency libxdp found: NO (tried pkgconfig)
+Run-time dependency libdw found: NO (tried pkgconfig)
+Has header "sys/epoll.h" : YES 
+Has header "linux/magic.h" : YES 
+Has header "valgrind/valgrind.h" : NO 
+Has header "linux/btrfs.h" : YES 
+Has header "libdrm/drm.h" : NO 
+Has header "pty.h" : YES 
+Has header "sys/disk.h" : NO 
+Has header "sys/ioccom.h" : NO 
+Has header "sys/kcov.h" : NO 
+Checking for function "close_range" : YES 
+Checking for function "accept4" : YES 
+Checking for function "clock_adjtime" : YES 
+Checking for function "dup3" : YES 
+Checking for function "fallocate" : YES 
+Checking for function "posix_fallocate" : YES 
+Checking for function "getcpu" : YES 
+Checking for function "sched_getcpu" : NO 
+Checking for function "posix_memalign" : YES 
+Checking for function "_aligned_malloc" : NO 
+Checking for function "valloc" : YES 
+Checking for function "memalign" : YES 
+Checking for function "ppoll" : YES 
+Checking for function "preadv" : YES 
+Checking for function "pthread_fchdir_np" : NO 
+Checking for function "sendfile" : YES 
+Checking for function "setns" : YES 
+Checking for function "unshare" : YES 
+Checking for function "syncfs" : YES 
+Checking for function "sync_file_range" : YES 
+Checking for function "timerfd_create" : YES 
+Checking for function "copy_file_range" : YES 
+Checking for function "getifaddrs" : YES 
+Checking for function "openpty" with dependency -lutil: YES 
+Checking for function "strchrnul" : YES 
+Checking for function "system" : YES 
+Checking for function "getloadavg" : YES 
+Header "linux/blkzoned.h" has symbol "BLKOPENZONE" : YES 
+Header "sys/epoll.h" has symbol "epoll_create1" : YES 
+Header "linux/falloc.h" has symbol "FALLOC_FL_PUNCH_HOLE" : YES 
+Header "linux/falloc.h" has symbol "FALLOC_FL_KEEP_SIZE" : YES 
+Header "linux/falloc.h" has symbol "FALLOC_FL_ZERO_RANGE" : YES 
+Has header "linux/fiemap.h" : YES 
+Header "linux/fs.h" has symbol "FS_IOC_FIEMAP" : YES 
+Checking for function "getrandom" : YES 
+Header "sys/random.h" has symbol "GRND_NONBLOCK" : YES 
+Header "sys/inotify.h" has symbol "inotify_init" : YES 
+Header "sys/inotify.h" has symbol "inotify_init1" : YES 
+Header "sys/prctl.h" has symbol "PR_SET_TIMERSLACK" : YES 
+Header "linux/rtnetlink.h" has symbol "IFLA_PROTO_DOWN" : YES 
+Header "sys/sysmacros.h" has symbol "makedev" : YES 
+Header "getopt.h" has symbol "optreset" : NO 
+Header "netinet/in.h" has symbol "IPPROTO_MPTCP" : YES 
+Checking whether type "struct sigevent" has member "sigev_notify_thread_id" : NO 
+Checking whether type "struct stat" has member "st_atim" : YES 
+Checking whether type "struct blk_zone" has member "capacity" : YES 
+Checking for type "struct iovec" : YES 
+Checking for type "struct utmpx" : YES 
+Checking for type "struct mmsghdr" : YES 
+Header "linux/vm_sockets.h" has symbol "AF_VSOCK" : YES 
+Program scripts/minikconf.py found: YES (~/projects/IBM-ACE-On-QEMU-Reproduction/build/qemu-source/build/pyvenv/bin/python3 ~/projects/IBM-ACE-On-QEMU-Reproduction/build/qemu-source/scripts/minikconf.py)
+Configuring riscv64-softmmu-config-target.h using configuration
+Configuring riscv64-softmmu-config-devices.mak with command
+Reading depfile: ~/projects/IBM-ACE-On-QEMU-Reproduction/build/qemu-source/build/meson-private/riscv64-softmmu-config-devices.mak.d
+Configuring riscv64-softmmu-config-devices.h using configuration
+Program scripts/make-config-poison.sh found: YES (~/projects/IBM-ACE-On-QEMU-Reproduction/build/qemu-source/scripts/make-config-poison.sh)
+Run-time dependency capstone found: NO (tried pkgconfig)
+Library fdt found: YES
+Configuring config-host.h using configuration
+Program scripts/hxtool found: YES (~/projects/IBM-ACE-On-QEMU-Reproduction/build/qemu-source/scripts/hxtool)
+Program scripts/shaderinclude.py found: YES (~/projects/IBM-ACE-On-QEMU-Reproduction/build/qemu-source/build/pyvenv/bin/python3 ~/projects/IBM-ACE-On-QEMU-Reproduction/build/qemu-source/scripts/shaderinclude.py)
+Program scripts/qapi-gen.py found: YES (~/projects/IBM-ACE-On-QEMU-Reproduction/build/qemu-source/build/pyvenv/bin/python3 ~/projects/IBM-ACE-On-QEMU-Reproduction/build/qemu-source/scripts/qapi-gen.py)
+Program scripts/qemu-version.sh found: YES (~/projects/IBM-ACE-On-QEMU-Reproduction/build/qemu-source/scripts/qemu-version.sh)
+
+Executing subproject libvhost-user 
+
+libvhost-user| Project name: libvhost-user
+libvhost-user| Project version: undefined
+libvhost-user| C compiler for the host machine: cc -m64 -mcx16 (gcc 13.3.0 "cc (Ubuntu 13.3.0-6ubuntu2~24.04.1) 13.3.0")
+libvhost-user| C linker for the host machine: cc -m64 -mcx16 ld.bfd 2.42
+libvhost-user| Compiler for C supports arguments -Wsign-compare: YES
+libvhost-user| Compiler for C supports arguments -Wdeclaration-after-statement: YES
+libvhost-user| Compiler for C supports arguments -Wstrict-aliasing: YES
+libvhost-user| Dependency threads found: YES unknown (cached)
+libvhost-user| Dependency glib-2.0 found: YES 2.80.0 (overridden)
+libvhost-user| Build targets in project: 9
+libvhost-user| Subproject libvhost-user finished.
+
+
+Executing subproject libvduse 
+
+libvduse| Project name: libvduse
+libvduse| Project version: undefined
+libvduse| C compiler for the host machine: cc -m64 -mcx16 (gcc 13.3.0 "cc (Ubuntu 13.3.0-6ubuntu2~24.04.1) 13.3.0")
+libvduse| C linker for the host machine: cc -m64 -mcx16 ld.bfd 2.42
+libvduse| Compiler for C supports arguments -Wsign-compare: YES (cached)
+libvduse| Compiler for C supports arguments -Wdeclaration-after-statement: YES (cached)
+libvduse| Compiler for C supports arguments -Wstrict-aliasing: YES (cached)
+libvduse| Build targets in project: 10
+libvduse| Subproject libvduse finished.
+
+
+Executing subproject keycodemapdb 
+
+keycodemapdb| Project name: keycodemapdb
+keycodemapdb| Project version: undefined
+keycodemapdb| Program tools/keymap-gen found: YES (~/projects/IBM-ACE-On-QEMU-Reproduction/build/qemu-source/subprojects/keycodemapdb/tools/keymap-gen)
+keycodemapdb| Build targets in project: 271
+keycodemapdb| Subproject keycodemapdb finished.
+
+Program scripts/decodetree.py found: YES (~/projects/IBM-ACE-On-QEMU-Reproduction/build/qemu-source/build/pyvenv/bin/python3 ~/projects/IBM-ACE-On-QEMU-Reproduction/build/qemu-source/scripts/decodetree.py)
+Program ../scripts/modules/module_block.py found: YES (~/projects/IBM-ACE-On-QEMU-Reproduction/build/qemu-source/build/pyvenv/bin/python3 ~/projects/IBM-ACE-On-QEMU-Reproduction/build/qemu-source/block/../scripts/modules/module_block.py)
+Program ../scripts/block-coroutine-wrapper.py found: YES (~/projects/IBM-ACE-On-QEMU-Reproduction/build/qemu-source/build/pyvenv/bin/python3 ~/projects/IBM-ACE-On-QEMU-Reproduction/build/qemu-source/block/../scripts/block-coroutine-wrapper.py)
+Program scripts/modinfo-collect.py found: YES (~/projects/IBM-ACE-On-QEMU-Reproduction/build/qemu-source/build/pyvenv/bin/python3 ~/projects/IBM-ACE-On-QEMU-Reproduction/build/qemu-source/scripts/modinfo-collect.py)
+Program scripts/modinfo-generate.py found: YES (~/projects/IBM-ACE-On-QEMU-Reproduction/build/qemu-source/build/pyvenv/bin/python3 ~/projects/IBM-ACE-On-QEMU-Reproduction/build/qemu-source/scripts/modinfo-generate.py)
+Program nm found: YES
+Program scripts/undefsym.py found: YES (~/projects/IBM-ACE-On-QEMU-Reproduction/build/qemu-source/build/pyvenv/bin/python3 ~/projects/IBM-ACE-On-QEMU-Reproduction/build/qemu-source/scripts/undefsym.py)
+Program scripts/feature_to_c.py found: YES (~/projects/IBM-ACE-On-QEMU-Reproduction/build/qemu-source/build/pyvenv/bin/python3 ~/projects/IBM-ACE-On-QEMU-Reproduction/build/qemu-source/scripts/feature_to_c.py)
+Program dtc found: YES (/usr/bin/dtc)
+Program qemu-keymap found: NO
+Program ~/projects/IBM-ACE-On-QEMU-Reproduction/build/qemu-source/build/pyvenv/bin/sphinx-build skipped: feature docs disabled
+Program bash found: YES 5.2.21 5.2.21 (/usr/bin/bash)
+Program ~/projects/IBM-ACE-On-QEMU-Reproduction/build/qemu-source/scripts/decodetree.py found: YES (~/projects/IBM-ACE-On-QEMU-Reproduction/build/qemu-source/build/pyvenv/bin/python3 ~/projects/IBM-ACE-On-QEMU-Reproduction/build/qemu-source/scripts/decodetree.py)
+
+Executing subproject berkeley-softfloat-3 
+
+berkeley-softfloat-3| Project name: berkeley-softfloat-3
+berkeley-softfloat-3| Project version: undefined
+berkeley-softfloat-3| C compiler for the host machine: cc -m64 -mcx16 (gcc 13.3.0 "cc (Ubuntu 13.3.0-6ubuntu2~24.04.1) 13.3.0")
+berkeley-softfloat-3| C linker for the host machine: cc -m64 -mcx16 ld.bfd 2.42
+berkeley-softfloat-3| Configuring platform.h using configuration
+berkeley-softfloat-3| Build targets in project: 366
+berkeley-softfloat-3| Subproject berkeley-softfloat-3 finished.
+
+
+Executing subproject berkeley-testfloat-3 
+
+berkeley-testfloat-3| Project name: berkeley-testfloat-3
+berkeley-testfloat-3| Project version: undefined
+berkeley-testfloat-3| C compiler for the host machine: cc -m64 -mcx16 (gcc 13.3.0 "cc (Ubuntu 13.3.0-6ubuntu2~24.04.1) 13.3.0")
+berkeley-testfloat-3| C linker for the host machine: cc -m64 -mcx16 ld.bfd 2.42
+berkeley-testfloat-3| Configuring platform.h using configuration
+berkeley-testfloat-3| Compiler for C supports arguments -Wno-ignored-pragmas: NO
+berkeley-testfloat-3| Build targets in project: 368
+berkeley-testfloat-3| Subproject berkeley-testfloat-3 finished.
+
+Program diff found: YES (/usr/bin/diff)
+Program dbus-daemon found: YES (/usr/bin/dbus-daemon)
+Run-time dependency gvnc-1.0 found: NO (tried pkgconfig)
+Run-time dependency sysprof-capture-4 found: NO (tried pkgconfig)
+Run-time dependency glib-2.0 found: YES 2.80.0
+Program initrd-stress.sh found: YES (~/projects/IBM-ACE-On-QEMU-Reproduction/build/qemu-source/tests/migration/initrd-stress.sh)
+Build targets in project: 491
+NOTICE: Future-deprecated features used:
+ * 1.1.0: {'"boolean option" keyword argument "value" of type str'}
+
+qemu 8.2.1
+
+  Build environment
+    Build directory                              : ~/projects/IBM-ACE-On-QEMU-Reproduction/build/qemu-source/build
+    Source path                                  : ~/projects/IBM-ACE-On-QEMU-Reproduction/build/qemu-source
+    Download dependencies                        : YES
+
+  Directories
+    Build directory                              : ~/projects/IBM-ACE-On-QEMU-Reproduction/build/qemu-source/build
+    Source path                                  : ~/projects/IBM-ACE-On-QEMU-Reproduction/build/qemu-source
+    Download dependencies                        : YES
+    Install prefix                               : ~/projects/IBM-ACE-On-QEMU-Reproduction/build/ace//qemu
+    BIOS directory                               : share/qemu
+    firmware path                                : share/qemu-firmware
+    binary directory                             : ~/projects/IBM-ACE-On-QEMU-Reproduction/build/ace//qemu/bin
+    library directory                            : ~/projects/IBM-ACE-On-QEMU-Reproduction/build/ace//qemu/lib/x86_64-linux-gnu
+    module directory                             : lib/x86_64-linux-gnu/qemu
+    libexec directory                            : ~/projects/IBM-ACE-On-QEMU-Reproduction/build/ace//qemu/libexec
+    include directory                            : ~/projects/IBM-ACE-On-QEMU-Reproduction/build/ace//qemu/include
+    config directory                             : ~/projects/IBM-ACE-On-QEMU-Reproduction/build/ace//qemu/etc
+    local state directory                        : ~/projects/IBM-ACE-On-QEMU-Reproduction/build/ace//qemu/var
+    Manual directory                             : ~/projects/IBM-ACE-On-QEMU-Reproduction/build/ace//qemu/share/man
+    Doc directory                                : ~/projects/IBM-ACE-On-QEMU-Reproduction/build/ace//qemu/share/doc
+
+  Host binaries
+    python                                       : ~/projects/IBM-ACE-On-QEMU-Reproduction/build/qemu-source/build/pyvenv/bin/python3 (version: 3.12)
+    sphinx-build                                 : NO
+    gdb                                          : /usr/bin/gdb-multiarch
+    iasl                                         : NO
+    genisoimage                                  : /usr/bin/genisoimage
+    smbd                                         : /usr/sbin/smbd
+
+  Configurable features
+    Documentation                                : NO
+    system-mode emulation                        : YES
+    user-mode emulation                          : NO
+    block layer                                  : YES
+    Install blobs                                : YES
+    module support                               : NO
+    fuzzing support                              : NO
+    Audio drivers                                : oss
+    Trace backends                               : log
+    D-Bus display                                : YES
+    QOM debugging                                : YES
+    Relocatable install                          : YES
+    vhost-kernel support                         : YES
+    vhost-net support                            : YES
+    vhost-user support                           : YES
+    vhost-user-crypto support                    : YES
+    vhost-user-blk server support                : YES
+    vhost-vdpa support                           : YES
+    build guest agent                            : YES
+
+  Compilation
+    host CPU                                     : x86_64
+    host endianness                              : little
+    C compiler                                   : cc -m64 -mcx16
+    Host C compiler                              : cc -m64 -mcx16
+    C++ compiler                                 : NO
+    Objective-C compiler                         : NO
+    CFLAGS                                       : -g -O2
+    QEMU_CFLAGS                                  : -D_GNU_SOURCE -D_FILE_OFFSET_BITS=64 -D_LARGEFILE_SOURCE -fno-strict-aliasing -fno-common -fwrapv -fstack-protector-strong
+    QEMU_LDFLAGS                                 : -fstack-protector-strong -Wl,-z,relro -Wl,-z,now -Wl,--warn-common
+    link-time optimization (LTO)                 : NO
+    PIE                                          : YES
+    static build                                 : NO
+    malloc trim support                          : YES
+    membarrier                                   : NO
+    debug graph lock                             : NO
+    debug stack usage                            : NO
+    mutex debugging                              : NO
+    memory allocator                             : system
+    avx2 optimization                            : YES
+    avx512bw optimization                        : YES
+    avx512f optimization                         : NO
+    gcov                                         : NO
+    thread sanitizer                             : NO
+    CFI support                                  : NO
+    strip binaries                               : NO
+    sparse                                       : NO
+    mingw32 support                              : NO
+
+  Cross compilers
+    riscv64                                      : riscv64-linux-gnu-gcc
+
+  Targets and accelerators
+    KVM support                                  : NO
+    HVF support                                  : NO
+    WHPX support                                 : NO
+    NVMM support                                 : NO
+    Xen support                                  : NO
+    Xen emulation                                : NO
+    TCG support                                  : YES
+    TCG backend                                  : native (x86_64)
+    TCG plugins                                  : YES
+    TCG debug enabled                            : NO
+    target list                                  : riscv64-softmmu
+    default devices                              : YES
+    out of process emulation                     : YES
+    vfio-user server                             : NO
+
+  Block layer support
+    coroutine backend                            : ucontext
+    coroutine pool                               : YES
+    Block whitelist (rw)                         : 
+    Block whitelist (ro)                         : 
+    Use block whitelist in tools                 : NO
+    VirtFS (9P) support                          : YES
+    VirtFS (9P) Proxy Helper support (deprecated): YES
+    Live block migration                         : YES
+    replication support                          : YES
+    bochs support                                : YES
+    cloop support                                : YES
+    dmg support                                  : YES
+    qcow v1 support                              : YES
+    vdi support                                  : YES
+    vhdx support                                 : YES
+    vmdk support                                 : YES
+    vpc support                                  : YES
+    vvfat support                                : YES
+    qed support                                  : YES
+    parallels support                            : YES
+    FUSE exports                                 : NO
+    VDUSE block exports                          : YES
+
+  Crypto
+    TLS priority                                 : NORMAL
+    GNUTLS support                               : YES 3.8.3
+      GNUTLS crypto                              : YES
+    libgcrypt                                    : NO
+    nettle                                       : NO
+    AF_ALG support                               : NO
+    rng-none                                     : NO
+    Linux keyring                                : YES
+    Linux keyutils                               : NO
+
+  User interface
+    SDL support                                  : NO
+    SDL image support                            : NO
+    GTK support                                  : NO
+    pixman                                       : YES 0.42.2
+    VTE support                                  : NO
+    PNG support                                  : NO
+    VNC support                                  : YES
+    VNC SASL support                             : NO
+    VNC JPEG support                             : NO
+    spice protocol support                       : NO
+    curses support                               : YES
+    brlapi support                               : NO
+
+  Audio backends
+    OSS support                                  : YES
+    sndio support                                : NO
+    ALSA support                                 : NO
+    PulseAudio support                           : NO
+    PipeWire support                             : NO
+    JACK support                                 : NO
+
+  Network backends
+    AF_XDP support                               : NO
+    slirp support                                : YES 4.7.0
+    vde support                                  : NO
+    netmap support                               : NO
+    l2tpv3 support                               : YES
+
+  Dependencies
+    libtasn1                                     : YES 4.19.0
+    PAM                                          : NO
+    iconv support                                : YES
+    virgl support                                : NO
+    rutabaga support                             : NO
+    blkio support                                : NO
+    curl support                                 : NO
+    Multipath support                            : NO
+    Linux AIO support                            : NO
+    Linux io_uring support                       : NO
+    ATTR/XATTR support                           : YES
+    RDMA support                                 : NO
+    PVRDMA support                               : NO
+    fdt support                                  : system
+    libcap-ng support                            : YES
+    bpf support                                  : NO
+    rbd support                                  : NO
+    smartcard support                            : NO
+    U2F support                                  : NO
+    libusb                                       : NO
+    usb net redir                                : NO
+    OpenGL support (epoxy)                       : NO
+    GBM                                          : NO
+    libiscsi support                             : NO
+    libnfs support                               : NO
+    seccomp support                              : NO
+    GlusterFS support                            : NO
+    hv-balloon support                           : YES
+    TPM support                                  : YES
+    libssh support                               : NO
+    lzo support                                  : NO
+    snappy support                               : NO
+    bzip2 support                                : NO
+    lzfse support                                : NO
+    zstd support                                 : YES 1.5.5
+    NUMA host support                            : NO
+    capstone                                     : NO
+    libpmem support                              : NO
+    libdaxctl support                            : NO
+    libudev                                      : NO
+    FUSE lseek                                   : NO
+    selinux                                      : YES 3.5
+    libdw                                        : NO
+
+  Subprojects
+    berkeley-softfloat-3                         : YES
+    berkeley-testfloat-3                         : YES
+    keycodemapdb                                 : YES
+    libvduse                                     : YES
+    libvhost-user                                : YES
+
+  User defined options
+    Native files                                 : config-meson.cross
+    prefix                                       : ~/projects/IBM-ACE-On-QEMU-Reproduction/build/ace//qemu/
+    docs                                         : disabled
+    kvm                                          : enabled
+    plugins                                      : true
+    slirp                                        : enabled
+
+Found ninja-1.11.1 at /usr/bin/ninja
+Running postconf script '~/projects/IBM-ACE-On-QEMU-Reproduction/build/qemu-source/build/pyvenv/bin/python3 ~/projects/IBM-ACE-On-QEMU-Reproduction/build/qemu-source/scripts/symlink-install-tree.py'
+make[1]: Entering directory '~/projects/IBM-ACE-On-QEMU-Reproduction/build/qemu-source'
+changing dir to build for make "install"...
+make[2]: Entering directory '~/projects/IBM-ACE-On-QEMU-Reproduction/build/qemu-source/build'
+[1/51] Generating tests/include/QAPI test (include) with a custom command
+[2/19] Generating qemu-version.h with a custom command (wrapped by meson to capture output)
+[2/3] Installing files.
+Installing trace/trace-events-all to ~/projects/IBM-ACE-On-QEMU-Reproduction/build/ace//qemu/share/qemu
+Installing fsdev/virtfs-proxy-helper to ~/projects/IBM-ACE-On-QEMU-Reproduction/build/ace//qemu/libexec
+Installing qemu-system-riscv64 to ~/projects/IBM-ACE-On-QEMU-Reproduction/build/ace//qemu/bin
+Installing qga/qemu-ga to ~/projects/IBM-ACE-On-QEMU-Reproduction/build/ace//qemu/bin
+Installing qemu-img to ~/projects/IBM-ACE-On-QEMU-Reproduction/build/ace//qemu/bin
+Installing qemu-io to ~/projects/IBM-ACE-On-QEMU-Reproduction/build/ace//qemu/bin
+Installing qemu-nbd to ~/projects/IBM-ACE-On-QEMU-Reproduction/build/ace//qemu/bin
+Installing storage-daemon/qemu-storage-daemon to ~/projects/IBM-ACE-On-QEMU-Reproduction/build/ace//qemu/bin
+Installing qemu-edid to ~/projects/IBM-ACE-On-QEMU-Reproduction/build/ace//qemu/bin
+Installing qemu-bridge-helper to ~/projects/IBM-ACE-On-QEMU-Reproduction/build/ace//qemu/libexec
+Installing qemu-pr-helper to ~/projects/IBM-ACE-On-QEMU-Reproduction/build/ace//qemu/bin
+Installing pc-bios/bamboo.dtb to ~/projects/IBM-ACE-On-QEMU-Reproduction/build/ace//qemu/share/qemu
+Installing pc-bios/canyonlands.dtb to ~/projects/IBM-ACE-On-QEMU-Reproduction/build/ace//qemu/share/qemu
+Installing pc-bios/petalogix-s3adsp1800.dtb to ~/projects/IBM-ACE-On-QEMU-Reproduction/build/ace//qemu/share/qemu
+Installing pc-bios/petalogix-ml605.dtb to ~/projects/IBM-ACE-On-QEMU-Reproduction/build/ace//qemu/share/qemu
+Installing ~/projects/IBM-ACE-On-QEMU-Reproduction/build/qemu-source/include/qemu/qemu-plugin.h to ~/projects/IBM-ACE-On-QEMU-Reproduction/build/ace//qemu/include
+Installing new directory ~/projects/IBM-ACE-On-QEMU-Reproduction/build/ace//qemu/var/run
+Installing ~/projects/IBM-ACE-On-QEMU-Reproduction/build/qemu-source/ui/icons/qemu_16x16.png to ~/projects/IBM-ACE-On-QEMU-Reproduction/build/ace//qemu/share/icons/hicolor/16x16/apps
+Installing ~/projects/IBM-ACE-On-QEMU-Reproduction/build/qemu-source/ui/icons/qemu_24x24.png to ~/projects/IBM-ACE-On-QEMU-Reproduction/build/ace//qemu/share/icons/hicolor/24x24/apps
+Installing ~/projects/IBM-ACE-On-QEMU-Reproduction/build/qemu-source/ui/icons/qemu_32x32.png to ~/projects/IBM-ACE-On-QEMU-Reproduction/build/ace//qemu/share/icons/hicolor/32x32/apps
+Installing ~/projects/IBM-ACE-On-QEMU-Reproduction/build/qemu-source/ui/icons/qemu_48x48.png to ~/projects/IBM-ACE-On-QEMU-Reproduction/build/ace//qemu/share/icons/hicolor/48x48/apps
+Installing ~/projects/IBM-ACE-On-QEMU-Reproduction/build/qemu-source/ui/icons/qemu_64x64.png to ~/projects/IBM-ACE-On-QEMU-Reproduction/build/ace//qemu/share/icons/hicolor/64x64/apps
+Installing ~/projects/IBM-ACE-On-QEMU-Reproduction/build/qemu-source/ui/icons/qemu_128x128.png to ~/projects/IBM-ACE-On-QEMU-Reproduction/build/ace//qemu/share/icons/hicolor/128x128/apps
+Installing ~/projects/IBM-ACE-On-QEMU-Reproduction/build/qemu-source/ui/icons/qemu_256x256.png to ~/projects/IBM-ACE-On-QEMU-Reproduction/build/ace//qemu/share/icons/hicolor/256x256/apps
+Installing ~/projects/IBM-ACE-On-QEMU-Reproduction/build/qemu-source/ui/icons/qemu_512x512.png to ~/projects/IBM-ACE-On-QEMU-Reproduction/build/ace//qemu/share/icons/hicolor/512x512/apps
+Installing ~/projects/IBM-ACE-On-QEMU-Reproduction/build/qemu-source/ui/icons/qemu_32x32.bmp to ~/projects/IBM-ACE-On-QEMU-Reproduction/build/ace//qemu/share/icons/hicolor/32x32/apps
+Installing ~/projects/IBM-ACE-On-QEMU-Reproduction/build/qemu-source/ui/icons/qemu.svg to ~/projects/IBM-ACE-On-QEMU-Reproduction/build/ace//qemu/share/icons/hicolor/scalable/apps
+Installing ~/projects/IBM-ACE-On-QEMU-Reproduction/build/qemu-source/ui/qemu.desktop to ~/projects/IBM-ACE-On-QEMU-Reproduction/build/ace//qemu/share/applications
+Installing ~/projects/IBM-ACE-On-QEMU-Reproduction/build/qemu-source/pc-bios/bios.bin to ~/projects/IBM-ACE-On-QEMU-Reproduction/build/ace//qemu/share/qemu
+Installing ~/projects/IBM-ACE-On-QEMU-Reproduction/build/qemu-source/pc-bios/bios-256k.bin to ~/projects/IBM-ACE-On-QEMU-Reproduction/build/ace//qemu/share/qemu
+Installing ~/projects/IBM-ACE-On-QEMU-Reproduction/build/qemu-source/pc-bios/bios-microvm.bin to ~/projects/IBM-ACE-On-QEMU-Reproduction/build/ace//qemu/share/qemu
+Installing ~/projects/IBM-ACE-On-QEMU-Reproduction/build/qemu-source/pc-bios/qboot.rom to ~/projects/IBM-ACE-On-QEMU-Reproduction/build/ace//qemu/share/qemu
+Installing ~/projects/IBM-ACE-On-QEMU-Reproduction/build/qemu-source/pc-bios/vgabios.bin to ~/projects/IBM-ACE-On-QEMU-Reproduction/build/ace//qemu/share/qemu
+Installing ~/projects/IBM-ACE-On-QEMU-Reproduction/build/qemu-source/pc-bios/vgabios-cirrus.bin to ~/projects/IBM-ACE-On-QEMU-Reproduction/build/ace//qemu/share/qemu
+Installing ~/projects/IBM-ACE-On-QEMU-Reproduction/build/qemu-source/pc-bios/vgabios-stdvga.bin to ~/projects/IBM-ACE-On-QEMU-Reproduction/build/ace//qemu/share/qemu
+Installing ~/projects/IBM-ACE-On-QEMU-Reproduction/build/qemu-source/pc-bios/vgabios-vmware.bin to ~/projects/IBM-ACE-On-QEMU-Reproduction/build/ace//qemu/share/qemu
+Installing ~/projects/IBM-ACE-On-QEMU-Reproduction/build/qemu-source/pc-bios/vgabios-qxl.bin to ~/projects/IBM-ACE-On-QEMU-Reproduction/build/ace//qemu/share/qemu
+Installing ~/projects/IBM-ACE-On-QEMU-Reproduction/build/qemu-source/pc-bios/vgabios-virtio.bin to ~/projects/IBM-ACE-On-QEMU-Reproduction/build/ace//qemu/share/qemu
+Installing ~/projects/IBM-ACE-On-QEMU-Reproduction/build/qemu-source/pc-bios/vgabios-ramfb.bin to ~/projects/IBM-ACE-On-QEMU-Reproduction/build/ace//qemu/share/qemu
+Installing ~/projects/IBM-ACE-On-QEMU-Reproduction/build/qemu-source/pc-bios/vgabios-bochs-display.bin to ~/projects/IBM-ACE-On-QEMU-Reproduction/build/ace//qemu/share/qemu
+Installing ~/projects/IBM-ACE-On-QEMU-Reproduction/build/qemu-source/pc-bios/vgabios-ati.bin to ~/projects/IBM-ACE-On-QEMU-Reproduction/build/ace//qemu/share/qemu
+Installing ~/projects/IBM-ACE-On-QEMU-Reproduction/build/qemu-source/pc-bios/openbios-sparc32 to ~/projects/IBM-ACE-On-QEMU-Reproduction/build/ace//qemu/share/qemu
+Installing ~/projects/IBM-ACE-On-QEMU-Reproduction/build/qemu-source/pc-bios/openbios-sparc64 to ~/projects/IBM-ACE-On-QEMU-Reproduction/build/ace//qemu/share/qemu
+Installing ~/projects/IBM-ACE-On-QEMU-Reproduction/build/qemu-source/pc-bios/openbios-ppc to ~/projects/IBM-ACE-On-QEMU-Reproduction/build/ace//qemu/share/qemu
+Installing ~/projects/IBM-ACE-On-QEMU-Reproduction/build/qemu-source/pc-bios/QEMU,tcx.bin to ~/projects/IBM-ACE-On-QEMU-Reproduction/build/ace//qemu/share/qemu
+Installing ~/projects/IBM-ACE-On-QEMU-Reproduction/build/qemu-source/pc-bios/QEMU,cgthree.bin to ~/projects/IBM-ACE-On-QEMU-Reproduction/build/ace//qemu/share/qemu
+Installing ~/projects/IBM-ACE-On-QEMU-Reproduction/build/qemu-source/pc-bios/pxe-e1000.rom to ~/projects/IBM-ACE-On-QEMU-Reproduction/build/ace//qemu/share/qemu
+Installing ~/projects/IBM-ACE-On-QEMU-Reproduction/build/qemu-source/pc-bios/pxe-eepro100.rom to ~/projects/IBM-ACE-On-QEMU-Reproduction/build/ace//qemu/share/qemu
+Installing ~/projects/IBM-ACE-On-QEMU-Reproduction/build/qemu-source/pc-bios/pxe-ne2k_pci.rom to ~/projects/IBM-ACE-On-QEMU-Reproduction/build/ace//qemu/share/qemu
+Installing ~/projects/IBM-ACE-On-QEMU-Reproduction/build/qemu-source/pc-bios/pxe-pcnet.rom to ~/projects/IBM-ACE-On-QEMU-Reproduction/build/ace//qemu/share/qemu
+Installing ~/projects/IBM-ACE-On-QEMU-Reproduction/build/qemu-source/pc-bios/pxe-rtl8139.rom to ~/projects/IBM-ACE-On-QEMU-Reproduction/build/ace//qemu/share/qemu
+Installing ~/projects/IBM-ACE-On-QEMU-Reproduction/build/qemu-source/pc-bios/pxe-virtio.rom to ~/projects/IBM-ACE-On-QEMU-Reproduction/build/ace//qemu/share/qemu
+Installing ~/projects/IBM-ACE-On-QEMU-Reproduction/build/qemu-source/pc-bios/efi-e1000.rom to ~/projects/IBM-ACE-On-QEMU-Reproduction/build/ace//qemu/share/qemu
+Installing ~/projects/IBM-ACE-On-QEMU-Reproduction/build/qemu-source/pc-bios/efi-eepro100.rom to ~/projects/IBM-ACE-On-QEMU-Reproduction/build/ace//qemu/share/qemu
+Installing ~/projects/IBM-ACE-On-QEMU-Reproduction/build/qemu-source/pc-bios/efi-ne2k_pci.rom to ~/projects/IBM-ACE-On-QEMU-Reproduction/build/ace//qemu/share/qemu
+Installing ~/projects/IBM-ACE-On-QEMU-Reproduction/build/qemu-source/pc-bios/efi-pcnet.rom to ~/projects/IBM-ACE-On-QEMU-Reproduction/build/ace//qemu/share/qemu
+Installing ~/projects/IBM-ACE-On-QEMU-Reproduction/build/qemu-source/pc-bios/efi-rtl8139.rom to ~/projects/IBM-ACE-On-QEMU-Reproduction/build/ace//qemu/share/qemu
+Installing ~/projects/IBM-ACE-On-QEMU-Reproduction/build/qemu-source/pc-bios/efi-virtio.rom to ~/projects/IBM-ACE-On-QEMU-Reproduction/build/ace//qemu/share/qemu
+Installing ~/projects/IBM-ACE-On-QEMU-Reproduction/build/qemu-source/pc-bios/efi-e1000e.rom to ~/projects/IBM-ACE-On-QEMU-Reproduction/build/ace//qemu/share/qemu
+Installing ~/projects/IBM-ACE-On-QEMU-Reproduction/build/qemu-source/pc-bios/efi-vmxnet3.rom to ~/projects/IBM-ACE-On-QEMU-Reproduction/build/ace//qemu/share/qemu
+Installing ~/projects/IBM-ACE-On-QEMU-Reproduction/build/qemu-source/pc-bios/qemu-nsis.bmp to ~/projects/IBM-ACE-On-QEMU-Reproduction/build/ace//qemu/share/qemu
+Installing ~/projects/IBM-ACE-On-QEMU-Reproduction/build/qemu-source/pc-bios/multiboot.bin to ~/projects/IBM-ACE-On-QEMU-Reproduction/build/ace//qemu/share/qemu
+Installing ~/projects/IBM-ACE-On-QEMU-Reproduction/build/qemu-source/pc-bios/multiboot_dma.bin to ~/projects/IBM-ACE-On-QEMU-Reproduction/build/ace//qemu/share/qemu
+Installing ~/projects/IBM-ACE-On-QEMU-Reproduction/build/qemu-source/pc-bios/linuxboot.bin to ~/projects/IBM-ACE-On-QEMU-Reproduction/build/ace//qemu/share/qemu
+Installing ~/projects/IBM-ACE-On-QEMU-Reproduction/build/qemu-source/pc-bios/linuxboot_dma.bin to ~/projects/IBM-ACE-On-QEMU-Reproduction/build/ace//qemu/share/qemu
+Installing ~/projects/IBM-ACE-On-QEMU-Reproduction/build/qemu-source/pc-bios/kvmvapic.bin to ~/projects/IBM-ACE-On-QEMU-Reproduction/build/ace//qemu/share/qemu
+Installing ~/projects/IBM-ACE-On-QEMU-Reproduction/build/qemu-source/pc-bios/pvh.bin to ~/projects/IBM-ACE-On-QEMU-Reproduction/build/ace//qemu/share/qemu
+Installing ~/projects/IBM-ACE-On-QEMU-Reproduction/build/qemu-source/pc-bios/s390-ccw.img to ~/projects/IBM-ACE-On-QEMU-Reproduction/build/ace//qemu/share/qemu
+Installing ~/projects/IBM-ACE-On-QEMU-Reproduction/build/qemu-source/pc-bios/s390-netboot.img to ~/projects/IBM-ACE-On-QEMU-Reproduction/build/ace//qemu/share/qemu
+Installing ~/projects/IBM-ACE-On-QEMU-Reproduction/build/qemu-source/pc-bios/slof.bin to ~/projects/IBM-ACE-On-QEMU-Reproduction/build/ace//qemu/share/qemu
+Installing ~/projects/IBM-ACE-On-QEMU-Reproduction/build/qemu-source/pc-bios/skiboot.lid to ~/projects/IBM-ACE-On-QEMU-Reproduction/build/ace//qemu/share/qemu
+Installing ~/projects/IBM-ACE-On-QEMU-Reproduction/build/qemu-source/pc-bios/palcode-clipper to ~/projects/IBM-ACE-On-QEMU-Reproduction/build/ace//qemu/share/qemu
+Installing ~/projects/IBM-ACE-On-QEMU-Reproduction/build/qemu-source/pc-bios/u-boot.e500 to ~/projects/IBM-ACE-On-QEMU-Reproduction/build/ace//qemu/share/qemu
+Installing ~/projects/IBM-ACE-On-QEMU-Reproduction/build/qemu-source/pc-bios/u-boot-sam460-20100605.bin to ~/projects/IBM-ACE-On-QEMU-Reproduction/build/ace//qemu/share/qemu
+Installing ~/projects/IBM-ACE-On-QEMU-Reproduction/build/qemu-source/pc-bios/qemu_vga.ndrv to ~/projects/IBM-ACE-On-QEMU-Reproduction/build/ace//qemu/share/qemu
+Installing ~/projects/IBM-ACE-On-QEMU-Reproduction/build/qemu-source/pc-bios/edk2-licenses.txt to ~/projects/IBM-ACE-On-QEMU-Reproduction/build/ace//qemu/share/qemu
+Installing ~/projects/IBM-ACE-On-QEMU-Reproduction/build/qemu-source/pc-bios/hppa-firmware.img to ~/projects/IBM-ACE-On-QEMU-Reproduction/build/ace//qemu/share/qemu
+Installing ~/projects/IBM-ACE-On-QEMU-Reproduction/build/qemu-source/pc-bios/opensbi-riscv32-generic-fw_dynamic.bin to ~/projects/IBM-ACE-On-QEMU-Reproduction/build/ace//qemu/share/qemu
+Installing ~/projects/IBM-ACE-On-QEMU-Reproduction/build/qemu-source/pc-bios/opensbi-riscv64-generic-fw_dynamic.bin to ~/projects/IBM-ACE-On-QEMU-Reproduction/build/ace//qemu/share/qemu
+Installing ~/projects/IBM-ACE-On-QEMU-Reproduction/build/qemu-source/pc-bios/npcm7xx_bootrom.bin to ~/projects/IBM-ACE-On-QEMU-Reproduction/build/ace//qemu/share/qemu
+Installing ~/projects/IBM-ACE-On-QEMU-Reproduction/build/qemu-source/pc-bios/vof.bin to ~/projects/IBM-ACE-On-QEMU-Reproduction/build/ace//qemu/share/qemu
+Installing ~/projects/IBM-ACE-On-QEMU-Reproduction/build/qemu-source/pc-bios/vof-nvram.bin to ~/projects/IBM-ACE-On-QEMU-Reproduction/build/ace//qemu/share/qemu
+Installing ~/projects/IBM-ACE-On-QEMU-Reproduction/build/qemu-source/pc-bios/keymaps/ar to ~/projects/IBM-ACE-On-QEMU-Reproduction/build/ace//qemu/share/qemu/keymaps
+Installing ~/projects/IBM-ACE-On-QEMU-Reproduction/build/qemu-source/pc-bios/keymaps/bepo to ~/projects/IBM-ACE-On-QEMU-Reproduction/build/ace//qemu/share/qemu/keymaps
+Installing ~/projects/IBM-ACE-On-QEMU-Reproduction/build/qemu-source/pc-bios/keymaps/cz to ~/projects/IBM-ACE-On-QEMU-Reproduction/build/ace//qemu/share/qemu/keymaps
+Installing ~/projects/IBM-ACE-On-QEMU-Reproduction/build/qemu-source/pc-bios/keymaps/da to ~/projects/IBM-ACE-On-QEMU-Reproduction/build/ace//qemu/share/qemu/keymaps
+Installing ~/projects/IBM-ACE-On-QEMU-Reproduction/build/qemu-source/pc-bios/keymaps/de to ~/projects/IBM-ACE-On-QEMU-Reproduction/build/ace//qemu/share/qemu/keymaps
+Installing ~/projects/IBM-ACE-On-QEMU-Reproduction/build/qemu-source/pc-bios/keymaps/de-ch to ~/projects/IBM-ACE-On-QEMU-Reproduction/build/ace//qemu/share/qemu/keymaps
+Installing ~/projects/IBM-ACE-On-QEMU-Reproduction/build/qemu-source/pc-bios/keymaps/en-gb to ~/projects/IBM-ACE-On-QEMU-Reproduction/build/ace//qemu/share/qemu/keymaps
+Installing ~/projects/IBM-ACE-On-QEMU-Reproduction/build/qemu-source/pc-bios/keymaps/en-us to ~/projects/IBM-ACE-On-QEMU-Reproduction/build/ace//qemu/share/qemu/keymaps
+Installing ~/projects/IBM-ACE-On-QEMU-Reproduction/build/qemu-source/pc-bios/keymaps/es to ~/projects/IBM-ACE-On-QEMU-Reproduction/build/ace//qemu/share/qemu/keymaps
+Installing ~/projects/IBM-ACE-On-QEMU-Reproduction/build/qemu-source/pc-bios/keymaps/et to ~/projects/IBM-ACE-On-QEMU-Reproduction/build/ace//qemu/share/qemu/keymaps
+Installing ~/projects/IBM-ACE-On-QEMU-Reproduction/build/qemu-source/pc-bios/keymaps/fi to ~/projects/IBM-ACE-On-QEMU-Reproduction/build/ace//qemu/share/qemu/keymaps
+Installing ~/projects/IBM-ACE-On-QEMU-Reproduction/build/qemu-source/pc-bios/keymaps/fo to ~/projects/IBM-ACE-On-QEMU-Reproduction/build/ace//qemu/share/qemu/keymaps
+Installing ~/projects/IBM-ACE-On-QEMU-Reproduction/build/qemu-source/pc-bios/keymaps/fr to ~/projects/IBM-ACE-On-QEMU-Reproduction/build/ace//qemu/share/qemu/keymaps
+Installing ~/projects/IBM-ACE-On-QEMU-Reproduction/build/qemu-source/pc-bios/keymaps/fr-be to ~/projects/IBM-ACE-On-QEMU-Reproduction/build/ace//qemu/share/qemu/keymaps
+Installing ~/projects/IBM-ACE-On-QEMU-Reproduction/build/qemu-source/pc-bios/keymaps/fr-ca to ~/projects/IBM-ACE-On-QEMU-Reproduction/build/ace//qemu/share/qemu/keymaps
+Installing ~/projects/IBM-ACE-On-QEMU-Reproduction/build/qemu-source/pc-bios/keymaps/fr-ch to ~/projects/IBM-ACE-On-QEMU-Reproduction/build/ace//qemu/share/qemu/keymaps
+Installing ~/projects/IBM-ACE-On-QEMU-Reproduction/build/qemu-source/pc-bios/keymaps/hr to ~/projects/IBM-ACE-On-QEMU-Reproduction/build/ace//qemu/share/qemu/keymaps
+Installing ~/projects/IBM-ACE-On-QEMU-Reproduction/build/qemu-source/pc-bios/keymaps/hu to ~/projects/IBM-ACE-On-QEMU-Reproduction/build/ace//qemu/share/qemu/keymaps
+Installing ~/projects/IBM-ACE-On-QEMU-Reproduction/build/qemu-source/pc-bios/keymaps/is to ~/projects/IBM-ACE-On-QEMU-Reproduction/build/ace//qemu/share/qemu/keymaps
+Installing ~/projects/IBM-ACE-On-QEMU-Reproduction/build/qemu-source/pc-bios/keymaps/it to ~/projects/IBM-ACE-On-QEMU-Reproduction/build/ace//qemu/share/qemu/keymaps
+Installing ~/projects/IBM-ACE-On-QEMU-Reproduction/build/qemu-source/pc-bios/keymaps/ja to ~/projects/IBM-ACE-On-QEMU-Reproduction/build/ace//qemu/share/qemu/keymaps
+Installing ~/projects/IBM-ACE-On-QEMU-Reproduction/build/qemu-source/pc-bios/keymaps/lt to ~/projects/IBM-ACE-On-QEMU-Reproduction/build/ace//qemu/share/qemu/keymaps
+Installing ~/projects/IBM-ACE-On-QEMU-Reproduction/build/qemu-source/pc-bios/keymaps/lv to ~/projects/IBM-ACE-On-QEMU-Reproduction/build/ace//qemu/share/qemu/keymaps
+Installing ~/projects/IBM-ACE-On-QEMU-Reproduction/build/qemu-source/pc-bios/keymaps/mk to ~/projects/IBM-ACE-On-QEMU-Reproduction/build/ace//qemu/share/qemu/keymaps
+Installing ~/projects/IBM-ACE-On-QEMU-Reproduction/build/qemu-source/pc-bios/keymaps/nl to ~/projects/IBM-ACE-On-QEMU-Reproduction/build/ace//qemu/share/qemu/keymaps
+Installing ~/projects/IBM-ACE-On-QEMU-Reproduction/build/qemu-source/pc-bios/keymaps/no to ~/projects/IBM-ACE-On-QEMU-Reproduction/build/ace//qemu/share/qemu/keymaps
+Installing ~/projects/IBM-ACE-On-QEMU-Reproduction/build/qemu-source/pc-bios/keymaps/pl to ~/projects/IBM-ACE-On-QEMU-Reproduction/build/ace//qemu/share/qemu/keymaps
+Installing ~/projects/IBM-ACE-On-QEMU-Reproduction/build/qemu-source/pc-bios/keymaps/pt to ~/projects/IBM-ACE-On-QEMU-Reproduction/build/ace//qemu/share/qemu/keymaps
+Installing ~/projects/IBM-ACE-On-QEMU-Reproduction/build/qemu-source/pc-bios/keymaps/pt-br to ~/projects/IBM-ACE-On-QEMU-Reproduction/build/ace//qemu/share/qemu/keymaps
+Installing ~/projects/IBM-ACE-On-QEMU-Reproduction/build/qemu-source/pc-bios/keymaps/ru to ~/projects/IBM-ACE-On-QEMU-Reproduction/build/ace//qemu/share/qemu/keymaps
+Installing ~/projects/IBM-ACE-On-QEMU-Reproduction/build/qemu-source/pc-bios/keymaps/th to ~/projects/IBM-ACE-On-QEMU-Reproduction/build/ace//qemu/share/qemu/keymaps
+Installing ~/projects/IBM-ACE-On-QEMU-Reproduction/build/qemu-source/pc-bios/keymaps/tr to ~/projects/IBM-ACE-On-QEMU-Reproduction/build/ace//qemu/share/qemu/keymaps
+Installing ~/projects/IBM-ACE-On-QEMU-Reproduction/build/qemu-source/pc-bios/keymaps/sl to ~/projects/IBM-ACE-On-QEMU-Reproduction/build/ace//qemu/share/qemu/keymaps
+Installing ~/projects/IBM-ACE-On-QEMU-Reproduction/build/qemu-source/pc-bios/keymaps/sv to ~/projects/IBM-ACE-On-QEMU-Reproduction/build/ace//qemu/share/qemu/keymaps
+make[2]: Leaving directory '~/projects/IBM-ACE-On-QEMU-Reproduction/build/qemu-source/build'
+make[1]: Leaving directory '~/projects/IBM-ACE-On-QEMU-Reproduction/build/qemu-source'
+$ date -u
+Mon Nov  2 11:29:13 UTC 2026
+$ stop_if_failed 'step 5'
+$ section '6. Verify the emulator and record the source tarball'
+
+===== 6. Verify the emulator and record the source tarball =====
+$ Q=~/projects/IBM-ACE-On-QEMU-Reproduction/build/ace//qemu/bin/qemu-system-riscv64
+$ ~/projects/IBM-ACE-On-QEMU-Reproduction/build/ace//qemu/bin/qemu-system-riscv64 --version
+QEMU emulator version 8.2.1
+Copyright (c) 2003-2023 Fabrice Bellard and the QEMU Project developers
+$ ~/projects/IBM-ACE-On-QEMU-Reproduction/build/ace//qemu/bin/qemu-system-riscv64 -machine help
+$ grep -w virt
+virt                 RISC-V VirtIO board
+$ ~/projects/IBM-ACE-On-QEMU-Reproduction/build/ace//qemu/bin/qemu-system-riscv64 -cpu help
+$ grep -w rv64
+rv64
+$ ldd ~/projects/IBM-ACE-On-QEMU-Reproduction/build/ace//qemu/bin/qemu-system-riscv64
+$ grep -E 'slirp|not found'
+	libslirp.so.0 => /lib/x86_64-linux-gnu/libslirp.so.0 (0x00007f04e14c3000)
+$ sha256sum ~/projects/IBM-ACE-On-QEMU-Reproduction/build/ace//qemu/bin/qemu-system-riscv64
+f01d93bae8cad6cab6fbb156e2372bbf430a4b930104f0a75af56c97d53864fa  ~/projects/IBM-ACE-On-QEMU-Reproduction/build/ace//qemu/bin/qemu-system-riscv64
+$ ls -l ~/projects/IBM-ACE-On-QEMU-Reproduction/build/qemu-source//qemu-8.2.1.tar.xz
+-rw------- 1 <user> <user> 129848448 Oct 27  2024 ~/projects/IBM-ACE-On-QEMU-Reproduction/build/qemu-source//qemu-8.2.1.tar.xz
+$ sha256sum ~/projects/IBM-ACE-On-QEMU-Reproduction/build/qemu-source//qemu-8.2.1.tar.xz
+8562751158175f9d187c5f22b57555abe3c870f0325c8ced12c34c6d987729be  ~/projects/IBM-ACE-On-QEMU-Reproduction/build/qemu-source//qemu-8.2.1.tar.xz
+$ /usr/bin/qemu-system-riscv64 --version
+QEMU emulator version 8.2.2 (Debian 1:8.2.2+ds-0ubuntu1.18)
+Copyright (c) 2003-2023 Fabrice Bellard and the QEMU Project developers
+$ du -sh ~/projects/IBM-ACE-On-QEMU-Reproduction/build/ace//qemu ~/projects/IBM-ACE-On-QEMU-Reproduction/build/qemu-source/
+133M	~/projects/IBM-ACE-On-QEMU-Reproduction/build/ace//qemu
+1.8G	~/projects/IBM-ACE-On-QEMU-Reproduction/build/qemu-source/
+$ section '7. Check the upstream tree and the project'
+
+===== 7. Check the upstream tree and the project =====
+$ cd ~/projects/IBM-ACE-On-QEMU-Reproduction/upstream/ACE-RISCV
+$ git status --short
+ M confidential-vms/linux_vm/Makefile
+ M hypervisor/Makefile
+ M security-monitor/Makefile
+ M tools/ace_run_hypervisor.sh
+ M tools/common.sh
+$ cd ~/projects/IBM-ACE-On-QEMU-Reproduction
+$ git status --short
+?? docs/G08_emulator.md
+?? scripts/G08_emulator.sh
+$ free -h
+               total        used        free      shared  buff/cache   available
+Mem:            30Gi        23Gi       560Mi       3.7Gi        10Gi       7.4Gi
+Swap:          8.0Gi       267Mi       7.7Gi
+$ finish completed
+
+===== SUMMARY =====
+failed_commands=0  completed
+# masked_from_raw_sha256=795e0b83fa81c62d1ce2e57d8198c6a1655b5216152c9886047079b4957b0abb

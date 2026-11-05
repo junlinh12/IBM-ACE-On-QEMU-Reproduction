@@ -1,0 +1,231 @@
+# G03 Apt Packages | run=G03_20261030T132027Z_gN9Ntr | input_sha256=0760b8dd09cf499b0e86698527a09c1cafb70a2b034b0a664a69b21780ad6e64
+# previous gate: G02 PASS (see logs/review/G02_review.md)
+$ section '1. Verify the downloaded files and all sealed evidence'
+
+===== 1. Verify the downloaded files and all sealed evidence =====
+$ cd ~/download
+$ sha256sum G03_apt_packages.sh G03_apt_packages.md
+0760b8dd09cf499b0e86698527a09c1cafb70a2b034b0a664a69b21780ad6e64  G03_apt_packages.sh
+99c5af6a867044167b772b54d83c8706a61a26d858a251622cd3cf76058db17d  G03_apt_packages.md
+$ echo '4453f6b6023b41698da41f736be243034eea50bfbcea5f6971cbe3969a83c302  G02_review.md'
+$ sha256sum -c -
+G02_review.md: OK
+$ sha256sum -c -
+$ echo '7577477ac34df4a2ed351fc0f1c1fe14ea3f3d888a6f2d337ffeccd845d783d8  SOURCE_PROVENANCE.md'
+SOURCE_PROVENANCE.md: OK
+$ echo 'fb577408376877e4c5f1b88b9e4055763a3babc6c548d43a78bd6f9f88b1fedf  PROJECT_CHARTER.md'
+$ sha256sum -c -
+PROJECT_CHARTER.md: OK
+$ cd ~/projects/IBM-ACE-On-QEMU-Reproduction/logs
+$ sha256sum -c ACE-G00-Host-Baseline-20261030T115047Z-a1SbSFY1.raw.log.sha256 G00_20261030T122505Z_7St35c.sha256 G01_20261030T125107Z_P3Dw1C.sha256 G02_20261030T130813Z_vP2nrT.sha256
+ACE-G00-Host-Baseline-20261030T115047Z-a1SbSFY1.raw.log: OK
+G00_20261030T122505Z_7St35c.raw.log: OK
+G00_20261030T122505Z_7St35c.input.sh: OK
+G01_20261030T125107Z_P3Dw1C.raw.log: OK
+G01_20261030T125107Z_P3Dw1C.input.sh: OK
+G02_20261030T130813Z_vP2nrT.raw.log: OK
+G02_20261030T130813Z_vP2nrT.input.sh: OK
+$ stop_if_failed 'step 1'
+$ section '2. Commit the reviewed G02 work (local only, UTC)'
+
+===== 2. Commit the reviewed G02 work (local only, UTC) =====
+$ cd ~/projects/IBM-ACE-On-QEMU-Reproduction
+$ cp ~/download/G02_review.md logs/review/
+$ cp ~/download/PROJECT_CHARTER.md PROJECT_CHARTER.md
+$ cp ~/download/SOURCE_PROVENANCE.md docs/
+$ git add PROJECT_CHARTER.md docs/SOURCE_PROVENANCE.md scripts/G02_fetch_upstream.sh docs/G02_fetch_upstream.md
+$ git status --short
+M  PROJECT_CHARTER.md
+A  docs/G02_fetch_upstream.md
+A  docs/SOURCE_PROVENANCE.md
+A  scripts/G02_fetch_upstream.sh
+$ git diff --cached --quiet
+$ TZ=UTC0
+$ git commit -m 'G02: pin IBM ACE-RISCV 1ebdebf and record source provenance'
+[main 3ee5ab0] G02: pin IBM ACE-RISCV 1ebdebf and record source provenance
+ 4 files changed, 371 insertions(+), 4 deletions(-)
+ create mode 100644 docs/G02_fetch_upstream.md
+ create mode 100644 docs/SOURCE_PROVENANCE.md
+ create mode 100644 scripts/G02_fetch_upstream.sh
+$ git log -2 '--format=%h  %aI  %an <%ae>  %s'
+3ee5ab0  2026-10-30T13:20:27+00:00  junlinh12 <238169016+junlinh12@users.noreply.github.com>  G02: pin IBM ACE-RISCV 1ebdebf and record source provenance
+a30129d  <local time>  junlinh12 <238169016+junlinh12@users.noreply.github.com>  G00-G01: host baseline and project skeleton
+$ git show --stat --format= HEAD
+ PROJECT_CHARTER.md            |   9 ++-
+ docs/G02_fetch_upstream.md    | 147 +++++++++++++++++++++++++++++++++++++
+ docs/SOURCE_PROVENANCE.md     |  54 ++++++++++++++
+ scripts/G02_fetch_upstream.sh | 165 ++++++++++++++++++++++++++++++++++++++++++
+ 4 files changed, 371 insertions(+), 4 deletions(-)
+$ cp ~/download/G03_apt_packages.sh scripts/
+$ cp ~/download/G03_apt_packages.md docs/
+$ stop_if_failed 'step 2'
+$ section '3. Check the packages before installing'
+
+===== 3. Check the packages before installing =====
+$ apt-cache policy llvm-dev clang libclang-dev
+llvm-dev:
+  Installed: (none)
+  Candidate: 1:18.0-59~exp2
+  Version table:
+     1:18.0-59~exp2 500
+        500 https://ftp.jaist.ac.jp/pub/Linux/ubuntu noble/universe amd64 Packages
+clang:
+  Installed: 1:18.0-59~exp2
+  Candidate: 1:18.0-59~exp2
+  Version table:
+ *** 1:18.0-59~exp2 500
+        500 https://ftp.jaist.ac.jp/pub/Linux/ubuntu noble/universe amd64 Packages
+        100 /var/lib/dpkg/status
+libclang-dev:
+  Installed: 1:18.0-59~exp2
+  Candidate: 1:18.0-59~exp2
+  Version table:
+ *** 1:18.0-59~exp2 500
+        500 https://ftp.jaist.ac.jp/pub/Linux/ubuntu noble/universe amd64 Packages
+        100 /var/lib/dpkg/status
+$ section '4. Refresh the package lists and simulate the install (sudo)'
+
+===== 4. Refresh the package lists and simulate the install (sudo) =====
+$ date -u
+Fri Oct 30 13:20:27 UTC 2026
+$ sudo apt-get update
+Hit:1 https://ftp.jaist.ac.jp/pub/Linux/ubuntu noble InRelease
+Get:2 https://dl.google.com/linux/chrome-stable/deb stable InRelease [2548 B]
+Get:3 https://ftp.jaist.ac.jp/pub/Linux/ubuntu noble-updates InRelease [126 kB]
+Hit:4 https://ftp.jaist.ac.jp/pub/Linux/ubuntu noble-backports InRelease
+Get:5 https://ftp.jaist.ac.jp/pub/Linux/ubuntu noble-security InRelease [126 kB]
+Get:6 https://dl.google.com/linux/chrome-stable/deb stable/main amd64 Packages [1405 B]
+Get:7 https://ftp.jaist.ac.jp/pub/Linux/ubuntu noble-updates/main amd64 Packages [1408 kB]
+Get:8 https://ftp.jaist.ac.jp/pub/Linux/ubuntu noble-updates/universe amd64 Packages [1708 kB]
+Fetched 3372 kB in 1s (6360 kB/s)
+Reading package lists...
+$ apt-get -s install llvm-dev
+NOTE: This is only a simulation!
+      apt-get needs root privileges for real execution.
+      Keep also in mind that locking is deactivated,
+      so don't depend on the relevance to the real current situation!
+Reading package lists...
+Building dependency tree...
+Reading state information...
+The following packages were automatically installed and are no longer required:
+  linux-headers-7.0.0-34-generic linux-hwe-7.0-headers-7.0.0-34
+  linux-hwe-7.0-tools-7.0.0-34 linux-image-7.0.0-34-generic
+  linux-modules-7.0.0-34-generic linux-tools-7.0.0-34-generic
+Use 'apt autoremove' to remove them.
+The following NEW packages will be installed:
+  llvm-dev
+0 upgraded, 1 newly installed, 0 to remove and 0 not upgraded.
+Inst llvm-dev (1:18.0-59~exp2 Ubuntu:24.04/noble [amd64])
+Conf llvm-dev (1:18.0-59~exp2 Ubuntu:24.04/noble [amd64])
+$ apt-get -s install llvm-dev
+$ awk '/^Remv /{r++} /^Inst [^ ]+ \[/{u++} END{printf "remove=%d upgrade=%d\n", r, u; exit (r+u)>0}'
+remove=0 upgrade=0
+$ stop_if_failed 'step 4'
+$ section '5. Install llvm-dev (sudo)'
+
+===== 5. Install llvm-dev (sudo) =====
+$ sudo apt-get install -y llvm-dev
+Reading package lists...
+Building dependency tree...
+Reading state information...
+The following packages were automatically installed and are no longer required:
+  linux-headers-7.0.0-34-generic linux-hwe-7.0-headers-7.0.0-34
+  linux-hwe-7.0-tools-7.0.0-34 linux-image-7.0.0-34-generic
+  linux-modules-7.0.0-34-generic linux-tools-7.0.0-34-generic
+Use 'sudo apt autoremove' to remove them.
+The following NEW packages will be installed:
+  llvm-dev
+0 upgraded, 1 newly installed, 0 to remove and 0 not upgraded.
+Need to get 1928 B of archives.
+After this operation, 26.6 kB of additional disk space will be used.
+Get:1 https://ftp.jaist.ac.jp/pub/Linux/ubuntu noble/universe amd64 llvm-dev amd64 1:18.0-59~exp2 [1928 B]
+Fetched 1928 B in 0s (27.4 kB/s)
+Selecting previously unselected package llvm-dev.
+(Reading database ... (Reading database ... 5%(Reading database ... 10%(Reading database ... 15%(Reading database ... 20%(Reading database ... 25%(Reading database ... 30%(Reading database ... 35%(Reading database ... 40%(Reading database ... 45%(Reading database ... 50%(Reading database ... 55%(Reading database ... 60%(Reading database ... 65%(Reading database ... 70%(Reading database ... 75%(Reading database ... 80%(Reading database ... 85%(Reading database ... 90%(Reading database ... 95%(Reading database ... 100%(Reading database ... 291377 files and directories currently installed.)
+Preparing to unpack .../llvm-dev_1%3a18.0-59~exp2_amd64.deb ...
+Unpacking llvm-dev (1:18.0-59~exp2) ...
+Setting up llvm-dev (1:18.0-59~exp2) ...
+$ date -u
+Fri Oct 30 13:20:36 UTC 2026
+$ stop_if_failed 'step 5'
+$ section '6. Verify every package required by the upstream CI'
+
+===== 6. Verify every package required by the upstream CI =====
+$ dpkg-query -W '-f=${Package}  ${Status}  ${Version}\n' autoconf automake autotools-dev curl python3 libmpc-dev libmpfr-dev libgmp-dev gawk build-essential bison flex texinfo gperf libtool patchutils bc zlib1g-dev libexpat1-dev xz-utils clang libclang-dev llvm-dev git libglib2.0-dev libfdt-dev libpixman-1-dev ninja-build python3-venv libslirp-dev unzip sed binutils diffutils bash patch gzip bzip2 perl tar cpio rsync file findutils sshpass wget
+autoconf  install ok installed  2.71-3
+automake  install ok installed  1:1.16.5-1.3ubuntu1
+autotools-dev  install ok installed  20220109.1
+bash  install ok installed  5.2.21-2ubuntu4
+bc  install ok installed  1.07.1-3ubuntu4
+binutils  install ok installed  2.42-4ubuntu2.10
+bison  install ok installed  2:3.8.2+dfsg-1ubuntu0.24.04.1
+build-essential  install ok installed  12.10ubuntu1
+bzip2  install ok installed  1.0.8-5.1ubuntu0.1
+clang  install ok installed  1:18.0-59~exp2
+cpio  install ok installed  2.15+dfsg-1ubuntu2.1
+curl  install ok installed  8.5.0-2ubuntu10.16
+diffutils  install ok installed  1:3.10-1ubuntu0.1
+file  install ok installed  1:5.45-3build1
+findutils  install ok installed  4.9.0-5build1
+flex  install ok installed  2.6.4-8.2build1
+gawk  install ok installed  1:5.2.1-2ubuntu0.1
+git  install ok installed  1:2.43.0-1ubuntu7.4
+gperf  install ok installed  3.1-1build1
+gzip  install ok installed  1.12-1ubuntu3.2
+libclang-dev  install ok installed  1:18.0-59~exp2
+libexpat1-dev  install ok installed  2.6.1-2ubuntu0.6
+libfdt-dev  install ok installed  1.7.0-2build1
+libglib2.0-dev  install ok installed  2.80.0-6ubuntu3.10
+libgmp-dev  install ok installed  2:6.3.0+dfsg-2ubuntu6.1
+libmpc-dev  install ok installed  1.3.1-1build1.1
+libmpfr-dev  install ok installed  4.2.1-1build1.1
+libpixman-1-dev  install ok installed  0.42.2-1build1
+libslirp-dev  install ok installed  4.7.0-1ubuntu3.1
+libtool  install ok installed  2.4.7-7build1
+llvm-dev  install ok installed  1:18.0-59~exp2
+ninja-build  install ok installed  1.11.1-2
+patch  install ok installed  2.7.6-7build3
+patchutils  install ok installed  0.4.2-1build3
+perl  install ok installed  5.38.2-3.2ubuntu0.6
+python3  install ok installed  3.12.3-0ubuntu2.1
+python3-venv  install ok installed  3.12.3-0ubuntu2.1
+rsync  install ok installed  3.2.7-1ubuntu1.5
+sed  install ok installed  4.9-2ubuntu0.24.04.1
+sshpass  install ok installed  1.09-1
+tar  install ok installed  1.35+dfsg-3ubuntu0.4
+texinfo  install ok installed  7.1-3build2
+unzip  install ok installed  6.0-28ubuntu4.1
+wget  install ok installed  1.21.4-1ubuntu4.5
+xz-utils  install ok installed  5.6.1+really5.4.5-1ubuntu0.4
+zlib1g-dev  install ok installed  1:1.3.dfsg-3.1ubuntu2.3
+$ tail -n 15 /var/log/apt/history.log
+Install: mtools:amd64 (4.0.43-1build1), bmap-tools:amd64 (3.7-2), python3-usb:amd64 (1.2.1-2)
+End-Date: <removed>
+
+Start-Date: <removed>
+Commandline: apt upgrade
+Requested-By: <removed>
+Install: linux-hwe-7.0-tools-7.0.0-42:amd64 (7.0.0-42.42~24.04.1, automatic), linux-modules-7.0.0-42-generic:amd64 (7.0.0-42.42~24.04.1, automatic), linux-image-7.0.0-42-generic:amd64 (7.0.0-42.42~24.04.1, automatic), linux-headers-7.0.0-42-generic:amd64 (7.0.0-42.42~24.04.1, automatic), linux-main-modules-v4l2loopback-7.0.0-42-generic:amd64 (7.0.0-42.42~24.04.1, automatic), linux-hwe-7.0-headers-7.0.0-42:amd64 (7.0.0-42.42~24.04.1, automatic), linux-tools-7.0.0-42-generic:amd64 (7.0.0-42.42~24.04.1, automatic), linux-main-modules-zfs-7.0.0-42-generic:amd64 (7.0.0-42.42~24.04.1, automatic)
+Upgrade: linux-headers-generic-hwe-24.04:amd64 (7.0.0-38.38~24.04.4, 7.0.0-42.42~24.04.1), linux-generic-hwe-24.04:amd64 (7.0.0-38.38~24.04.4, 7.0.0-42.42~24.04.1), libglib2.0-dev-bin:amd64 (2.80.0-6ubuntu3.9, 2.80.0-6ubuntu3.10), google-chrome-stable:amd64 (155.0.8059.84-1, 156.0.8078.79-1), libfprint-2-2:amd64 (1:1.94.7+tod1-0ubuntu5~24.04.8, 1:1.94.7+tod1-0ubuntu5~24.04.9), libglib2.0-bin:amd64 (2.80.0-6ubuntu3.9, 2.80.0-6ubuntu3.10), libglib2.0-dev:amd64 (2.80.0-6ubuntu3.9, 2.80.0-6ubuntu3.10), xserver-xorg-core:amd64 (2:21.1.12-1ubuntu1.8, 2:21.1.12-1ubuntu1.9), gir1.2-glib-2.0:amd64 (2.80.0-6ubuntu3.9, 2.80.0-6ubuntu3.10), libglib2.0-data:amd64 (2.80.0-6ubuntu3.9, 2.80.0-6ubuntu3.10), xserver-xorg-legacy:amd64 (2:21.1.12-1ubuntu1.8, 2:21.1.12-1ubuntu1.9), ubuntu-pro-client-l10n:amd64 (37.2ubuntu~24.04.1, 38ubuntu0~24.04), libgirepository-2.0-0:amd64 (2.80.0-6ubuntu3.9, 2.80.0-6ubuntu3.10), cloud-init:amd64 (26.1-0ubuntu1~24.04.1, 26.2-0ubuntu1~24.04.2), xserver-common:amd64 (2:21.1.12-1ubuntu1.8, 2:21.1.12-1ubuntu1.9), libfprint-2-tod1:amd64 (1:1.94.7+tod1-0ubuntu5~24.04.8, 1:1.94.7+tod1-0ubuntu5~24.04.9), linux-image-generic-hwe-24.04:amd64 (7.0.0-38.38~24.04.4, 7.0.0-42.42~24.04.1), xserver-xephyr:amd64 (2:21.1.12-1ubuntu1.8, 2:21.1.12-1ubuntu1.9), tmux:amd64 (3.4-1ubuntu0.1, 3.4-1ubuntu0.2), libglib2.0-0t64:amd64 (2.80.0-6ubuntu3.9, 2.80.0-6ubuntu3.10), ubuntu-pro-client:amd64 (37.2ubuntu~24.04.1, 38ubuntu0~24.04)
+End-Date: <removed>
+
+Start-Date: <removed>
+Commandline: apt-get install -y llvm-dev
+Requested-By: <removed>
+Install: llvm-dev:amd64 (1:18.0-59~exp2)
+End-Date: <removed>
+$ section '7. Check the project repository'
+
+===== 7. Check the project repository =====
+$ cd ~/projects/IBM-ACE-On-QEMU-Reproduction
+$ git status --short
+?? docs/G03_apt_packages.md
+?? scripts/G03_apt_packages.sh
+$ git log '--format=%h  %aI  %s'
+3ee5ab0  2026-10-30T13:20:27+00:00  G02: pin IBM ACE-RISCV 1ebdebf and record source provenance
+a30129d  <local time>  G00-G01: host baseline and project skeleton
+$ finish completed
+
+===== SUMMARY =====
+failed_commands=0  completed
+# masked_from_raw_sha256=ee29b98c5d33b2a0e2f7d0069a3d37632b9cbea7aa7c40317e7ca23af1762fd9

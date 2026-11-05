@@ -1,0 +1,459 @@
+# G16a Publication Audit | run=G16a_20261104T132430Z_uYpTAo | input_sha256=f864317004ffb93cfe2cb53a1784c4ea3954cd135c254587961c68a7567d7202
+# previous gate: G15b PASS (see logs/review/G15b_review.md)
+$ section '1. Verify the downloaded files and all sealed evidence'
+
+===== 1. Verify the downloaded files and all sealed evidence =====
+$ cd ~/download
+$ sha256sum G16a_publication_audit.sh G16a_publication_audit.md
+f864317004ffb93cfe2cb53a1784c4ea3954cd135c254587961c68a7567d7202  G16a_publication_audit.sh
+f0162d72a9e42afe68f2e2e4a1e57e46c12040b5b463ec173af7f0e53afb8900  G16a_publication_audit.md
+$ sha256sum -c -
+$ echo '7ccc20622641a34be2ebb251d498bd8b6dbab03d86b40e1bdae76d9a9ff24417  G15b_review.md'
+G15b_review.md: OK
+$ cd ~/projects/IBM-ACE-On-QEMU-Reproduction/logs
+$ sha256sum -c ACE-G00-Host-Baseline-20261030T115047Z-a1SbSFY1.raw.log.sha256 G00_20261030T122505Z_7St35c.sha256 G01_20261030T125107Z_P3Dw1C.sha256 G02_20261030T130813Z_vP2nrT.sha256 G03_20261030T132027Z_gN9Ntr.sha256 G04_20261102T023215Z_DtsO6K.sha256 G05_20261102T025456Z_lCG0ac.sha256 G05b_20261102T035410Z_z0g7ji.sha256 G06_20261102T040430Z_BPbdDC.sha256 G07_20261102T041114Z_vzwQUZ.sha256 G07_20261102T084900Z_ZTrxqN.sha256 G08_20261102T091256Z_nnjq89.sha256 G08_20261102T112611Z_dl5kmx.sha256 G08_20261102T112702Z_6hnn8n.sha256 G09_20261102T114120Z_PLjTHu.sha256 G09_20261102T115757Z_b6e4Mk.sha256 G10_20261102T131021Z_RbQpnI.sha256 G11_20261102T132117Z_URiLe8.sha256 G12_20261104T091034Z_XoudcY.sha256 G13_20261104T111257Z_8tPBjL.sha256 G14_20261104T123248Z_16kjwp.sha256 G15_20261104T125134Z_jrn7fa.sha256 G15b_20261104T130510Z_X7qKqK.sha256
+ACE-G00-Host-Baseline-20261030T115047Z-a1SbSFY1.raw.log: OK
+G00_20261030T122505Z_7St35c.raw.log: OK
+G00_20261030T122505Z_7St35c.input.sh: OK
+G01_20261030T125107Z_P3Dw1C.raw.log: OK
+G01_20261030T125107Z_P3Dw1C.input.sh: OK
+G02_20261030T130813Z_vP2nrT.raw.log: OK
+G02_20261030T130813Z_vP2nrT.input.sh: OK
+G03_20261030T132027Z_gN9Ntr.raw.log: OK
+G03_20261030T132027Z_gN9Ntr.input.sh: OK
+G04_20261102T023215Z_DtsO6K.raw.log: OK
+G04_20261102T023215Z_DtsO6K.input.sh: OK
+G05_20261102T025456Z_lCG0ac.raw.log: OK
+G05_20261102T025456Z_lCG0ac.input.sh: OK
+G05b_20261102T035410Z_z0g7ji.raw.log: OK
+G05b_20261102T035410Z_z0g7ji.input.sh: OK
+G06_20261102T040430Z_BPbdDC.raw.log: OK
+G06_20261102T040430Z_BPbdDC.input.sh: OK
+G07_20261102T041114Z_vzwQUZ.raw.log: OK
+G07_20261102T041114Z_vzwQUZ.input.sh: OK
+G07_20261102T084900Z_ZTrxqN.raw.log: OK
+G07_20261102T084900Z_ZTrxqN.input.sh: OK
+G08_20261102T091256Z_nnjq89.raw.log: OK
+G08_20261102T091256Z_nnjq89.input.sh: OK
+G08_20261102T112611Z_dl5kmx.raw.log: OK
+G08_20261102T112611Z_dl5kmx.input.sh: OK
+G08_20261102T112702Z_6hnn8n.raw.log: OK
+G08_20261102T112702Z_6hnn8n.input.sh: OK
+G09_20261102T114120Z_PLjTHu.raw.log: OK
+G09_20261102T114120Z_PLjTHu.input.sh: OK
+G09_20261102T115757Z_b6e4Mk.raw.log: OK
+G09_20261102T115757Z_b6e4Mk.input.sh: OK
+G10_20261102T131021Z_RbQpnI.raw.log: OK
+G10_20261102T131021Z_RbQpnI.input.sh: OK
+G11_20261102T132117Z_URiLe8.raw.log: OK
+G11_20261102T132117Z_URiLe8.input.sh: OK
+G12_20261104T091034Z_XoudcY.raw.log: OK
+G12_20261104T091034Z_XoudcY.input.sh: OK
+G13_20261104T111257Z_8tPBjL.raw.log: OK
+G13_20261104T111257Z_8tPBjL.input.sh: OK
+G14_20261104T123248Z_16kjwp.raw.log: OK
+G14_20261104T123248Z_16kjwp.input.sh: OK
+G15_20261104T125134Z_jrn7fa.raw.log: OK
+G15_20261104T125134Z_jrn7fa.input.sh: OK
+G15b_20261104T130510Z_X7qKqK.raw.log: OK
+G15b_20261104T130510Z_X7qKqK.input.sh: OK
+$ stop_if_failed 'step 1'
+$ section '2. Commit the reviewed G15b work (local only, UTC)'
+
+===== 2. Commit the reviewed G15b work (local only, UTC) =====
+$ cd ~/projects/IBM-ACE-On-QEMU-Reproduction
+$ cp ~/download/G15b_review.md logs/review/
+$ git add scripts/G15b_negative_control.sh docs/G15b_negative_control.md
+$ git status --short
+A  docs/G15b_negative_control.md
+A  scripts/G15b_negative_control.sh
+$ git diff --cached --quiet
+$ TZ=UTC0
+$ git commit -m 'G15b: negative control of the local attestation'
+[main 52d2c67] G15b: negative control of the local attestation
+ 2 files changed, 470 insertions(+)
+ create mode 100644 docs/G15b_negative_control.md
+ create mode 100644 scripts/G15b_negative_control.sh
+$ git log -1 '--format=%h  %aI  %an <%ae>  %s'
+52d2c67  2026-11-04T13:24:30+00:00  junlinh12 <238169016+junlinh12@users.noreply.github.com>  G15b: negative control of the local attestation
+$ cp ~/download/G16a_publication_audit.sh scripts/
+$ cp ~/download/G16a_publication_audit.md docs/
+$ stop_if_failed 'step 2'
+$ section '3. List what Git would publish'
+
+===== 3. List what Git would publish =====
+$ cd ~/projects/IBM-ACE-On-QEMU-Reproduction
+$ git ls-files
+$ sort
+.gitignore
+PROJECT_CHARTER.md
+docs/G00_host_baseline.md
+docs/G01_project_skeleton.md
+docs/G02_fetch_upstream.md
+docs/G03_apt_packages.md
+docs/G04_rust_toolchain.md
+docs/G05_audit_build_scripts.md
+docs/G05b_apply_safety_patches.md
+docs/G06_devtools.md
+docs/G07_tools.md
+docs/G08_emulator.md
+docs/G09_hypervisor.md
+docs/G10_firmware.md
+docs/G11_confidential_vms.md
+docs/G12_rebuild_all.md
+docs/G13_boot_hypervisor.md
+docs/G14_attestation.md
+docs/G15_regression_test.md
+docs/G15b_negative_control.md
+docs/SAFETY_AUDIT.md
+docs/SOURCE_PROVENANCE.md
+logs/public/.keep
+patches/0001-build-parallelism.patch
+patches/0002-run-scripts-host-safety.patch
+patches/README.md
+scripts/G00_host_baseline.sh
+scripts/G01_project_skeleton.sh
+scripts/G02_fetch_upstream.sh
+scripts/G03_apt_packages.sh
+scripts/G04_rust_toolchain.sh
+scripts/G05_audit_build_scripts.sh
+scripts/G05b_apply_safety_patches.sh
+scripts/G06_devtools.sh
+scripts/G07_tools.sh
+scripts/G08_emulator.sh
+scripts/G09_hypervisor.sh
+scripts/G10_firmware.sh
+scripts/G11_confidential_vms.sh
+scripts/G12_rebuild_all.sh
+scripts/G13_boot_hypervisor.sh
+scripts/G14_attestation.sh
+scripts/G15_regression_test.sh
+scripts/G15b_negative_control.sh
+scripts/build_env.sh
+scripts/wgetrc
+$ git ls-files
+$ wc -l
+46
+$ git ls-files -z
+$ xargs -0 du -ch
+$ tail -n 1
+412K	total
+$ git status --short
+?? docs/G16a_publication_audit.md
+?? scripts/G16a_publication_audit.sh
+$ section '4. Record the identity and dates of every commit'
+
+===== 4. Record the identity and dates of every commit =====
+$ git log --reverse '--format=%h | %an <%ae> | %aI | %cn <%ce> | %cI | %s'
+a30129d | junlinh12 <238169016+junlinh12@users.noreply.github.com> | <local time> | junlinh12 <238169016+junlinh12@users.noreply.github.com> | <local time> | G00-G01: host baseline and project skeleton
+3ee5ab0 | junlinh12 <238169016+junlinh12@users.noreply.github.com> | 2026-10-30T13:20:27+00:00 | junlinh12 <238169016+junlinh12@users.noreply.github.com> | 2026-10-30T13:20:27+00:00 | G02: pin IBM ACE-RISCV 1ebdebf and record source provenance
+5cbf58c | junlinh12 <238169016+junlinh12@users.noreply.github.com> | 2026-11-02T02:32:15+00:00 | junlinh12 <238169016+junlinh12@users.noreply.github.com> | 2026-11-02T02:32:15+00:00 | G03: install llvm-dev required by the upstream CI
+6f2e410 | junlinh12 <238169016+junlinh12@users.noreply.github.com> | 2026-11-02T02:54:56+00:00 | junlinh12 <238169016+junlinh12@users.noreply.github.com> | 2026-11-02T02:54:56+00:00 | G04: install Rust nightly-2026-03-23; checkpoint 1
+22bbf68 | junlinh12 <238169016+junlinh12@users.noreply.github.com> | 2026-11-02T03:54:10+00:00 | junlinh12 <238169016+junlinh12@users.noreply.github.com> | 2026-11-02T03:54:10+00:00 | G05: audit upstream build and run scripts (read-only)
+75ed2b3 | junlinh12 <238169016+junlinh12@users.noreply.github.com> | 2026-11-02T04:04:30+00:00 | junlinh12 <238169016+junlinh12@users.noreply.github.com> | 2026-11-02T04:04:30+00:00 | G05b: safety patches for build parallelism and run scripts
+1e7d46d | junlinh12 <238169016+junlinh12@users.noreply.github.com> | 2026-11-02T04:11:14+00:00 | junlinh12 <238169016+junlinh12@users.noreply.github.com> | 2026-11-02T04:11:14+00:00 | G06: RISC-V GNU toolchain (make devtools)
+968706f | junlinh12 <238169016+junlinh12@users.noreply.github.com> | 2026-11-02T11:27:02+00:00 | junlinh12 <238169016+junlinh12@users.noreply.github.com> | 2026-11-02T11:27:02+00:00 | G07: ACE tools and TAP tool (make tools)
+f949474 | junlinh12 <238169016+junlinh12@users.noreply.github.com> | 2026-11-02T11:41:20+00:00 | junlinh12 <238169016+junlinh12@users.noreply.github.com> | 2026-11-02T11:41:20+00:00 | G08: QEMU 8.2.1 for the emulated platform (make emulator)
+08fca23 | junlinh12 <238169016+junlinh12@users.noreply.github.com> | 2026-11-02T13:10:21+00:00 | junlinh12 <238169016+junlinh12@users.noreply.github.com> | 2026-11-02T13:10:21+00:00 | G09: hypervisor image (make hypervisor); checkpoint 2
+5617893 | junlinh12 <238169016+junlinh12@users.noreply.github.com> | 2026-11-02T13:21:17+00:00 | junlinh12 <238169016+junlinh12@users.noreply.github.com> | 2026-11-02T13:21:17+00:00 | G10: OpenSBI with the ACE security monitor (make firmware)
+e1eb63a | junlinh12 <238169016+junlinh12@users.noreply.github.com> | 2026-11-04T09:10:34+00:00 | junlinh12 <238169016+junlinh12@users.noreply.github.com> | 2026-11-04T09:10:34+00:00 | G11: confidential VM, TAPs, kvmtool (make confidential_vms)
+fd349d8 | junlinh12 <238169016+junlinh12@users.noreply.github.com> | 2026-11-04T11:12:57+00:00 | junlinh12 <238169016+junlinh12@users.noreply.github.com> | 2026-11-04T11:12:57+00:00 | G12: integrated rebuild and end-to-end artifact audit
+4faa6fe | junlinh12 <238169016+junlinh12@users.noreply.github.com> | 2026-11-04T12:32:48+00:00 | junlinh12 <238169016+junlinh12@users.noreply.github.com> | 2026-11-04T12:32:48+00:00 | G13: boot OpenSBI, the ACE security monitor, and the Linux hypervisor
+03ddfa0 | junlinh12 <238169016+junlinh12@users.noreply.github.com> | 2026-11-04T12:51:34+00:00 | junlinh12 <238169016+junlinh12@users.noreply.github.com> | 2026-11-04T12:51:34+00:00 | G14: confidential VM, local attestation, and the demo secret; checkpoint 3
+829f07a | junlinh12 <238169016+junlinh12@users.noreply.github.com> | 2026-11-04T13:05:10+00:00 | junlinh12 <238169016+junlinh12@users.noreply.github.com> | 2026-11-04T13:05:10+00:00 | G15: upstream regression test (ace test), unchanged
+52d2c67 | junlinh12 <238169016+junlinh12@users.noreply.github.com> | 2026-11-04T13:24:30+00:00 | junlinh12 <238169016+junlinh12@users.noreply.github.com> | 2026-11-04T13:24:30+00:00 | G15b: negative control of the local attestation
+$ git log --format=%ae%n%ce
+$ sort
+$ uniq -c
+     34 238169016+junlinh12@users.noreply.github.com
+$ git log --format=%aI%n%cI
+$ grep -v '+00:00$'
+$ sort
+$ uniq -c
+      2 <local time>
+$ section '5. Search the whole history for personal and host strings'
+
+===== 5. Search the whole history for personal and host strings =====
+$$ id -un
+$$ git rev-list --all
+$ git grep -l -I -w -F -e <user> 52d2c673446ffe6ae2b2ffbcfd3441dd673ad522 829f07abaa162e6f0e34a3afb14e0da239c182e3 03ddfa0e277ca808d711a9c601039cd7d1ecfb3f 4faa6fed623a7b5674d2cc78ae43d981dfb6ac41 fd349d80eeaa30b060b6f096ab4aef3771b8f612 e1eb63a8f65abd8e4e53fa08109fe4a4d438edaa 56178938cf7c19d57035339893b36d603e9183d9 08fca23208d8a5bb2afcf108ac5d196558541a7f f949474d9f703a27e3e42f26e4043f13204ee78b 968706f154357ffccc53d65d30bdb2f723db6b9a 1e7d46db7fa4eca102c4f7c5cb63f73e90b2eb63 75ed2b352646ad5667f75eded8f66abd9a36a71d 22bbf68fcf2fc6a5d5f90af9aaa3c4b7ee68503a 6f2e410330cb0b9285aa5f2d8fabb7647f660224 5cbf58cbdc8564419113d669d0e8549b070b659f 3ee5ab0cc17de113d74f05639ad16f5fd411ff3c a30129dfe539848fd13abd56b0b404b6a48f16bb
+$ echo '(user name: not found)'
+(user name: not found)
+$$ hostname
+$$ git rev-list --all
+$ git grep -l -I -w -F -e <host> 52d2c673446ffe6ae2b2ffbcfd3441dd673ad522 829f07abaa162e6f0e34a3afb14e0da239c182e3 03ddfa0e277ca808d711a9c601039cd7d1ecfb3f 4faa6fed623a7b5674d2cc78ae43d981dfb6ac41 fd349d80eeaa30b060b6f096ab4aef3771b8f612 e1eb63a8f65abd8e4e53fa08109fe4a4d438edaa 56178938cf7c19d57035339893b36d603e9183d9 08fca23208d8a5bb2afcf108ac5d196558541a7f f949474d9f703a27e3e42f26e4043f13204ee78b 968706f154357ffccc53d65d30bdb2f723db6b9a 1e7d46db7fa4eca102c4f7c5cb63f73e90b2eb63 75ed2b352646ad5667f75eded8f66abd9a36a71d 22bbf68fcf2fc6a5d5f90af9aaa3c4b7ee68503a 6f2e410330cb0b9285aa5f2d8fabb7647f660224 5cbf58cbdc8564419113d669d0e8549b070b659f 3ee5ab0cc17de113d74f05639ad16f5fd411ff3c a30129dfe539848fd13abd56b0b404b6a48f16bb
+$ echo '(host name: not found)'
+(host name: not found)
+$$ git rev-list --all
+$ git grep -l -I -F -e ~ 52d2c673446ffe6ae2b2ffbcfd3441dd673ad522 829f07abaa162e6f0e34a3afb14e0da239c182e3 03ddfa0e277ca808d711a9c601039cd7d1ecfb3f 4faa6fed623a7b5674d2cc78ae43d981dfb6ac41 fd349d80eeaa30b060b6f096ab4aef3771b8f612 e1eb63a8f65abd8e4e53fa08109fe4a4d438edaa 56178938cf7c19d57035339893b36d603e9183d9 08fca23208d8a5bb2afcf108ac5d196558541a7f f949474d9f703a27e3e42f26e4043f13204ee78b 968706f154357ffccc53d65d30bdb2f723db6b9a 1e7d46db7fa4eca102c4f7c5cb63f73e90b2eb63 75ed2b352646ad5667f75eded8f66abd9a36a71d 22bbf68fcf2fc6a5d5f90af9aaa3c4b7ee68503a 6f2e410330cb0b9285aa5f2d8fabb7647f660224 5cbf58cbdc8564419113d669d0e8549b070b659f 3ee5ab0cc17de113d74f05639ad16f5fd411ff3c a30129dfe539848fd13abd56b0b404b6a48f16bb
+$ echo '(home path: not found)'
+(home path: not found)
+$$ git rev-list --all
+$ git grep -l -I -e /home/ 52d2c673446ffe6ae2b2ffbcfd3441dd673ad522 829f07abaa162e6f0e34a3afb14e0da239c182e3 03ddfa0e277ca808d711a9c601039cd7d1ecfb3f 4faa6fed623a7b5674d2cc78ae43d981dfb6ac41 fd349d80eeaa30b060b6f096ab4aef3771b8f612 e1eb63a8f65abd8e4e53fa08109fe4a4d438edaa 56178938cf7c19d57035339893b36d603e9183d9 08fca23208d8a5bb2afcf108ac5d196558541a7f f949474d9f703a27e3e42f26e4043f13204ee78b 968706f154357ffccc53d65d30bdb2f723db6b9a 1e7d46db7fa4eca102c4f7c5cb63f73e90b2eb63 75ed2b352646ad5667f75eded8f66abd9a36a71d 22bbf68fcf2fc6a5d5f90af9aaa3c4b7ee68503a 6f2e410330cb0b9285aa5f2d8fabb7647f660224 5cbf58cbdc8564419113d669d0e8549b070b659f 3ee5ab0cc17de113d74f05639ad16f5fd411ff3c a30129dfe539848fd13abd56b0b404b6a48f16bb
+$ echo '(/home/: not found)'
+(/home/: not found)
+$$ git rev-list --all
+$ git grep -l -I -F -e <local offset> 52d2c673446ffe6ae2b2ffbcfd3441dd673ad522 829f07abaa162e6f0e34a3afb14e0da239c182e3 03ddfa0e277ca808d711a9c601039cd7d1ecfb3f 4faa6fed623a7b5674d2cc78ae43d981dfb6ac41 fd349d80eeaa30b060b6f096ab4aef3771b8f612 e1eb63a8f65abd8e4e53fa08109fe4a4d438edaa 56178938cf7c19d57035339893b36d603e9183d9 08fca23208d8a5bb2afcf108ac5d196558541a7f f949474d9f703a27e3e42f26e4043f13204ee78b 968706f154357ffccc53d65d30bdb2f723db6b9a 1e7d46db7fa4eca102c4f7c5cb63f73e90b2eb63 75ed2b352646ad5667f75eded8f66abd9a36a71d 22bbf68fcf2fc6a5d5f90af9aaa3c4b7ee68503a 6f2e410330cb0b9285aa5f2d8fabb7647f660224 5cbf58cbdc8564419113d669d0e8549b070b659f 3ee5ab0cc17de113d74f05639ad16f5fd411ff3c a30129dfe539848fd13abd56b0b404b6a48f16bb
+52d2c673446ffe6ae2b2ffbcfd3441dd673ad522:docs/G03_apt_packages.md
+829f07abaa162e6f0e34a3afb14e0da239c182e3:docs/G03_apt_packages.md
+03ddfa0e277ca808d711a9c601039cd7d1ecfb3f:docs/G03_apt_packages.md
+4faa6fed623a7b5674d2cc78ae43d981dfb6ac41:docs/G03_apt_packages.md
+fd349d80eeaa30b060b6f096ab4aef3771b8f612:docs/G03_apt_packages.md
+e1eb63a8f65abd8e4e53fa08109fe4a4d438edaa:docs/G03_apt_packages.md
+56178938cf7c19d57035339893b36d603e9183d9:docs/G03_apt_packages.md
+08fca23208d8a5bb2afcf108ac5d196558541a7f:docs/G03_apt_packages.md
+f949474d9f703a27e3e42f26e4043f13204ee78b:docs/G03_apt_packages.md
+968706f154357ffccc53d65d30bdb2f723db6b9a:docs/G03_apt_packages.md
+1e7d46db7fa4eca102c4f7c5cb63f73e90b2eb63:docs/G03_apt_packages.md
+75ed2b352646ad5667f75eded8f66abd9a36a71d:docs/G03_apt_packages.md
+22bbf68fcf2fc6a5d5f90af9aaa3c4b7ee68503a:docs/G03_apt_packages.md
+6f2e410330cb0b9285aa5f2d8fabb7647f660224:docs/G03_apt_packages.md
+5cbf58cbdc8564419113d669d0e8549b070b659f:docs/G03_apt_packages.md
+$ git log --all --format=%B
+$$ id -un
+$$ hostname
+$ grep -c -w -F -e <user> -e <host>
+0
+$ echo '(not found in commit messages)'
+(not found in commit messages)
+$ section '6. Search the published files for content that needs a person to judge'
+
+===== 6. Search the published files for content that needs a person to judge =====
+$ cut -c1-200
+$ git grep -n -I -E '\b([0-9]{1,3}\.){3}[0-9]{1,3}\b' HEAD
+HEAD:docs/G05_audit_build_scripts.md:13:| Network exposure (`hostfwd`) and fixed passwords | an SSH port forward without `127.0.0.1` is reachable from the network |
+HEAD:docs/G05b_apply_safety_patches.md:16:| `patches/0002-run-scripts-host-safety.patch` | SSH on 127.0.0.1 only; stop only ACE's own QEMU; nothing written to `~/.ssh` | A5, A7, A8, A9 |
+HEAD:docs/G07_tools.md:130:grep -c 'hostfwd=tcp:127.0.0.1:' "$ACE_DIR/tools/ace_run_hypervisor.sh"
+HEAD:docs/G13_boot_hypervisor.md:14:| Run script | `$ACE_DIR/tools/ace run` -> `ace_run_hypervisor.sh`, with patch 0002 (SSH forward on `127.0.0.1` only) | `tools/ace`, `tools/ace_run_hypervisor.sh` |
+HEAD:docs/G13_boot_hypervisor.md:18:| SSH port | `4022` on `127.0.0.1` (`--host-port`), checked free before the boot | this gate |
+HEAD:docs/G13_boot_hypervisor.md:26:Stop exactly that QEMU with `pkill -u "$(id -un)" -f "hostfwd=tcp:127.0.0.1:4022-:22"`; never use `ace stop` (SAFETY_AUDIT A7).
+HEAD:docs/G13_boot_hypervisor.md:104:pgrep -a -u "$(id -un)" -f "hostfwd=tcp:127.0.0.1:$PORT-:22" | cut -c1-400
+HEAD:docs/G13_boot_hypervisor.md:112:the forwarded port listens on `127.0.0.1` only.
+HEAD:docs/G13_boot_hypervisor.md:160:pkill -u "$(id -un)" -f "hostfwd=tcp:127.0.0.1:$PORT-:22" || echo "(no QEMU of this gate left to stop)"
+HEAD:docs/G14_attestation.md:109:pgrep -a -u "$(id -un)" -f "hostfwd=tcp:127.0.0.1:$PORT-:22" | cut -c1-400
+HEAD:docs/G14_attestation.md:191:pkill -u "$(id -un)" -f "hostfwd=tcp:127.0.0.1:$PORT-:22" || echo "(no QEMU of this gate left to stop)"
+HEAD:docs/G14_attestation.md:230:machine with `pkill -u "$(id -un)" -f "hostfwd=tcp:127.0.0.1:4022-:22"`.
+HEAD:docs/G15_regression_test.md:14:| start the hypervisor | `tools/ace_test.sh:15` -> `ace_run_hypervisor.sh --daemonize` | QEMU in the background, SSH forward on a random port 3000-5999 on `127.0.0.
+HEAD:docs/G15b_negative_control.md:196:pkill -u "$(id -un)" -f "hostfwd=tcp:127.0.0.1:$PORT-:22" || echo "(no QEMU of this gate left to stop)"
+HEAD:docs/G15b_negative_control.md:229:`pkill -u "$(id -un)" -f "hostfwd=tcp:127.0.0.1:4022-:22"`.
+HEAD:docs/SAFETY_AUDIT.md:40:Decision: patch 0002 forwards on `127.0.0.1` only.
+HEAD:docs/SAFETY_AUDIT.md:56:Decision: patch 0002 selects only the process with the exact rule `hostfwd=tcp:127.0.0.1:PORT-:22`.
+HEAD:patches/0002-run-scripts-host-safety.patch:21: - The SSH port is forwarded on 127.0.0.1 only.
+HEAD:patches/0002-run-scripts-host-safety.patch:33:-    -netdev user,id=net0,net=192.168.100.1/24,dhcpstart=192.168.100.128,hostfwd=tcp::${HOST_PORT}-:22 \
+HEAD:patches/0002-run-scripts-host-safety.patch:34:+    -netdev user,id=net0,net=192.168.100.1/24,dhcpstart=192.168.100.128,hostfwd=tcp:127.0.0.1:${HOST_PORT}-:22 \
+HEAD:patches/0002-run-scripts-host-safety.patch:59:+    PID="$(pgrep -u "$(whoami)" -f "hostfwd=tcp:127.0.0.1:${PORT}-:22")"
+HEAD:patches/README.md:9:| `0002-run-scripts-host-safety.patch` | `tools/ace_run_hypervisor.sh`, `tools/common.sh` | SSH only on 127.0.0.1; never stop other users' or projects' processes; nothing writ
+HEAD:scripts/G07_tools.sh:169:grep -c 'hostfwd=tcp:127.0.0.1:' "$ACE_DIR/tools/ace_run_hypervisor.sh"
+HEAD:scripts/G13_boot_hypervisor.sh:8:#  127.0.0.1 (patch 0002), records the serial console in logs/, waits for SSH (at most 15 min),
+HEAD:scripts/G13_boot_hypervisor.sh:163:pgrep -a -u "$(id -un)" -f "hostfwd=tcp:127.0.0.1:$PORT-:22" | cut -c1-400
+HEAD:scripts/G13_boot_hypervisor.sh:187:pkill -u "$(id -un)" -f "hostfwd=tcp:127.0.0.1:$PORT-:22" || echo "(no QEMU of this gate left to stop)"
+HEAD:scripts/G14_attestation.sh:162:pgrep -a -u "$(id -un)" -f "hostfwd=tcp:127.0.0.1:$PORT-:22" | cut -c1-400
+HEAD:scripts/G14_attestation.sh:200:pkill -u "$(id -un)" -f "hostfwd=tcp:127.0.0.1:$PORT-:22" || echo "(no QEMU of this gate left to stop)"
+HEAD:scripts/G15b_negative_control.sh:221:pkill -u "$(id -un)" -f "hostfwd=tcp:127.0.0.1:$PORT-:22" || echo "(no QEMU of this gate left to stop)"
+$ git grep -n -I -E '\b([0-9a-fA-F]{2}:){5}[0-9a-fA-F]{2}\b' HEAD
+$ cut -c1-200
+$ echo '(no MAC address)'
+(no MAC address)
+$ git grep -n -I -E 'BEGIN [A-Z ]*PRIVATE KEY|ghp_[A-Za-z0-9]{20,}|github_pat_|AKIA[0-9A-Z]{16}|xox[baprs]-[A-Za-z0-9-]+|passw' HEAD
+$ cut -c1-200
+HEAD:docs/G02_fetch_upstream.md:70:`GIT_TERMINAL_PROMPT=0` makes Git fail instead of asking for a password.
+HEAD:docs/G03_apt_packages.md:119:Do not start it with `sudo`; it asks for the password at step 4 when needed.
+HEAD:docs/G05_audit_build_scripts.md:13:| Network exposure (`hostfwd`) and fixed passwords | an SSH port forward without `127.0.0.1` is reachable from the network |
+HEAD:docs/G13_boot_hypervisor.md:19:| Login | `root` / `passwd`, through `SSH_CMD` of `tools/common.sh` (patch 0002: nothing written to `~/.ssh`) | `tools/common.sh:7-12` |
+HEAD:docs/SAFETY_AUDIT.md:38:the fixed password `passwd` (`tools/common.sh:7-8`). While the emulated hypervisor runs, anyone on the
+HEAD:docs/SAFETY_AUDIT.md:60:later boot presents a new key on the same port, ssh disables password login and `wait_for_ssh`
+HEAD:patches/0002-run-scripts-host-safety.patch:8:   (hostfwd=tcp::PORT-:22), and the guest accepts root with a fixed password.
+HEAD:patches/0002-run-scripts-host-safety.patch:14:   a later boot with a new key on the same port then disables password login, and
+HEAD:patches/0002-run-scripts-host-safety.patch:41:@@ -9,5 +9,5 @@ export HYPERVISOR_TEST_PASSWD="passwd"
+HEAD:patches/0002-run-scripts-host-safety.patch:44:-export SSH_PASSWD_PARAMS="-o PasswordAuthentication=yes -o PreferredAuthentications=keyboard-interactive,password -o PubkeyAuthentication=no -o Stri
+HEAD:patches/0002-run-scripts-host-safety.patch:45:+export SSH_PASSWD_PARAMS="-o PasswordAuthentication=yes -o PreferredAuthentications=keyboard-interactive,password -o PubkeyAuthentication=no -o Stri
+$ git grep -h -I -o -E '[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}' HEAD
+$ sort
+$ uniq -c
+      1 238169016+junlinh12@users.noreply.github.com
+      2 GITHUB_USER@users.noreply.github.com
+      4 git@github.com
+$ section '7. Scan the candidate evidence in logs/review'
+
+===== 7. Scan the candidate evidence in logs/review =====
+$ ls -l logs/review
+total 3644
+-rw------- 1 <user> <user>    3370 Nov  2 02:54 CHECKPOINT_1.md
+-rw------- 1 <user> <user>    4329 Nov  2 13:10 CHECKPOINT_2.md
+-rw------- 1 <user> <user>    5228 Nov  4 12:51 CHECKPOINT_3.md
+-r-------- 1 <user> <user>   13131 Oct 30 12:25 G00_20261030T122505Z_7St35c.review.log
+-rw------- 1 <user> <user>    3498 Oct 30 12:51 G00_review.md
+-r-------- 1 <user> <user>    4838 Oct 30 12:51 G01_20261030T125107Z_P3Dw1C.review.log
+-rw------- 1 <user> <user>    2559 Oct 30 13:08 G01_review.md
+-r-------- 1 <user> <user>   10880 Oct 30 13:08 G02_20261030T130813Z_vP2nrT.review.log
+-rw------- 1 <user> <user>    4609 Oct 30 13:20 G02_review.md
+-r-------- 1 <user> <user>   13618 Oct 30 13:20 G03_20261030T132027Z_gN9Ntr.review.log
+-rw------- 1 <user> <user>    2636 Nov  2 02:32 G03_review.md
+-r-------- 1 <user> <user>    7294 Nov  2 02:32 G04_20261102T023215Z_DtsO6K.review.log
+-rw------- 1 <user> <user>    2671 Nov  2 02:54 G04_review.md
+-r-------- 1 <user> <user>  128151 Nov  2 02:54 G05_20261102T025456Z_lCG0ac.review.log
+-rw------- 1 <user> <user>    3103 Nov  2 03:54 G05_review.md
+-r-------- 1 <user> <user>   46263 Nov  2 03:54 G05b_20261102T035410Z_z0g7ji.review.log
+-rw------- 1 <user> <user>    4668 Nov  2 04:04 G05b_review.md
+-r-------- 1 <user> <user>   11963 Nov  2 04:05 G06_20261102T040430Z_BPbdDC.review.log
+-rw------- 1 <user> <user>    2563 Nov  2 08:49 G06_review.md
+-r-------- 1 <user> <user>    5913 Nov  2 04:11 G07_20261102T041114Z_vzwQUZ.review.log
+-r-------- 1 <user> <user>   17573 Nov  2 08:49 G07_20261102T084900Z_ZTrxqN.review.log
+-rw------- 1 <user> <user>    3787 Nov  2 11:27 G07_review.md
+-rw------- 1 <user> <user>    2449 Nov  2 08:49 G07_run1_review.md
+-r-------- 1 <user> <user>    3291 Nov  2 09:12 G08_20261102T091256Z_nnjq89.review.log
+-r-------- 1 <user> <user>    2952 Nov  2 11:26 G08_20261102T112611Z_dl5kmx.review.log
+-r-------- 1 <user> <user>   60960 Nov  2 11:29 G08_20261102T112702Z_6hnn8n.review.log
+-rw------- 1 <user> <user>    4366 Nov  2 11:57 G08_review.md
+-r-------- 1 <user> <user>   16679 Nov  2 11:44 G09_20261102T114120Z_PLjTHu.review.log
+-r-------- 1 <user> <user> 2333072 Nov  2 12:23 G09_20261102T115757Z_b6e4Mk.review.log
+-rw------- 1 <user> <user>    4945 Nov  2 13:10 G09_review.md
+-rw------- 1 <user> <user>    4001 Nov  2 11:57 G09_run1_review.md
+-r-------- 1 <user> <user>   81137 Nov  2 13:10 G10_20261102T131021Z_RbQpnI.review.log
+-rw------- 1 <user> <user>    4434 Nov  2 13:21 G10_review.md
+-r-------- 1 <user> <user>  597431 Nov  2 13:31 G11_20261102T132117Z_URiLe8.review.log
+-rw------- 1 <user> <user>    5947 Nov  4 09:10 G11_review.md
+-r-------- 1 <user> <user>   75256 Nov  4 09:10 G12_20261104T091034Z_XoudcY.review.log
+-rw------- 1 <user> <user>    4611 Nov  4 11:12 G12_review.md
+-r-------- 1 <user> <user>   36774 Nov  4 11:13 G13_20261104T111257Z_8tPBjL.review.log
+-rw------- 1 <user> <user>    5010 Nov  4 12:32 G13_review.md
+-r-------- 1 <user> <user>   34174 Nov  4 12:33 G14_20261104T123248Z_16kjwp.review.log
+-rw------- 1 <user> <user>    5212 Nov  4 12:51 G14_review.md
+-r-------- 1 <user> <user>   15317 Nov  4 12:52 G15_20261104T125134Z_jrn7fa.review.log
+-rw------- 1 <user> <user>    3922 Nov  4 13:05 G15_review.md
+-r-------- 1 <user> <user>   29346 Nov  4 13:06 G15b_20261104T130510Z_X7qKqK.review.log
+-rw------- 1 <user> <user>    4670 Nov  4 13:24 G15b_review.md
+$$ id -un
+$$ hostname
+$ grep -l -w -F -e <user> -e <host> logs/review/CHECKPOINT_1.md logs/review/CHECKPOINT_2.md logs/review/CHECKPOINT_3.md logs/review/G00_20261030T122505Z_7St35c.review.log logs/review/G00_review.md logs/review/G01_20261030T125107Z_P3Dw1C.review.log logs/review/G01_review.md logs/review/G02_20261030T130813Z_vP2nrT.review.log logs/review/G02_review.md logs/review/G03_20261030T132027Z_gN9Ntr.review.log logs/review/G03_review.md logs/review/G04_20261102T023215Z_DtsO6K.review.log logs/review/G04_review.md logs/review/G05_20261102T025456Z_lCG0ac.review.log logs/review/G05_review.md logs/review/G05b_20261102T035410Z_z0g7ji.review.log logs/review/G05b_review.md logs/review/G06_20261102T040430Z_BPbdDC.review.log logs/review/G06_review.md logs/review/G07_20261102T041114Z_vzwQUZ.review.log logs/review/G07_20261102T084900Z_ZTrxqN.review.log logs/review/G07_review.md logs/review/G07_run1_review.md logs/review/G08_20261102T091256Z_nnjq89.review.log logs/review/G08_20261102T112611Z_dl5kmx.review.log logs/review/G08_20261102T112702Z_6hnn8n.review.log logs/review/G08_review.md logs/review/G09_20261102T114120Z_PLjTHu.review.log logs/review/G09_20261102T115757Z_b6e4Mk.review.log logs/review/G09_review.md logs/review/G09_run1_review.md logs/review/G10_20261102T131021Z_RbQpnI.review.log logs/review/G10_review.md logs/review/G11_20261102T132117Z_URiLe8.review.log logs/review/G11_review.md logs/review/G12_20261104T091034Z_XoudcY.review.log logs/review/G12_review.md logs/review/G13_20261104T111257Z_8tPBjL.review.log logs/review/G13_review.md logs/review/G14_20261104T123248Z_16kjwp.review.log logs/review/G14_review.md logs/review/G15_20261104T125134Z_jrn7fa.review.log logs/review/G15_review.md logs/review/G15b_20261104T130510Z_X7qKqK.review.log logs/review/G15b_review.md
+$ echo '(no user name or host name in logs/review)'
+(no user name or host name in logs/review)
+$ grep -l -F -e ~ logs/review/CHECKPOINT_1.md logs/review/CHECKPOINT_2.md logs/review/CHECKPOINT_3.md logs/review/G00_20261030T122505Z_7St35c.review.log logs/review/G00_review.md logs/review/G01_20261030T125107Z_P3Dw1C.review.log logs/review/G01_review.md logs/review/G02_20261030T130813Z_vP2nrT.review.log logs/review/G02_review.md logs/review/G03_20261030T132027Z_gN9Ntr.review.log logs/review/G03_review.md logs/review/G04_20261102T023215Z_DtsO6K.review.log logs/review/G04_review.md logs/review/G05_20261102T025456Z_lCG0ac.review.log logs/review/G05_review.md logs/review/G05b_20261102T035410Z_z0g7ji.review.log logs/review/G05b_review.md logs/review/G06_20261102T040430Z_BPbdDC.review.log logs/review/G06_review.md logs/review/G07_20261102T041114Z_vzwQUZ.review.log logs/review/G07_20261102T084900Z_ZTrxqN.review.log logs/review/G07_review.md logs/review/G07_run1_review.md logs/review/G08_20261102T091256Z_nnjq89.review.log logs/review/G08_20261102T112611Z_dl5kmx.review.log logs/review/G08_20261102T112702Z_6hnn8n.review.log logs/review/G08_review.md logs/review/G09_20261102T114120Z_PLjTHu.review.log logs/review/G09_20261102T115757Z_b6e4Mk.review.log logs/review/G09_review.md logs/review/G09_run1_review.md logs/review/G10_20261102T131021Z_RbQpnI.review.log logs/review/G10_review.md logs/review/G11_20261102T132117Z_URiLe8.review.log logs/review/G11_review.md logs/review/G12_20261104T091034Z_XoudcY.review.log logs/review/G12_review.md logs/review/G13_20261104T111257Z_8tPBjL.review.log logs/review/G13_review.md logs/review/G14_20261104T123248Z_16kjwp.review.log logs/review/G14_review.md logs/review/G15_20261104T125134Z_jrn7fa.review.log logs/review/G15_review.md logs/review/G15b_20261104T130510Z_X7qKqK.review.log logs/review/G15b_review.md
+$ echo '(no home path in logs/review)'
+(no home path in logs/review)
+$ grep -c -F <local offset> logs/review/CHECKPOINT_1.md logs/review/CHECKPOINT_2.md logs/review/CHECKPOINT_3.md logs/review/G00_20261030T122505Z_7St35c.review.log logs/review/G00_review.md logs/review/G01_20261030T125107Z_P3Dw1C.review.log logs/review/G01_review.md logs/review/G02_20261030T130813Z_vP2nrT.review.log logs/review/G02_review.md logs/review/G03_20261030T132027Z_gN9Ntr.review.log logs/review/G03_review.md logs/review/G04_20261102T023215Z_DtsO6K.review.log logs/review/G04_review.md logs/review/G05_20261102T025456Z_lCG0ac.review.log logs/review/G05_review.md logs/review/G05b_20261102T035410Z_z0g7ji.review.log logs/review/G05b_review.md logs/review/G06_20261102T040430Z_BPbdDC.review.log logs/review/G06_review.md logs/review/G07_20261102T041114Z_vzwQUZ.review.log logs/review/G07_20261102T084900Z_ZTrxqN.review.log logs/review/G07_review.md logs/review/G07_run1_review.md logs/review/G08_20261102T091256Z_nnjq89.review.log logs/review/G08_20261102T112611Z_dl5kmx.review.log logs/review/G08_20261102T112702Z_6hnn8n.review.log logs/review/G08_review.md logs/review/G09_20261102T114120Z_PLjTHu.review.log logs/review/G09_20261102T115757Z_b6e4Mk.review.log logs/review/G09_review.md logs/review/G09_run1_review.md logs/review/G10_20261102T131021Z_RbQpnI.review.log logs/review/G10_review.md logs/review/G11_20261102T132117Z_URiLe8.review.log logs/review/G11_review.md logs/review/G12_20261104T091034Z_XoudcY.review.log logs/review/G12_review.md logs/review/G13_20261104T111257Z_8tPBjL.review.log logs/review/G13_review.md logs/review/G14_20261104T123248Z_16kjwp.review.log logs/review/G14_review.md logs/review/G15_20261104T125134Z_jrn7fa.review.log logs/review/G15_review.md logs/review/G15b_20261104T130510Z_X7qKqK.review.log logs/review/G15b_review.md
+$ grep -v ':0$'
+logs/review/CHECKPOINT_1.md:1
+logs/review/CHECKPOINT_2.md:1
+logs/review/CHECKPOINT_3.md:1
+logs/review/G02_20261030T130813Z_vP2nrT.review.log:1
+logs/review/G02_review.md:1
+logs/review/G03_20261030T132027Z_gN9Ntr.review.log:2
+logs/review/G04_20261102T023215Z_DtsO6K.review.log:1
+$ grep -c -E ' [A-Z][a-z]{2} +[0-9]{1,2} [0-9]{2}:[0-9]{2} ' logs/review/CHECKPOINT_1.md logs/review/CHECKPOINT_2.md logs/review/CHECKPOINT_3.md logs/review/G00_20261030T122505Z_7St35c.review.log logs/review/G00_review.md logs/review/G01_20261030T125107Z_P3Dw1C.review.log logs/review/G01_review.md logs/review/G02_20261030T130813Z_vP2nrT.review.log logs/review/G02_review.md logs/review/G03_20261030T132027Z_gN9Ntr.review.log logs/review/G03_review.md logs/review/G04_20261102T023215Z_DtsO6K.review.log logs/review/G04_review.md logs/review/G05_20261102T025456Z_lCG0ac.review.log logs/review/G05_review.md logs/review/G05b_20261102T035410Z_z0g7ji.review.log logs/review/G05b_review.md logs/review/G06_20261102T040430Z_BPbdDC.review.log logs/review/G06_review.md logs/review/G07_20261102T041114Z_vzwQUZ.review.log logs/review/G07_20261102T084900Z_ZTrxqN.review.log logs/review/G07_review.md logs/review/G07_run1_review.md logs/review/G08_20261102T091256Z_nnjq89.review.log logs/review/G08_20261102T112611Z_dl5kmx.review.log logs/review/G08_20261102T112702Z_6hnn8n.review.log logs/review/G08_review.md logs/review/G09_20261102T114120Z_PLjTHu.review.log logs/review/G09_20261102T115757Z_b6e4Mk.review.log logs/review/G09_review.md logs/review/G09_run1_review.md logs/review/G10_20261102T131021Z_RbQpnI.review.log logs/review/G10_review.md logs/review/G11_20261102T132117Z_URiLe8.review.log logs/review/G11_review.md logs/review/G12_20261104T091034Z_XoudcY.review.log logs/review/G12_review.md logs/review/G13_20261104T111257Z_8tPBjL.review.log logs/review/G13_review.md logs/review/G14_20261104T123248Z_16kjwp.review.log logs/review/G14_review.md logs/review/G15_20261104T125134Z_jrn7fa.review.log logs/review/G15_review.md logs/review/G15b_20261104T130510Z_X7qKqK.review.log logs/review/G15b_review.md
+$ grep -v ':0$'
+logs/review/G00_20261030T122505Z_7St35c.review.log:1
+logs/review/G07_20261102T084900Z_ZTrxqN.review.log:9
+logs/review/G09_20261102T115757Z_b6e4Mk.review.log:7
+logs/review/G10_20261102T131021Z_RbQpnI.review.log:20
+logs/review/G11_20261102T132117Z_URiLe8.review.log:13
+logs/review/G13_20261104T111257Z_8tPBjL.review.log:13
+logs/review/G14_20261104T123248Z_16kjwp.review.log:2
+logs/review/G15b_20261104T130510Z_X7qKqK.review.log:1
+$ cut -c1-160
+$ grep -n -E 'Requested-By|Start-Date|End-Date' logs/review/CHECKPOINT_1.md logs/review/CHECKPOINT_2.md logs/review/CHECKPOINT_3.md logs/review/G00_20261030T122505Z_7St35c.review.log logs/review/G00_review.md logs/review/G01_20261030T125107Z_P3Dw1C.review.log logs/review/G01_review.md logs/review/G02_20261030T130813Z_vP2nrT.review.log logs/review/G02_review.md logs/review/G03_20261030T132027Z_gN9Ntr.review.log logs/review/G03_review.md logs/review/G04_20261102T023215Z_DtsO6K.review.log logs/review/G04_review.md logs/review/G05_20261102T025456Z_lCG0ac.review.log logs/review/G05_review.md logs/review/G05b_20261102T035410Z_z0g7ji.review.log logs/review/G05b_review.md logs/review/G06_20261102T040430Z_BPbdDC.review.log logs/review/G06_review.md logs/review/G07_20261102T041114Z_vzwQUZ.review.log logs/review/G07_20261102T084900Z_ZTrxqN.review.log logs/review/G07_review.md logs/review/G07_run1_review.md logs/review/G08_20261102T091256Z_nnjq89.review.log logs/review/G08_20261102T112611Z_dl5kmx.review.log logs/review/G08_20261102T112702Z_6hnn8n.review.log logs/review/G08_review.md logs/review/G09_20261102T114120Z_PLjTHu.review.log logs/review/G09_20261102T115757Z_b6e4Mk.review.log logs/review/G09_review.md logs/review/G09_run1_review.md logs/review/G10_20261102T131021Z_RbQpnI.review.log logs/review/G10_review.md logs/review/G11_20261102T132117Z_URiLe8.review.log logs/review/G11_review.md logs/review/G12_20261104T091034Z_XoudcY.review.log logs/review/G12_review.md logs/review/G13_20261104T111257Z_8tPBjL.review.log logs/review/G13_review.md logs/review/G14_20261104T123248Z_16kjwp.review.log logs/review/G14_review.md logs/review/G15_20261104T125134Z_jrn7fa.review.log logs/review/G15_review.md logs/review/G15b_20261104T130510Z_X7qKqK.review.log logs/review/G15b_review.md
+logs/review/G03_20261030T132027Z_gN9Ntr.review.log:203:End-Date: <removed>
+logs/review/G03_20261030T132027Z_gN9Ntr.review.log:205:Start-Date: <removed>
+logs/review/G03_20261030T132027Z_gN9Ntr.review.log:207:Requested-By: <removed>
+logs/review/G03_20261030T132027Z_gN9Ntr.review.log:210:End-Date: <removed>
+logs/review/G03_20261030T132027Z_gN9Ntr.review.log:212:Start-Date: <removed>
+logs/review/G03_20261030T132027Z_gN9Ntr.review.log:214:Requested-By: <removed>
+logs/review/G03_20261030T132027Z_gN9Ntr.review.log:216:End-Date: <removed>
+$ grep -l -E '\b([0-9]{1,3}\.){3}[0-9]{1,3}\b' logs/review/CHECKPOINT_1.md logs/review/CHECKPOINT_2.md logs/review/CHECKPOINT_3.md logs/review/G00_20261030T122505Z_7St35c.review.log logs/review/G00_review.md logs/review/G01_20261030T125107Z_P3Dw1C.review.log logs/review/G01_review.md logs/review/G02_20261030T130813Z_vP2nrT.review.log logs/review/G02_review.md logs/review/G03_20261030T132027Z_gN9Ntr.review.log logs/review/G03_review.md logs/review/G04_20261102T023215Z_DtsO6K.review.log logs/review/G04_review.md logs/review/G05_20261102T025456Z_lCG0ac.review.log logs/review/G05_review.md logs/review/G05b_20261102T035410Z_z0g7ji.review.log logs/review/G05b_review.md logs/review/G06_20261102T040430Z_BPbdDC.review.log logs/review/G06_review.md logs/review/G07_20261102T041114Z_vzwQUZ.review.log logs/review/G07_20261102T084900Z_ZTrxqN.review.log logs/review/G07_review.md logs/review/G07_run1_review.md logs/review/G08_20261102T091256Z_nnjq89.review.log logs/review/G08_20261102T112611Z_dl5kmx.review.log logs/review/G08_20261102T112702Z_6hnn8n.review.log logs/review/G08_review.md logs/review/G09_20261102T114120Z_PLjTHu.review.log logs/review/G09_20261102T115757Z_b6e4Mk.review.log logs/review/G09_review.md logs/review/G09_run1_review.md logs/review/G10_20261102T131021Z_RbQpnI.review.log logs/review/G10_review.md logs/review/G11_20261102T132117Z_URiLe8.review.log logs/review/G11_review.md logs/review/G12_20261104T091034Z_XoudcY.review.log logs/review/G12_review.md logs/review/G13_20261104T111257Z_8tPBjL.review.log logs/review/G13_review.md logs/review/G14_20261104T123248Z_16kjwp.review.log logs/review/G14_review.md logs/review/G15_20261104T125134Z_jrn7fa.review.log logs/review/G15_review.md logs/review/G15b_20261104T130510Z_X7qKqK.review.log logs/review/G15b_review.md
+logs/review/CHECKPOINT_2.md
+logs/review/G00_review.md
+logs/review/G05_20261102T025456Z_lCG0ac.review.log
+logs/review/G05b_20261102T035410Z_z0g7ji.review.log
+logs/review/G07_20261102T084900Z_ZTrxqN.review.log
+logs/review/G07_review.md
+logs/review/G13_20261104T111257Z_8tPBjL.review.log
+logs/review/G13_review.md
+logs/review/G14_20261104T123248Z_16kjwp.review.log
+logs/review/G14_review.md
+logs/review/G15_20261104T125134Z_jrn7fa.review.log
+logs/review/G15_review.md
+logs/review/G15b_20261104T130510Z_X7qKqK.review.log
+$ section '8. Record the licenses involved'
+
+===== 8. Record the licenses involved =====
+$ head -n 3 upstream/ACE-RISCV/LICENSE
+                                 Apache License
+                           Version 2.0, January 2004
+                        http://www.apache.org/licenses/
+$ git -C upstream/ACE-RISCV ls-files
+$ grep -i -E '(^|/)(license|copying|notice)[^/]*$'
+LICENSE
+$ grep -H -m 1 SPDX-License-Identifier upstream/ACE-RISCV/tools/ace_run_hypervisor.sh upstream/ACE-RISCV/tools/common.sh upstream/ACE-RISCV/hypervisor/Makefile upstream/ACE-RISCV/security-monitor/Makefile upstream/ACE-RISCV/confidential-vms/linux_vm/Makefile
+upstream/ACE-RISCV/tools/ace_run_hypervisor.sh:# SPDX-License-Identifier: Apache-2.0
+upstream/ACE-RISCV/tools/common.sh:# SPDX-License-Identifier: Apache-2.0
+upstream/ACE-RISCV/hypervisor/Makefile:# SPDX-License-Identifier: Apache-2.0
+upstream/ACE-RISCV/security-monitor/Makefile:# SPDX-License-Identifier: Apache-2.0
+upstream/ACE-RISCV/confidential-vms/linux_vm/Makefile:# SPDX-License-Identifier: Apache-2.0
+$ ls 'LICENSE*' 'NOTICE*' 'README*'
+$ echo '(no license, notice, or readme file in the project yet)'
+(no license, notice, or readme file in the project yet)
+$ section '9. Record the manifest of the publishable files'
+
+===== 9. Record the manifest of the publishable files =====
+$ git ls-files -z
+$ xargs -0 sha256sum
+ef7267d77254a4f03c699a78ad8459fd0bcc26216f70d67482929be5f8e5fdd1  .gitignore
+8bcf3e3afb1c34524803e47ef9015c64e52139cb9e6ec70efa69185cf13da045  PROJECT_CHARTER.md
+c542d734b4eabd0a4f94a8284f7f8522138f32512f0c6668a85f471321f98666  docs/G00_host_baseline.md
+753a5f6a1fa1b6a46f62255c4a2321f22c2cc0b466b8849b2df1f483442a7a43  docs/G01_project_skeleton.md
+7bc63cf21df5ebb99e249d328b75e08bd42fe278b1d549b2ca5b5fc895a00ef2  docs/G02_fetch_upstream.md
+99c5af6a867044167b772b54d83c8706a61a26d858a251622cd3cf76058db17d  docs/G03_apt_packages.md
+21fa441e72b66a4ba79d7d78b093614bf6e8a36b6481d7ed93d168f6d6a101b4  docs/G04_rust_toolchain.md
+5a6abf58568e6bbf0456f7f058f7314001c3850d234055752b983bd9c73578fa  docs/G05_audit_build_scripts.md
+61d201bd74e3bc15ade9acae359697fcff1d1055b561e482b90869fc4501e8ad  docs/G05b_apply_safety_patches.md
+9982b09b5040cddc58d26f08964f3db62d10b3b0909ea900c09065a38b7d7455  docs/G06_devtools.md
+a4b5f034792b2729f1eddf0e1b78c990bc4983910458c9d2f5cad1d3dd383214  docs/G07_tools.md
+3d06c1d028abc05960e17c867f3ee947924dc825efaa170d02905dd10ee0eb2c  docs/G08_emulator.md
+e1b757cf1d767395e0e91c57428e6bbe632c9c08ff052a05ab8695a71d15116c  docs/G09_hypervisor.md
+5c20ff45c178d236a16908ac258472e9c96d53c83e5105b6e957a96cb2ed4274  docs/G10_firmware.md
+eddfc9b50c7f3682ebbe154b52caad1458486276e08a8e4f995f0a2b155df778  docs/G11_confidential_vms.md
+f16fbda417ffd243034ec1480566534dc8d917e7431e7e7054d7a113b55e9252  docs/G12_rebuild_all.md
+198a420cbe10f9ac98cfcaa0e1478a12cb9e27a119b840d69a59c5d6c4c5d584  docs/G13_boot_hypervisor.md
+6211dd43edd8567961a5053a75e9f1fb1caeb934cbafa4d8b04c03488437ca0d  docs/G14_attestation.md
+e82485041c5a82172db14f8fb58d5c841940c4d88e985cc994bc72558e48bfe5  docs/G15_regression_test.md
+74d44e357545d48b7bcad5fbeca33593576e3ce23be8cd195b891f4ec328e19a  docs/G15b_negative_control.md
+6a353adb19ed00865c6e5b29bfe46098ccab0d045200aa41a78396465cb490bb  docs/SAFETY_AUDIT.md
+e3639f17752b4e0452d53b3d9f67298b0315ed36fa93d375cb037f068723199f  docs/SOURCE_PROVENANCE.md
+e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855  logs/public/.keep
+cf83fb0b058c47958b9767be45673780ecd34de044bc89cf723fe4dcbe68f69a  patches/0001-build-parallelism.patch
+3064e443ade7f24b46d5a85179afc94bf8fce1e0046a4581ea9e9549f8ed869b  patches/0002-run-scripts-host-safety.patch
+8ce96558b74c5019087e8cc79f166d534dbb40fa67cfe88426c8fdef063cf7e5  patches/README.md
+d88c31af440a9a8d820a46e3df4855c130a004db19602c00e5ec2aeb38e48fb4  scripts/G00_host_baseline.sh
+92c97c3dcca2ad329d2610b41114ee99373450a8d2b8889b4b5948e23b777a5c  scripts/G01_project_skeleton.sh
+b926ff1077874f0699b99454a0cd00560693700f01c6753a934438b257d2bd95  scripts/G02_fetch_upstream.sh
+0760b8dd09cf499b0e86698527a09c1cafb70a2b034b0a664a69b21780ad6e64  scripts/G03_apt_packages.sh
+48e3362b5575ea72013f7a88d8fe6e5c48fb8e8590ee1d5f3b66cdb17d81c8ea  scripts/G04_rust_toolchain.sh
+a0abc9fe33f6e77d56bf39a1bb62b60a9e3224b23c3f79ea0733d0a66830e7fd  scripts/G05_audit_build_scripts.sh
+d89ee9f91ec60153fc13815269fabbae062d6ae97c39fa0937ee4857cb8d1fee  scripts/G05b_apply_safety_patches.sh
+0fb65977682f3d9b2deafdb2c3b73bf07f1b150f05a5f4c495298718e4bf3321  scripts/G06_devtools.sh
+e42ccfec0dd998e7407af1a9600e1cf8c719a0f50fbd04e78d0be45ff74cff95  scripts/G07_tools.sh
+d93a60b04dfdf92ae489167d4a4aeb7a3cc2655eb792612568a4ae125c6285bf  scripts/G08_emulator.sh
+cbdca51e5aafc00480951fb5edd54df11304a002615ff4f4dc2749484f61f6b7  scripts/G09_hypervisor.sh
+fe39133881948eb8da176bd957d1c83b334aa2c28a2a394d69b12b4f6a2d2e70  scripts/G10_firmware.sh
+823ee81068c2065fafe15e4bfd34a30eb21eadc79112340f5e4e332ba0457851  scripts/G11_confidential_vms.sh
+0e274dc9e9feaed7400bddd8b9ce9346ecdacb37ba8433f7a36219d3d270312d  scripts/G12_rebuild_all.sh
+331fb4ab55deb6ab5ac9fcfbde08341f1716d6d1e2e3c02b70e780728e4f6820  scripts/G13_boot_hypervisor.sh
+c3ab16b4c91c8afbd4155e63e5102697c55e99fa052cfcc06aa73c5e8199067a  scripts/G14_attestation.sh
+af2ce6aa1e0adddb9e55c80407450a13fc3544ad0d70d1104d4331d09313f6d2  scripts/G15_regression_test.sh
+c34d7e0a39d0af267aad403dd9d5c4e393e358fc3cf03091dc01e896e058fe7c  scripts/G15b_negative_control.sh
+dd8de984968d097bc882ab5f3dd47286c9fb71652864e0ec0db00a5260f90de8  scripts/build_env.sh
+ce1fecda74befd6a4c8d5bdcd3738434099975aa4ff8bc25a6cfeb577315e96f  scripts/wgetrc
+$ section '10. Check the project'
+
+===== 10. Check the project =====
+$ git status --short
+?? docs/G16a_publication_audit.md
+?? scripts/G16a_publication_audit.sh
+$ git log --oneline
+$ wc -l
+17
+$ finish completed
+
+===== SUMMARY =====
+failed_commands=0  completed
+# masked_from_raw_sha256=21bddf1fffa45b473917ed9056b639338e58e6bbbbc170d053112f81e055b11f

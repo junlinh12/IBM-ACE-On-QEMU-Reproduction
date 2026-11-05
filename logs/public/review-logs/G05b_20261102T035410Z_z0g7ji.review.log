@@ -1,0 +1,631 @@
+# G05b Apply Safety Patches | run=G05b_20261102T035410Z_z0g7ji | input_sha256=d89ee9f91ec60153fc13815269fabbae062d6ae97c39fa0937ee4857cb8d1fee
+# previous gate: G05 read-only audit PASS (see logs/review/G05_review.md)
+$ section '1. Verify the downloaded files and all sealed evidence'
+
+===== 1. Verify the downloaded files and all sealed evidence =====
+$ cd ~/download
+$ sha256sum G05b_apply_safety_patches.sh G05b_apply_safety_patches.md
+d89ee9f91ec60153fc13815269fabbae062d6ae97c39fa0937ee4857cb8d1fee  G05b_apply_safety_patches.sh
+61d201bd74e3bc15ade9acae359697fcff1d1055b561e482b90869fc4501e8ad  G05b_apply_safety_patches.md
+$ echo '770d636225cc42ba9954513dfcb426db343131c49b68761db2b9ebb562db8956  G05_review.md'
+$ sha256sum -c -
+G05_review.md: OK
+$ sha256sum -c -
+$ echo '4c2de2f2ffec80da8639932f292510dcd1f44f358f3373fd9ee2a9083fb8fe38  SAFETY_AUDIT.md'
+SAFETY_AUDIT.md: OK
+$ echo '8ce96558b74c5019087e8cc79f166d534dbb40fa67cfe88426c8fdef063cf7e5  PATCHES_README.md'
+$ sha256sum -c -
+PATCHES_README.md: OK
+$ sha256sum -c -
+$ echo 'cf83fb0b058c47958b9767be45673780ecd34de044bc89cf723fe4dcbe68f69a  0001-build-parallelism.patch'
+0001-build-parallelism.patch: OK
+$ sha256sum -c -
+$ echo '2aeadce13855d1d518ec267d2f5ee9f6164849751583495c022e2f1fd0faf503  0002-run-scripts-host-safety.patch'
+0002-run-scripts-host-safety.patch: OK
+$ cd ~/projects/IBM-ACE-On-QEMU-Reproduction/logs
+$ sha256sum -c ACE-G00-Host-Baseline-20261030T115047Z-a1SbSFY1.raw.log.sha256 G00_20261030T122505Z_7St35c.sha256 G01_20261030T125107Z_P3Dw1C.sha256 G02_20261030T130813Z_vP2nrT.sha256 G03_20261030T132027Z_gN9Ntr.sha256 G04_20261102T023215Z_DtsO6K.sha256 G05_20261102T025456Z_lCG0ac.sha256
+ACE-G00-Host-Baseline-20261030T115047Z-a1SbSFY1.raw.log: OK
+G00_20261030T122505Z_7St35c.raw.log: OK
+G00_20261030T122505Z_7St35c.input.sh: OK
+G01_20261030T125107Z_P3Dw1C.raw.log: OK
+G01_20261030T125107Z_P3Dw1C.input.sh: OK
+G02_20261030T130813Z_vP2nrT.raw.log: OK
+G02_20261030T130813Z_vP2nrT.input.sh: OK
+G03_20261030T132027Z_gN9Ntr.raw.log: OK
+G03_20261030T132027Z_gN9Ntr.input.sh: OK
+G04_20261102T023215Z_DtsO6K.raw.log: OK
+G04_20261102T023215Z_DtsO6K.input.sh: OK
+G05_20261102T025456Z_lCG0ac.raw.log: OK
+G05_20261102T025456Z_lCG0ac.input.sh: OK
+$ stop_if_failed 'step 1'
+$ section '2. Commit the reviewed G05 read-only work (local only, UTC)'
+
+===== 2. Commit the reviewed G05 read-only work (local only, UTC) =====
+$ cd ~/projects/IBM-ACE-On-QEMU-Reproduction
+$ cp ~/download/G05_review.md logs/review/
+$ git add scripts/G05_audit_build_scripts.sh docs/G05_audit_build_scripts.md
+$ git status --short
+A  docs/G05_audit_build_scripts.md
+A  scripts/G05_audit_build_scripts.sh
+$ git diff --cached --quiet
+$ TZ=UTC0
+$ git commit -m 'G05: audit upstream build and run scripts (read-only)'
+[main 22bbf68] G05: audit upstream build and run scripts (read-only)
+ 2 files changed, 298 insertions(+)
+ create mode 100644 docs/G05_audit_build_scripts.md
+ create mode 100644 scripts/G05_audit_build_scripts.sh
+$ git log -1 '--format=%h  %aI  %an <%ae>  %s'
+22bbf68  2026-11-02T03:54:10+00:00  junlinh12 <238169016+junlinh12@users.noreply.github.com>  G05: audit upstream build and run scripts (read-only)
+$ git show --stat --format= HEAD
+ docs/G05_audit_build_scripts.md    | 139 ++++++++++++++++++++++++++++++++
+ scripts/G05_audit_build_scripts.sh | 159 +++++++++++++++++++++++++++++++++++++
+ 2 files changed, 298 insertions(+)
+$ cp ~/download/G05b_apply_safety_patches.sh scripts/
+$ cp ~/download/G05b_apply_safety_patches.md docs/
+$ stop_if_failed 'step 2'
+$ section '3. Record the test scripts and Buildroot configurations'
+
+===== 3. Record the test scripts and Buildroot configurations =====
+$ cd ~/projects/IBM-ACE-On-QEMU-Reproduction/upstream/ACE-RISCV
+$ git ls-files -z -- hypervisor/rootfs confidential-vms/linux_vm/hypervisor_rootfs
+$ xargs -0 -r grep -IHn ''
+confidential-vms/linux_vm/hypervisor_rootfs/run_linux_vm_kvmtool.sh:1:#!/usr/bin/env bash
+confidential-vms/linux_vm/hypervisor_rootfs/run_linux_vm_kvmtool.sh:2:# SPDX-FileCopyrightText: 2023 IBM Corporation
+confidential-vms/linux_vm/hypervisor_rootfs/run_linux_vm_kvmtool.sh:3:# SPDX-FileContributor: Wojciech Ozga <woz@zurich.ibm.com>, IBM Research - Zurich
+confidential-vms/linux_vm/hypervisor_rootfs/run_linux_vm_kvmtool.sh:4:# SPDX-License-Identifier: Apache-2.0
+confidential-vms/linux_vm/hypervisor_rootfs/run_linux_vm_kvmtool.sh:5:
+confidential-vms/linux_vm/hypervisor_rootfs/run_linux_vm_kvmtool.sh:6:KERNEL=/root/linux_vm/Image
+confidential-vms/linux_vm/hypervisor_rootfs/run_linux_vm_kvmtool.sh:7:TAP=/root/linux_vm/cove_tap_kvmtool
+confidential-vms/linux_vm/hypervisor_rootfs/run_linux_vm_kvmtool.sh:8:
+confidential-vms/linux_vm/hypervisor_rootfs/run_linux_vm_kvmtool.sh:9:./lkvm-static run -c2 --console virtio --cove-vm --cove-tap=${TAP} --cove-single-step-init -p "console=ttyS0 ro root=/dev/vda swiotlb=mmnn,force" -k ${KERNEL} --virtio-transport=pci
+confidential-vms/linux_vm/hypervisor_rootfs/run_linux_vm_qemu.sh:1:#!/usr/bin/env bash
+confidential-vms/linux_vm/hypervisor_rootfs/run_linux_vm_qemu.sh:2:# SPDX-FileCopyrightText: 2023 IBM Corporation
+confidential-vms/linux_vm/hypervisor_rootfs/run_linux_vm_qemu.sh:3:# SPDX-FileContributor: Wojciech Ozga <woz@zurich.ibm.com>, IBM Research - Zurich
+confidential-vms/linux_vm/hypervisor_rootfs/run_linux_vm_qemu.sh:4:# SPDX-License-Identifier: Apache-2.0
+confidential-vms/linux_vm/hypervisor_rootfs/run_linux_vm_qemu.sh:5:
+confidential-vms/linux_vm/hypervisor_rootfs/run_linux_vm_qemu.sh:6:HOST_PORT="$((3000 + RANDOM % 3000))"
+confidential-vms/linux_vm/hypervisor_rootfs/run_linux_vm_qemu.sh:7:INTERACTIVE="-nographic"
+confidential-vms/linux_vm/hypervisor_rootfs/run_linux_vm_qemu.sh:8:SMP=2
+confidential-vms/linux_vm/hypervisor_rootfs/run_linux_vm_qemu.sh:9:MEMORY=1G
+confidential-vms/linux_vm/hypervisor_rootfs/run_linux_vm_qemu.sh:10:ID=""
+confidential-vms/linux_vm/hypervisor_rootfs/run_linux_vm_qemu.sh:11:
+confidential-vms/linux_vm/hypervisor_rootfs/run_linux_vm_qemu.sh:12:for i in "$@"; do
+confidential-vms/linux_vm/hypervisor_rootfs/run_linux_vm_qemu.sh:13:  case $i in
+confidential-vms/linux_vm/hypervisor_rootfs/run_linux_vm_qemu.sh:14:    -e=*|--debug-port=*)
+confidential-vms/linux_vm/hypervisor_rootfs/run_linux_vm_qemu.sh:15:      DEBUG_PORT="${i#*=}"
+confidential-vms/linux_vm/hypervisor_rootfs/run_linux_vm_qemu.sh:16:      DEBUG_OPTIONS="-gdb tcp::${DEBUG_PORT} -S -d in_asm -D debug.log"
+confidential-vms/linux_vm/hypervisor_rootfs/run_linux_vm_qemu.sh:17:      echo ${DEBUG_OPTIONS}
+confidential-vms/linux_vm/hypervisor_rootfs/run_linux_vm_qemu.sh:18:      shift
+confidential-vms/linux_vm/hypervisor_rootfs/run_linux_vm_qemu.sh:19:      ;;
+confidential-vms/linux_vm/hypervisor_rootfs/run_linux_vm_qemu.sh:20:    --host-port=*)
+confidential-vms/linux_vm/hypervisor_rootfs/run_linux_vm_qemu.sh:21:      HOST_PORT="${i#*=}"
+confidential-vms/linux_vm/hypervisor_rootfs/run_linux_vm_qemu.sh:22:      shift
+confidential-vms/linux_vm/hypervisor_rootfs/run_linux_vm_qemu.sh:23:      ;;
+confidential-vms/linux_vm/hypervisor_rootfs/run_linux_vm_qemu.sh:24:    -s=*|--smp=*)
+confidential-vms/linux_vm/hypervisor_rootfs/run_linux_vm_qemu.sh:25:      SMP="${i#*=}"
+confidential-vms/linux_vm/hypervisor_rootfs/run_linux_vm_qemu.sh:26:      shift
+confidential-vms/linux_vm/hypervisor_rootfs/run_linux_vm_qemu.sh:27:      ;;
+confidential-vms/linux_vm/hypervisor_rootfs/run_linux_vm_qemu.sh:28:    -m=*|--memory=*)
+confidential-vms/linux_vm/hypervisor_rootfs/run_linux_vm_qemu.sh:29:      MEMORY="${i#*=}"
+confidential-vms/linux_vm/hypervisor_rootfs/run_linux_vm_qemu.sh:30:      shift
+confidential-vms/linux_vm/hypervisor_rootfs/run_linux_vm_qemu.sh:31:      ;;
+confidential-vms/linux_vm/hypervisor_rootfs/run_linux_vm_qemu.sh:32:    -i=*|--id=*)
+confidential-vms/linux_vm/hypervisor_rootfs/run_linux_vm_qemu.sh:33:      ID="${i#*=}"
+confidential-vms/linux_vm/hypervisor_rootfs/run_linux_vm_qemu.sh:34:      shift
+confidential-vms/linux_vm/hypervisor_rootfs/run_linux_vm_qemu.sh:35:      ;;
+confidential-vms/linux_vm/hypervisor_rootfs/run_linux_vm_qemu.sh:36:    --daemonize*)
+confidential-vms/linux_vm/hypervisor_rootfs/run_linux_vm_qemu.sh:37:      INTERACTIVE="-daemonize"
+confidential-vms/linux_vm/hypervisor_rootfs/run_linux_vm_qemu.sh:38:      shift
+confidential-vms/linux_vm/hypervisor_rootfs/run_linux_vm_qemu.sh:39:      ;;
+confidential-vms/linux_vm/hypervisor_rootfs/run_linux_vm_qemu.sh:40:    -*|--*)
+confidential-vms/linux_vm/hypervisor_rootfs/run_linux_vm_qemu.sh:41:      echo "Unknown option $i"
+confidential-vms/linux_vm/hypervisor_rootfs/run_linux_vm_qemu.sh:42:      exit 1
+confidential-vms/linux_vm/hypervisor_rootfs/run_linux_vm_qemu.sh:43:      ;;
+confidential-vms/linux_vm/hypervisor_rootfs/run_linux_vm_qemu.sh:44:    *)
+confidential-vms/linux_vm/hypervisor_rootfs/run_linux_vm_qemu.sh:45:      ;;
+confidential-vms/linux_vm/hypervisor_rootfs/run_linux_vm_qemu.sh:46:  esac
+confidential-vms/linux_vm/hypervisor_rootfs/run_linux_vm_qemu.sh:47:done
+confidential-vms/linux_vm/hypervisor_rootfs/run_linux_vm_qemu.sh:48:
+confidential-vms/linux_vm/hypervisor_rootfs/run_linux_vm_qemu.sh:49:if [ ! -f "/root/linux_vm${ID}" ]; then
+confidential-vms/linux_vm/hypervisor_rootfs/run_linux_vm_qemu.sh:50:  cp -rf /root/linux_vm /root/linux_vm${ID}
+confidential-vms/linux_vm/hypervisor_rootfs/run_linux_vm_qemu.sh:51:fi
+confidential-vms/linux_vm/hypervisor_rootfs/run_linux_vm_qemu.sh:52:
+confidential-vms/linux_vm/hypervisor_rootfs/run_linux_vm_qemu.sh:53:QEMU_CMD=qemu-system-riscv64
+confidential-vms/linux_vm/hypervisor_rootfs/run_linux_vm_qemu.sh:54:KERNEL=/root/linux_vm${ID}/Image
+confidential-vms/linux_vm/hypervisor_rootfs/run_linux_vm_qemu.sh:55:DRIVE=/root/linux_vm${ID}/rootfs.ext2
+confidential-vms/linux_vm/hypervisor_rootfs/run_linux_vm_qemu.sh:56:INITRAMFS=/root/linux_vm${ID}/rootfs.cpio
+confidential-vms/linux_vm/hypervisor_rootfs/run_linux_vm_qemu.sh:57:TAP=/root/linux_vm${ID}/cove_tap_qemu
+confidential-vms/linux_vm/hypervisor_rootfs/run_linux_vm_qemu.sh:58:
+confidential-vms/linux_vm/hypervisor_rootfs/run_linux_vm_qemu.sh:59:echo "SSH port: ${HOST_PORT}"
+confidential-vms/linux_vm/hypervisor_rootfs/run_linux_vm_qemu.sh:60:echo "Number of cores assigned to the guest: ${SMP}"
+confidential-vms/linux_vm/hypervisor_rootfs/run_linux_vm_qemu.sh:61:echo "${INTERACTIVE}"
+confidential-vms/linux_vm/hypervisor_rootfs/run_linux_vm_qemu.sh:62:
+confidential-vms/linux_vm/hypervisor_rootfs/run_linux_vm_qemu.sh:63:${QEMU_CMD} ${DEBUG_OPTIONS} \
+confidential-vms/linux_vm/hypervisor_rootfs/run_linux_vm_qemu.sh:64:    ${INTERACTIVE} \
+confidential-vms/linux_vm/hypervisor_rootfs/run_linux_vm_qemu.sh:65:    --enable-kvm \
+confidential-vms/linux_vm/hypervisor_rootfs/run_linux_vm_qemu.sh:66:    -machine virt,cove=true,cove-tap-filename=${TAP} -cpu rv64,f=true -smp ${SMP} -m ${MEMORY} \
+confidential-vms/linux_vm/hypervisor_rootfs/run_linux_vm_qemu.sh:67:    -kernel ${KERNEL} \
+confidential-vms/linux_vm/hypervisor_rootfs/run_linux_vm_qemu.sh:68:    -seed 0 \
+confidential-vms/linux_vm/hypervisor_rootfs/run_linux_vm_qemu.sh:69:    -global virtio-mmio.force-legacy=false \
+confidential-vms/linux_vm/hypervisor_rootfs/run_linux_vm_qemu.sh:70:    -append "console=ttyS0 ro root=/dev/vda swiotlb=mmnn,force" \
+confidential-vms/linux_vm/hypervisor_rootfs/run_linux_vm_qemu.sh:71:    -device virtio-blk-pci,drive=hd0,iommu_platform=on,disable-legacy=on,disable-modern=off \
+confidential-vms/linux_vm/hypervisor_rootfs/run_linux_vm_qemu.sh:72:    -drive if=none,format=raw,file=${DRIVE},id=hd0 \
+confidential-vms/linux_vm/hypervisor_rootfs/run_linux_vm_qemu.sh:73:    -device virtio-net-pci,netdev=net0,iommu_platform=on,disable-legacy=on,disable-modern=off \
+confidential-vms/linux_vm/hypervisor_rootfs/run_linux_vm_qemu.sh:74:    -netdev user,id=net0,net=192.168.100.1/24,dhcpstart=192.168.100.128,hostfwd=tcp::${HOST_PORT}-:22
+hypervisor/rootfs/common.sh:1:#!/usr/bin/env bash
+hypervisor/rootfs/common.sh:2:# SPDX-FileCopyrightText: 2023 IBM Corporation
+hypervisor/rootfs/common.sh:3:# SPDX-FileContributor: Wojciech Ozga <woz@zurich.ibm.com>, IBM Research - Zurich
+hypervisor/rootfs/common.sh:4:# SPDX-License-Identifier: Apache-2.0
+hypervisor/rootfs/common.sh:5:export TVM_TEST_PASSWD="passwd"
+hypervisor/rootfs/common.sh:6:export SSH_CMD="sshpass -p ${TVM_TEST_PASSWD} ssh -y -q"
+hypervisor/rootfs/common.sh:7:
+hypervisor/rootfs/common.sh:8:function kill_confidential_vm() {
+hypervisor/rootfs/common.sh:9:    PID="$(pidof qemu-system-riscv64)"
+hypervisor/rootfs/common.sh:10:    kill -9 $PID
+hypervisor/rootfs/common.sh:11:    wait $PID 2>/dev/null
+hypervisor/rootfs/common.sh:12:}
+hypervisor/rootfs/common.sh:13:
+hypervisor/rootfs/common.sh:14:function wait_for_ssh () {
+hypervisor/rootfs/common.sh:15:    for i in $(seq 1 30); do
+hypervisor/rootfs/common.sh:16:        if [ "$( $SSH_CMD -p$3 $1@$2 'whoami' )" == "root" ]; then
+hypervisor/rootfs/common.sh:17:            break
+hypervisor/rootfs/common.sh:18:        fi
+hypervisor/rootfs/common.sh:19:        echo "Waiting for the TVM's SSH ..."
+hypervisor/rootfs/common.sh:20:        sleep 1
+hypervisor/rootfs/common.sh:21:    done
+hypervisor/rootfs/common.sh:22:}
+hypervisor/rootfs/selftest.sh:1:#!/usr/bin/env bash
+hypervisor/rootfs/selftest.sh:2:# SPDX-FileCopyrightText: 2023 IBM Corporation
+hypervisor/rootfs/selftest.sh:3:# SPDX-FileContributor: Wojciech Ozga <woz@zurich.ibm.com>, IBM Research - Zurich
+hypervisor/rootfs/selftest.sh:4:# SPDX-License-Identifier: Apache-2.0
+hypervisor/rootfs/selftest.sh:5:
+hypervisor/rootfs/selftest.sh:6:# This script runs all tests in harness
+hypervisor/rootfs/selftest.sh:7:
+hypervisor/rootfs/selftest.sh:8:declare -a TESTS=("test_attestation" "test_smp")
+hypervisor/rootfs/selftest.sh:9:
+hypervisor/rootfs/selftest.sh:10:for i in "${TESTS[@]}"; do
+hypervisor/rootfs/selftest.sh:11:    ./$i.sh 2>&1 > $i.log
+hypervisor/rootfs/selftest.sh:12:    RESULT=$?
+hypervisor/rootfs/selftest.sh:13:    if [ $RESULT -eq 0 ]; then
+hypervisor/rootfs/selftest.sh:14:        echo "$i: success"
+hypervisor/rootfs/selftest.sh:15:    else
+hypervisor/rootfs/selftest.sh:16:        echo "$i: failed"
+hypervisor/rootfs/selftest.sh:17:        echo ""
+hypervisor/rootfs/selftest.sh:18:        echo "======= Logs: ======="
+hypervisor/rootfs/selftest.sh:19:        cat $i.log
+hypervisor/rootfs/selftest.sh:20:    fi
+hypervisor/rootfs/selftest.sh:21:done
+hypervisor/rootfs/test_attestation.sh:1:#!/usr/bin/env bash
+hypervisor/rootfs/test_attestation.sh:2:# SPDX-FileCopyrightText: 2025 IBM Corporation
+hypervisor/rootfs/test_attestation.sh:3:# SPDX-FileContributor: Wojciech Ozga <woz@zurich.ibm.com>, IBM Research - Zurich
+hypervisor/rootfs/test_attestation.sh:4:# SPDX-License-Identifier: Apache-2.0
+hypervisor/rootfs/test_attestation.sh:5:. common.sh
+hypervisor/rootfs/test_attestation.sh:6:
+hypervisor/rootfs/test_attestation.sh:7:/root/run_linux_vm_qemu.sh -s=1 -m=256M --daemonize 2>&1 > tmp_run_vm.log &
+hypervisor/rootfs/test_attestation.sh:8:sleep 5
+hypervisor/rootfs/test_attestation.sh:9:
+hypervisor/rootfs/test_attestation.sh:10:TVM_USER="root"
+hypervisor/rootfs/test_attestation.sh:11:TVM_HOST="localhost"
+hypervisor/rootfs/test_attestation.sh:12:TVM_PORT="$(grep 'SSH port' tmp_run_vm.log | awk -F': ' '{ print $2 }' )"
+hypervisor/rootfs/test_attestation.sh:13:echo "TVM's SSH is listening on port: $TVM_PORT"
+hypervisor/rootfs/test_attestation.sh:14:
+hypervisor/rootfs/test_attestation.sh:15:wait_for_ssh $TVM_USER $TVM_HOST $TVM_PORT
+hypervisor/rootfs/test_attestation.sh:16:
+hypervisor/rootfs/test_attestation.sh:17:$SSH_CMD -p${TVM_PORT} ${TVM_USER}@${TVM_HOST} 'insmod /root/ace_module/ace.ko'
+hypervisor/rootfs/test_attestation.sh:18:$SSH_CMD -p${TVM_PORT} ${TVM_USER}@${TVM_HOST} 'dmesg | grep Secret' > tmp_dmesg.log
+hypervisor/rootfs/test_attestation.sh:19:
+hypervisor/rootfs/test_attestation.sh:20:ATTESTATION_RESULT="$(grep 'Secret=0xc0ffeec0ffeec0ffeec0ffee' tmp_dmesg.log | wc -l)"
+hypervisor/rootfs/test_attestation.sh:21:
+hypervisor/rootfs/test_attestation.sh:22:kill_confidential_vm
+hypervisor/rootfs/test_attestation.sh:23:sleep 5
+hypervisor/rootfs/test_attestation.sh:24:
+hypervisor/rootfs/test_attestation.sh:25:if [[ "x$ATTESTATION_RESULT" == "x1" ]]; then
+hypervisor/rootfs/test_attestation.sh:26:    echo "Attestation test succeeded"
+hypervisor/rootfs/test_attestation.sh:27:    exit 0
+hypervisor/rootfs/test_attestation.sh:28:else
+hypervisor/rootfs/test_attestation.sh:29:    echo "Attestation test failed"
+hypervisor/rootfs/test_attestation.sh:30:    exit 1
+hypervisor/rootfs/test_attestation.sh:31:fi
+hypervisor/rootfs/test_smp.sh:1:#!/usr/bin/env bash
+hypervisor/rootfs/test_smp.sh:2:# SPDX-FileCopyrightText: 2025 IBM Corporation
+hypervisor/rootfs/test_smp.sh:3:# SPDX-FileContributor: Wojciech Ozga <woz@zurich.ibm.com>, IBM Research - Zurich
+hypervisor/rootfs/test_smp.sh:4:# SPDX-License-Identifier: Apache-2.0
+hypervisor/rootfs/test_smp.sh:5:. common.sh
+hypervisor/rootfs/test_smp.sh:6:
+hypervisor/rootfs/test_smp.sh:7:/root/run_linux_vm_qemu.sh -s=2 -m=256M --daemonize 2>&1 > tmp_run_smp.log &
+hypervisor/rootfs/test_smp.sh:8:sleep 5
+hypervisor/rootfs/test_smp.sh:9:
+hypervisor/rootfs/test_smp.sh:10:TVM_USER="root"
+hypervisor/rootfs/test_smp.sh:11:TVM_HOST="localhost"
+hypervisor/rootfs/test_smp.sh:12:TVM_PORT="$(grep 'SSH port' tmp_run_smp.log | awk -F': ' '{ print $2 }' )"
+hypervisor/rootfs/test_smp.sh:13:echo "TVM's SSH is listening on port: $TVM_PORT"
+hypervisor/rootfs/test_smp.sh:14:
+hypervisor/rootfs/test_smp.sh:15:wait_for_ssh $TVM_USER $TVM_HOST $TVM_PORT
+hypervisor/rootfs/test_smp.sh:16:
+hypervisor/rootfs/test_smp.sh:17:$SSH_CMD -p${TVM_PORT} ${TVM_USER}@${TVM_HOST} 'cat /root/this_is_confidential_vm_filesystem' > tmp_smp_dmesg.log
+hypervisor/rootfs/test_smp.sh:18:RESULT="$(grep 'hello from confidential VM filesystem' tmp_smp_dmesg.log | wc -l)"
+hypervisor/rootfs/test_smp.sh:19:
+hypervisor/rootfs/test_smp.sh:20:kill_confidential_vm
+hypervisor/rootfs/test_smp.sh:21:sleep 5
+hypervisor/rootfs/test_smp.sh:22:
+hypervisor/rootfs/test_smp.sh:23:if [[ "x$RESULT" == "x1" ]]; then
+hypervisor/rootfs/test_smp.sh:24:    echo "SMP test succeeded"
+hypervisor/rootfs/test_smp.sh:25:    exit 0
+hypervisor/rootfs/test_smp.sh:26:else
+hypervisor/rootfs/test_smp.sh:27:    echo "SMP test failed"
+hypervisor/rootfs/test_smp.sh:28:    exit 1
+hypervisor/rootfs/test_smp.sh:29:fi
+$ grep -IHn '' hypervisor/configurations/qemu_riscv64_virt_defconfig confidential-vms/linux_vm/configurations/qemu_riscv64_virt_defconfig
+hypervisor/configurations/qemu_riscv64_virt_defconfig:1:BR2_TARGET_GENERIC_HOSTNAME="hypervisor"
+hypervisor/configurations/qemu_riscv64_virt_defconfig:2:BR2_TARGET_GENERIC_ISSUE="Welcome to untrusted Hypervisor!"
+hypervisor/configurations/qemu_riscv64_virt_defconfig:3:# Architecture
+hypervisor/configurations/qemu_riscv64_virt_defconfig:4:BR2_riscv=y
+hypervisor/configurations/qemu_riscv64_virt_defconfig:5:BR2_RISCV_64=y
+hypervisor/configurations/qemu_riscv64_virt_defconfig:6:BR2_RISCV_g=y
+hypervisor/configurations/qemu_riscv64_virt_defconfig:7:BR2_RISCV_ABI_LP64D=y
+hypervisor/configurations/qemu_riscv64_virt_defconfig:8:BR2_GCC_TARGET_ABI="lp64d"
+hypervisor/configurations/qemu_riscv64_virt_defconfig:9:#
+hypervisor/configurations/qemu_riscv64_virt_defconfig:10:BR2_TOOLCHAIN_EXTERNAL=y
+hypervisor/configurations/qemu_riscv64_virt_defconfig:11:BR2_TOOLCHAIN_EXTERNAL_PATH="$(RISCV)"
+hypervisor/configurations/qemu_riscv64_virt_defconfig:12:BR2_TOOLCHAIN_EXTERNAL_CUSTOM_PREFIX="$(ARCH)-unknown-linux-gnu"
+hypervisor/configurations/qemu_riscv64_virt_defconfig:13:BR2_TOOLCHAIN_EXTERNAL_GCC_12=y
+hypervisor/configurations/qemu_riscv64_virt_defconfig:14:BR2_TOOLCHAIN_EXTERNAL_HEADERS_5_10=y
+hypervisor/configurations/qemu_riscv64_virt_defconfig:15:BR2_TOOLCHAIN_EXTERNAL_CUSTOM_GLIBC=y
+hypervisor/configurations/qemu_riscv64_virt_defconfig:16:#BR2_TOOLCHAIN_EXTERNAL_INET_RPC=y
+hypervisor/configurations/qemu_riscv64_virt_defconfig:17:BR2_TOOLCHAIN_EXTERNAL_INET_RPC=n
+hypervisor/configurations/qemu_riscv64_virt_defconfig:18:BR2_TOOLCHAIN_EXTERNAL_CXX=y
+hypervisor/configurations/qemu_riscv64_virt_defconfig:19:
+hypervisor/configurations/qemu_riscv64_virt_defconfig:20:# Shell
+hypervisor/configurations/qemu_riscv64_virt_defconfig:21:BR2_PACKAGE_BUSYBOX_SHOW_OTHERS=y
+hypervisor/configurations/qemu_riscv64_virt_defconfig:22:BR2_PACKAGE_BASH=y
+hypervisor/configurations/qemu_riscv64_virt_defconfig:23:BR2_SYSTEM_BIN_SH_BASH=y
+hypervisor/configurations/qemu_riscv64_virt_defconfig:24:
+hypervisor/configurations/qemu_riscv64_virt_defconfig:25:# System
+hypervisor/configurations/qemu_riscv64_virt_defconfig:26:BR2_SYSTEM_DHCP="eth0"
+hypervisor/configurations/qemu_riscv64_virt_defconfig:27:BR2_TARGET_GENERIC_GETTY=y
+hypervisor/configurations/qemu_riscv64_virt_defconfig:28:#BR2_TARGET_GENERIC_GETTY_PORT="ttyS0"
+hypervisor/configurations/qemu_riscv64_virt_defconfig:29:BR2_TARGET_GENERIC_ROOT_PASSWD="passwd"
+hypervisor/configurations/qemu_riscv64_virt_defconfig:30:
+hypervisor/configurations/qemu_riscv64_virt_defconfig:31:# Filesystem
+hypervisor/configurations/qemu_riscv64_virt_defconfig:32:BR2_TARGET_ROOTFS_EXT2=y
+hypervisor/configurations/qemu_riscv64_virt_defconfig:33:BR2_ROOTFS_OVERLAY=""
+hypervisor/configurations/qemu_riscv64_virt_defconfig:34:BR2_TARGET_ROOTFS_EXT2_2=n
+hypervisor/configurations/qemu_riscv64_virt_defconfig:35:BR2_TARGET_ROOTFS_EXT2_3=n
+hypervisor/configurations/qemu_riscv64_virt_defconfig:36:BR2_TARGET_ROOTFS_EXT2_4=y
+hypervisor/configurations/qemu_riscv64_virt_defconfig:37:BR2_TARGET_ROOTFS_EXT2_SIZE="5G"
+hypervisor/configurations/qemu_riscv64_virt_defconfig:38:
+hypervisor/configurations/qemu_riscv64_virt_defconfig:39:# Kernel
+hypervisor/configurations/qemu_riscv64_virt_defconfig:40:BR2_LINUX_KERNEL=y
+hypervisor/configurations/qemu_riscv64_virt_defconfig:41:BR2_LINUX_KERNEL_CUSTOM_VERSION=y
+hypervisor/configurations/qemu_riscv64_virt_defconfig:42:BR2_LINUX_KERNEL_CUSTOM_VERSION_VALUE="6.3-rc4"
+hypervisor/configurations/qemu_riscv64_virt_defconfig:43:BR2_PACKAGE_HOST_LINUX_HEADERS_CUSTOM_6_3=y
+hypervisor/configurations/qemu_riscv64_virt_defconfig:44:# BR2_LINUX_KERNEL_USE_ARCH_DEFAULT_CONFIG=y
+hypervisor/configurations/qemu_riscv64_virt_defconfig:45:BR2_LINUX_KERNEL_USE_CUSTOM_CONFIG=y
+hypervisor/configurations/qemu_riscv64_virt_defconfig:46:BR2_LINUX_KERNEL_CUSTOM_CONFIG_FILE=""
+hypervisor/configurations/qemu_riscv64_virt_defconfig:47:BR2_LINUX_KERNEL_IMAGE=y
+hypervisor/configurations/qemu_riscv64_virt_defconfig:48:BR2_LINUX_KERNEL_VMLINUX=y
+hypervisor/configurations/qemu_riscv64_virt_defconfig:49:BR2_LINUX_KERNEL_BZIMAGE=y
+hypervisor/configurations/qemu_riscv64_virt_defconfig:50:# specify patches of the linux kernel
+hypervisor/configurations/qemu_riscv64_virt_defconfig:51:BR2_LINUX_KERNEL_PATCH=""
+hypervisor/configurations/qemu_riscv64_virt_defconfig:52:# development with custom Linux kernel sources
+hypervisor/configurations/qemu_riscv64_virt_defconfig:53:BR2_PACKAGE_OVERRIDE_FILE=""
+hypervisor/configurations/qemu_riscv64_virt_defconfig:54:
+hypervisor/configurations/qemu_riscv64_virt_defconfig:55:BR2_GLOBAL_PATCH_DIR=""
+hypervisor/configurations/qemu_riscv64_virt_defconfig:56:
+hypervisor/configurations/qemu_riscv64_virt_defconfig:57:# Packages
+hypervisor/configurations/qemu_riscv64_virt_defconfig:58:BR2_PACKAGE_DROPBEAR=y
+hypervisor/configurations/qemu_riscv64_virt_defconfig:59:BR2_PACKAGE_OPENSSH_CLIENT=y
+hypervisor/configurations/qemu_riscv64_virt_defconfig:60:BR2_PACKAGE_SSHPASS=y
+hypervisor/configurations/qemu_riscv64_virt_defconfig:61:
+hypervisor/configurations/qemu_riscv64_virt_defconfig:62:# Qemu
+hypervisor/configurations/qemu_riscv64_virt_defconfig:63:BR2_PACKAGE_QEMU=y
+hypervisor/configurations/qemu_riscv64_virt_defconfig:64:BR2_PACKAGE_QEMU_SLIRP=y
+hypervisor/configurations/qemu_riscv64_virt_defconfig:65:BR2_PACKAGE_QEMU_SYSTEM=y
+hypervisor/configurations/qemu_riscv64_virt_defconfig:66:# build just QEMU for riscv64
+hypervisor/configurations/qemu_riscv64_virt_defconfig:67:BR2_PACKAGE_QEMU_CHOOSE_TARGETS=y
+hypervisor/configurations/qemu_riscv64_virt_defconfig:68:BR2_PACKAGE_QEMU_TARGET_RISCV64=y
+hypervisor/configurations/qemu_riscv64_virt_defconfig:69:
+hypervisor/configurations/qemu_riscv64_virt_defconfig:70:BR2_PER_PACKAGE_DIRECTORIES=y
+hypervisor/configurations/qemu_riscv64_virt_defconfig:71:BR2_VERBOSE=0
+hypervisor/configurations/qemu_riscv64_virt_defconfig:72:
+confidential-vms/linux_vm/configurations/qemu_riscv64_virt_defconfig:1:BR2_TARGET_GENERIC_HOSTNAME="confidential_vm"
+confidential-vms/linux_vm/configurations/qemu_riscv64_virt_defconfig:2:BR2_TARGET_GENERIC_ISSUE="Welcome to ACE Confidential VM!"
+confidential-vms/linux_vm/configurations/qemu_riscv64_virt_defconfig:3:# Architecture
+confidential-vms/linux_vm/configurations/qemu_riscv64_virt_defconfig:4:BR2_riscv=y
+confidential-vms/linux_vm/configurations/qemu_riscv64_virt_defconfig:5:BR2_RISCV_64=y
+confidential-vms/linux_vm/configurations/qemu_riscv64_virt_defconfig:6:BR2_RISCV_g=y
+confidential-vms/linux_vm/configurations/qemu_riscv64_virt_defconfig:7:BR2_RISCV_ABI_LP64D=y
+confidential-vms/linux_vm/configurations/qemu_riscv64_virt_defconfig:8:BR2_GCC_TARGET_ABI="lp64d"
+confidential-vms/linux_vm/configurations/qemu_riscv64_virt_defconfig:9:#
+confidential-vms/linux_vm/configurations/qemu_riscv64_virt_defconfig:10:BR2_TOOLCHAIN_EXTERNAL=y
+confidential-vms/linux_vm/configurations/qemu_riscv64_virt_defconfig:11:BR2_TOOLCHAIN_EXTERNAL_PATH="$(RISCV)"
+confidential-vms/linux_vm/configurations/qemu_riscv64_virt_defconfig:12:BR2_TOOLCHAIN_EXTERNAL_CUSTOM_PREFIX="$(ARCH)-unknown-linux-gnu"
+confidential-vms/linux_vm/configurations/qemu_riscv64_virt_defconfig:13:BR2_TOOLCHAIN_EXTERNAL_GCC_12=y
+confidential-vms/linux_vm/configurations/qemu_riscv64_virt_defconfig:14:BR2_TOOLCHAIN_EXTERNAL_HEADERS_5_10=y
+confidential-vms/linux_vm/configurations/qemu_riscv64_virt_defconfig:15:BR2_TOOLCHAIN_EXTERNAL_CUSTOM_GLIBC=y
+confidential-vms/linux_vm/configurations/qemu_riscv64_virt_defconfig:16:#BR2_TOOLCHAIN_EXTERNAL_INET_RPC=y
+confidential-vms/linux_vm/configurations/qemu_riscv64_virt_defconfig:17:BR2_TOOLCHAIN_EXTERNAL_INET_RPC=n
+confidential-vms/linux_vm/configurations/qemu_riscv64_virt_defconfig:18:BR2_TOOLCHAIN_EXTERNAL_CXX=y
+confidential-vms/linux_vm/configurations/qemu_riscv64_virt_defconfig:19:
+confidential-vms/linux_vm/configurations/qemu_riscv64_virt_defconfig:20:# Shell
+confidential-vms/linux_vm/configurations/qemu_riscv64_virt_defconfig:21:BR2_PACKAGE_BUSYBOX_SHOW_OTHERS=y
+confidential-vms/linux_vm/configurations/qemu_riscv64_virt_defconfig:22:BR2_PACKAGE_BASH=y
+confidential-vms/linux_vm/configurations/qemu_riscv64_virt_defconfig:23:BR2_SYSTEM_BIN_SH_BASH=y
+confidential-vms/linux_vm/configurations/qemu_riscv64_virt_defconfig:24:
+confidential-vms/linux_vm/configurations/qemu_riscv64_virt_defconfig:25:# System
+confidential-vms/linux_vm/configurations/qemu_riscv64_virt_defconfig:26:BR2_SYSTEM_DHCP="eth0"
+confidential-vms/linux_vm/configurations/qemu_riscv64_virt_defconfig:27:BR2_TARGET_GENERIC_GETTY=y
+confidential-vms/linux_vm/configurations/qemu_riscv64_virt_defconfig:28:BR2_TARGET_GENERIC_GETTY_PORT="ttyS0"
+confidential-vms/linux_vm/configurations/qemu_riscv64_virt_defconfig:29:BR2_TARGET_GENERIC_ROOT_PASSWD="passwd"
+confidential-vms/linux_vm/configurations/qemu_riscv64_virt_defconfig:30:
+confidential-vms/linux_vm/configurations/qemu_riscv64_virt_defconfig:31:# Filesystem
+confidential-vms/linux_vm/configurations/qemu_riscv64_virt_defconfig:32:BR2_ROOTFS_OVERLAY=""
+confidential-vms/linux_vm/configurations/qemu_riscv64_virt_defconfig:33:BR2_TARGET_ROOTFS_EXT2=y
+confidential-vms/linux_vm/configurations/qemu_riscv64_virt_defconfig:34:BR2_TARGET_ROOTFS_EXT2_2=n
+confidential-vms/linux_vm/configurations/qemu_riscv64_virt_defconfig:35:BR2_TARGET_ROOTFS_EXT2_3=n
+confidential-vms/linux_vm/configurations/qemu_riscv64_virt_defconfig:36:BR2_TARGET_ROOTFS_EXT2_4=y
+confidential-vms/linux_vm/configurations/qemu_riscv64_virt_defconfig:37:BR2_TARGET_ROOTFS_EXT2_SIZE="1G"
+confidential-vms/linux_vm/configurations/qemu_riscv64_virt_defconfig:38:
+confidential-vms/linux_vm/configurations/qemu_riscv64_virt_defconfig:39:# Kernel
+confidential-vms/linux_vm/configurations/qemu_riscv64_virt_defconfig:40:BR2_LINUX_KERNEL=y
+confidential-vms/linux_vm/configurations/qemu_riscv64_virt_defconfig:41:# BR2_LINUX_KERNEL_CUSTOM_GIT=y
+confidential-vms/linux_vm/configurations/qemu_riscv64_virt_defconfig:42:# BR2_LINUX_KERNEL_CUSTOM_REPO_URL=""
+confidential-vms/linux_vm/configurations/qemu_riscv64_virt_defconfig:43:# BR2_LINUX_KERNEL_CUSTOM_REPO_VERSION=""
+confidential-vms/linux_vm/configurations/qemu_riscv64_virt_defconfig:44:BR2_LINUX_KERNEL_CUSTOM_VERSION=y
+confidential-vms/linux_vm/configurations/qemu_riscv64_virt_defconfig:45:BR2_LINUX_KERNEL_CUSTOM_VERSION_VALUE="6.3-rc4"
+confidential-vms/linux_vm/configurations/qemu_riscv64_virt_defconfig:46:BR2_PACKAGE_HOST_LINUX_HEADERS_CUSTOM_6_3=y
+confidential-vms/linux_vm/configurations/qemu_riscv64_virt_defconfig:47:# BR2_LINUX_KERNEL_USE_ARCH_DEFAULT_CONFIG=y
+confidential-vms/linux_vm/configurations/qemu_riscv64_virt_defconfig:48:BR2_LINUX_KERNEL_USE_CUSTOM_CONFIG=y
+confidential-vms/linux_vm/configurations/qemu_riscv64_virt_defconfig:49:BR2_LINUX_KERNEL_CUSTOM_CONFIG_FILE=""
+confidential-vms/linux_vm/configurations/qemu_riscv64_virt_defconfig:50:BR2_LINUX_KERNEL_IMAGE=y
+confidential-vms/linux_vm/configurations/qemu_riscv64_virt_defconfig:51:BR2_LINUX_KERNEL_VMLINUX=y
+confidential-vms/linux_vm/configurations/qemu_riscv64_virt_defconfig:52:BR2_LINUX_KERNEL_BZIMAGE=y
+confidential-vms/linux_vm/configurations/qemu_riscv64_virt_defconfig:53:# specify patches of the linux kernel
+confidential-vms/linux_vm/configurations/qemu_riscv64_virt_defconfig:54:BR2_LINUX_KERNEL_PATCH=""
+confidential-vms/linux_vm/configurations/qemu_riscv64_virt_defconfig:55:# development with custom Linux kernel sources
+confidential-vms/linux_vm/configurations/qemu_riscv64_virt_defconfig:56:BR2_PACKAGE_OVERRIDE_FILE=""
+confidential-vms/linux_vm/configurations/qemu_riscv64_virt_defconfig:57:
+confidential-vms/linux_vm/configurations/qemu_riscv64_virt_defconfig:58:# Packages
+confidential-vms/linux_vm/configurations/qemu_riscv64_virt_defconfig:59:BR2_PACKAGE_DROPBEAR=y
+confidential-vms/linux_vm/configurations/qemu_riscv64_virt_defconfig:60:
+confidential-vms/linux_vm/configurations/qemu_riscv64_virt_defconfig:61:BR2_TARGET_OPENSBI=y
+confidential-vms/linux_vm/configurations/qemu_riscv64_virt_defconfig:62:BR2_TARGET_OPENSBI_PLAT="generic"
+confidential-vms/linux_vm/configurations/qemu_riscv64_virt_defconfig:63:
+confidential-vms/linux_vm/configurations/qemu_riscv64_virt_defconfig:64:BR2_PER_PACKAGE_DIRECTORIES=y
+confidential-vms/linux_vm/configurations/qemu_riscv64_virt_defconfig:65:BR2_VERBOSE=0
+confidential-vms/linux_vm/configurations/qemu_riscv64_virt_defconfig:66:BR2_PACKAGE_NVME=y
+confidential-vms/linux_vm/configurations/qemu_riscv64_virt_defconfig:67:
+confidential-vms/linux_vm/configurations/qemu_riscv64_virt_defconfig:68:# Initramfs
+confidential-vms/linux_vm/configurations/qemu_riscv64_virt_defconfig:69:# BR2_TARGET_ROOTFS_INITRAMFS=y
+confidential-vms/linux_vm/configurations/qemu_riscv64_virt_defconfig:70:# BR2_TARGET_ROOTFS_CPIO=y
+confidential-vms/linux_vm/configurations/qemu_riscv64_virt_defconfig:71:# BR2_PACKAGE_BUSYBOX=y
+confidential-vms/linux_vm/configurations/qemu_riscv64_virt_defconfig:72:# BR2_INIT_BUSYBOX=y
+confidential-vms/linux_vm/configurations/qemu_riscv64_virt_defconfig:73:# BR2_PACKAGE_HOST_DRACUT=y
+confidential-vms/linux_vm/configurations/qemu_riscv64_virt_defconfig:74:# BR2_TARGET_ROOTFS_CPIO_DRACUT=y
+confidential-vms/linux_vm/configurations/qemu_riscv64_virt_defconfig:75:# # dm-crypt
+confidential-vms/linux_vm/configurations/qemu_riscv64_virt_defconfig:76:# BR2_PACKAGE_HOST_GENIMAGE=y
+confidential-vms/linux_vm/configurations/qemu_riscv64_virt_defconfig:77:# BR2_PACKAGE_CRYPTSETUP=y
+confidential-vms/linux_vm/configurations/qemu_riscv64_virt_defconfig:78:# BR2_PACKAGE_HOST_CRYPTSETUP=y
+confidential-vms/linux_vm/configurations/qemu_riscv64_virt_defconfig:79:# BR2_PACKAGE_E2FSPROGS=y
+$ stop_if_failed 'step 3'
+$ section '4. Install the patches and the audit into the project'
+
+===== 4. Install the patches and the audit into the project =====
+$ cd ~/projects/IBM-ACE-On-QEMU-Reproduction
+$ cp ~/download/0001-build-parallelism.patch patches/
+$ cp ~/download/0002-run-scripts-host-safety.patch patches/
+$ cp ~/download/PATCHES_README.md patches/README.md
+$ cp ~/download/SAFETY_AUDIT.md docs/
+$ sha256sum patches/0001-build-parallelism.patch patches/0002-run-scripts-host-safety.patch patches/README.md
+cf83fb0b058c47958b9767be45673780ecd34de044bc89cf723fe4dcbe68f69a  patches/0001-build-parallelism.patch
+2aeadce13855d1d518ec267d2f5ee9f6164849751583495c022e2f1fd0faf503  patches/0002-run-scripts-host-safety.patch
+8ce96558b74c5019087e8cc79f166d534dbb40fa67cfe88426c8fdef063cf7e5  patches/README.md
+$ stop_if_failed 'step 4'
+$ section '5. Check the patches against the pinned sources'
+
+===== 5. Check the patches against the pinned sources =====
+$ cd ~/projects/IBM-ACE-On-QEMU-Reproduction/upstream/ACE-RISCV
+$ git rev-parse HEAD
+1ebdebf4cacc04fcb83191053b4e979cbcdcb2d6
+$ git ls-tree HEAD hypervisor/Makefile confidential-vms/linux_vm/Makefile security-monitor/Makefile tools/ace_run_hypervisor.sh tools/common.sh
+100644 blob b117d26d67a08c32c1cfc2253e30362d80a08fb1	confidential-vms/linux_vm/Makefile
+100644 blob 2a5bb1e60660e2bf771a78d4950334cb462b8161	hypervisor/Makefile
+100644 blob 60ce784f0c51056585e1cdc14bf8ac73702752ed	security-monitor/Makefile
+100755 blob 33b9a71d73803920a4166a20aae5b852e09e4bac	tools/ace_run_hypervisor.sh
+100644 blob 492a6f1c162419622842eb0a4efd40152c7388ac	tools/common.sh
+$ git apply --reverse --check ~/projects/IBM-ACE-On-QEMU-Reproduction/patches/0001-build-parallelism.patch
+$ git apply --check ~/projects/IBM-ACE-On-QEMU-Reproduction/patches/0001-build-parallelism.patch
+$ git apply --reverse --check ~/projects/IBM-ACE-On-QEMU-Reproduction/patches/0002-run-scripts-host-safety.patch
+$ git apply --check ~/projects/IBM-ACE-On-QEMU-Reproduction/patches/0002-run-scripts-host-safety.patch
+warning: tools/ace_run_hypervisor.sh has type 100755, expected 100644
+$ stop_if_failed 'step 5'
+$ section '6. Apply the patches'
+
+===== 6. Apply the patches =====
+$ git apply --reverse --check ~/projects/IBM-ACE-On-QEMU-Reproduction/patches/0001-build-parallelism.patch
+$ git apply ~/projects/IBM-ACE-On-QEMU-Reproduction/patches/0001-build-parallelism.patch
+$ git apply --reverse --check ~/projects/IBM-ACE-On-QEMU-Reproduction/patches/0002-run-scripts-host-safety.patch
+$ git apply ~/projects/IBM-ACE-On-QEMU-Reproduction/patches/0002-run-scripts-host-safety.patch
+warning: tools/ace_run_hypervisor.sh has type 100755, expected 100644
+$ git apply --reverse --check ~/projects/IBM-ACE-On-QEMU-Reproduction/patches/0001-build-parallelism.patch
+$ git apply --reverse --check ~/projects/IBM-ACE-On-QEMU-Reproduction/patches/0002-run-scripts-host-safety.patch
+$ stop_if_failed 'step 6'
+$ section '7. Record the patched state'
+
+===== 7. Record the patched state =====
+$ git status --short
+ M confidential-vms/linux_vm/Makefile
+ M hypervisor/Makefile
+ M security-monitor/Makefile
+ M tools/ace_run_hypervisor.sh
+ M tools/common.sh
+$ git diff --stat
+ confidential-vms/linux_vm/Makefile |  8 +++++---
+ hypervisor/Makefile                | 10 ++++++----
+ security-monitor/Makefile          |  2 +-
+ tools/ace_run_hypervisor.sh        |  2 +-
+ tools/common.sh                    |  6 +++---
+ 5 files changed, 16 insertions(+), 12 deletions(-)
+$ git diff
+diff --git a/confidential-vms/linux_vm/Makefile b/confidential-vms/linux_vm/Makefile
+index b117d26..2897070 100644
+--- a/confidential-vms/linux_vm/Makefile
++++ b/confidential-vms/linux_vm/Makefile
+@@ -35,6 +35,8 @@ RISCV_GNU_TOOLCHAIN_WORK_DIR		?= $(ACE_DIR)/riscv-gnu-toolchain/
+ export PATH 						:= $(RISCV_GNU_TOOLCHAIN_WORK_DIR)/bin:$(PATH)
+ 
+ CROSS_COMPILE						?= riscv64-unknown-linux-gnu-
++# Buildroot parallelism. 0 = number of CPUs + 1 (upstream default); can be overridden.
++BR2_JLEVEL							?= 0
+ 
+ all: buildroot
+ 
+@@ -57,8 +59,8 @@ buildroot: setup
+ 			echo "Buildroot repository not initialized. Did you forget to run: git submodule update --init --recursive?" ;\
+ 			exit 1 ;\
+ 		fi ;\
+-		$(MAKE) -s -C $(LINUX_VM_BUILDROOT_SOURCE_DIR) RISCV=$(RISCV_GNU_TOOLCHAIN_WORK_DIR) PATH=$(PATH) O=$(LINUX_VM_BUILDROOT_WORK_DIR) CROSS_COMPILE=$(CROSS_COMPILE) BR2_JLEVEL=0 olddefconfig; \
+-		$(MAKE) -s -C $(LINUX_VM_BUILDROOT_SOURCE_DIR) RISCV=$(RISCV_GNU_TOOLCHAIN_WORK_DIR) PATH=$(PATH) O=$(LINUX_VM_BUILDROOT_WORK_DIR) BR2_JLEVEL=0; \
++		$(MAKE) -s -C $(LINUX_VM_BUILDROOT_SOURCE_DIR) RISCV=$(RISCV_GNU_TOOLCHAIN_WORK_DIR) PATH=$(PATH) O=$(LINUX_VM_BUILDROOT_WORK_DIR) CROSS_COMPILE=$(CROSS_COMPILE) BR2_JLEVEL=$(BR2_JLEVEL) olddefconfig; \
++		$(MAKE) -s -C $(LINUX_VM_BUILDROOT_SOURCE_DIR) RISCV=$(RISCV_GNU_TOOLCHAIN_WORK_DIR) PATH=$(PATH) O=$(LINUX_VM_BUILDROOT_WORK_DIR) BR2_JLEVEL=$(BR2_JLEVEL); \
+ 	fi
+ 
+ dev:
+@@ -67,7 +69,7 @@ dev:
+ 	sed "s@^BR2_PACKAGE_OVERRIDE_FILE=.*@BR2_PACKAGE_OVERRIDE_FILE=\"$(LINUX_VM_BUILDROOT_OVERRIDE_DIR)\"@g" -i $(LINUX_VM_BUILDROOT_WORK_DIR)/.config ;\
+ 	sed "s@^BR2_LINUX_KERNEL_CUSTOM_CONFIG_FILE=.*@BR2_LINUX_KERNEL_CUSTOM_CONFIG_FILE=\"$(LINUX_VM_KERNEL_CONFIG)\"@g" -i $(LINUX_VM_BUILDROOT_WORK_DIR)/.config; \
+ 	sed "s@^BR2_TARGET_ROOTFS_EXT2_SIZE=.*@BR2_TARGET_ROOTFS_EXT2_SIZE=\"$(LINUX_VM_BUILDROOT_ROOTFS_SIZE)\"@g" -i $(LINUX_VM_BUILDROOT_WORK_DIR)/.config; \
+-	$(MAKE) -s -C $(LINUX_VM_BUILDROOT_SOURCE_DIR) RISCV=$(RISCV_GNU_TOOLCHAIN_WORK_DIR) PATH=$(PATH) O=$(LINUX_VM_BUILDROOT_WORK_DIR) CROSS_COMPILE=$(CROSS_COMPILE) BR2_JLEVEL=0 linux-rebuild all
++	$(MAKE) -s -C $(LINUX_VM_BUILDROOT_SOURCE_DIR) RISCV=$(RISCV_GNU_TOOLCHAIN_WORK_DIR) PATH=$(PATH) O=$(LINUX_VM_BUILDROOT_WORK_DIR) CROSS_COMPILE=$(CROSS_COMPILE) BR2_JLEVEL=$(BR2_JLEVEL) linux-rebuild all
+ 
+ overlay: setup
+ 	echo "Rebuilding overloay"; \
+diff --git a/hypervisor/Makefile b/hypervisor/Makefile
+index 2a5bb1e..59d52a1 100644
+--- a/hypervisor/Makefile
++++ b/hypervisor/Makefile
+@@ -27,6 +27,8 @@ RISCV_GNU_TOOLCHAIN_WORK_DIR		?= $(ACE_DIR)/riscv-gnu-toolchain/
+ export PATH 						:= $(RISCV_GNU_TOOLCHAIN_WORK_DIR)/bin:$(PATH)
+ 
+ CROSS_COMPILE						?= riscv64-unknown-linux-gnu-
++# Buildroot parallelism. 0 = number of CPUs + 1 (upstream default); can be overridden.
++BR2_JLEVEL							?= 0
+ 
+ all: setup buildroot
+ 
+@@ -50,8 +52,8 @@ buildroot: setup
+ 			echo "Buildroot repository not initialized. Did you forget to run: git submodule update --init --recursive?" ;\
+ 			exit 1 ;\
+ 		fi ;\
+-		$(MAKE) -s -C $(BUILDROOT_SOURCE_DIR) RISCV=$(RISCV_GNU_TOOLCHAIN_WORK_DIR) PATH=$(PATH) O=$(BUILDROOT_WORK_DIR) CROSS_COMPILE=$(CROSS_COMPILE) BR2_JLEVEL=0 olddefconfig ;\
+-		$(MAKE) -s -C $(BUILDROOT_SOURCE_DIR) RISCV=$(RISCV_GNU_TOOLCHAIN_WORK_DIR) PATH=$(PATH) O=$(BUILDROOT_WORK_DIR) BR2_JLEVEL=0 ;\
++		$(MAKE) -s -C $(BUILDROOT_SOURCE_DIR) RISCV=$(RISCV_GNU_TOOLCHAIN_WORK_DIR) PATH=$(PATH) O=$(BUILDROOT_WORK_DIR) CROSS_COMPILE=$(CROSS_COMPILE) BR2_JLEVEL=$(BR2_JLEVEL) olddefconfig ;\
++		$(MAKE) -s -C $(BUILDROOT_SOURCE_DIR) RISCV=$(RISCV_GNU_TOOLCHAIN_WORK_DIR) PATH=$(PATH) O=$(BUILDROOT_WORK_DIR) BR2_JLEVEL=$(BR2_JLEVEL) ;\
+ 	fi
+ 
+ overlay: kvmtool
+@@ -64,7 +66,7 @@ overlay: kvmtool
+ dev:
+ 	sed "s@^BR2_PACKAGE_OVERRIDE_FILE=.*@BR2_PACKAGE_OVERRIDE_FILE=\"$(HYPERVISOR_BUILDROOT_OVERRIDE_DIR)\"@g" -i $(BUILDROOT_WORK_DIR)/.config; \
+ 	sed "s@^BR2_LINUX_KERNEL_CUSTOM_CONFIG_FILE=.*@BR2_LINUX_KERNEL_CUSTOM_CONFIG_FILE=\"$(HYPERVISOR_LINUX_CONFIG)\"@g" -i $(BUILDROOT_WORK_DIR)/.config; \
+-	$(MAKE) -s -C $(BUILDROOT_SOURCE_DIR) RISCV=$(RISCV_GNU_TOOLCHAIN_WORK_DIR) PATH=$(PATH) O=$(BUILDROOT_WORK_DIR) BR2_JLEVEL=0 linux-rebuild all; \
++	$(MAKE) -s -C $(BUILDROOT_SOURCE_DIR) RISCV=$(RISCV_GNU_TOOLCHAIN_WORK_DIR) PATH=$(PATH) O=$(BUILDROOT_WORK_DIR) BR2_JLEVEL=$(BR2_JLEVEL) linux-rebuild all; \
+ 	#$(MAKE) -s -C $(BUILDROOT_SOURCE_DIR) RISCV=$(RISCV_GNU_TOOLCHAIN_WORK_DIR) PATH=$(PATH) O=$(BUILDROOT_WORK_DIR) BR2_JLEVEL=0 qemu-rebuild all
+ 
+ rootfs: overlay
+@@ -86,7 +88,7 @@ kvmtool:
+ 		git clone -b cove-integration-03072023 https://github.com/wojciechozga/kvmtool.git ;\
+ 		rm -f $(KVMTOOL_WORK_DIR)/kvmtool/lkvm-static ;\
+ 		cd $(KVMTOOL_WORK_DIR)/kvmtool ;\
+-		ARCH=riscv LIBFDT_DIR=${KVMTOOL_WORK_DIR}/dtc/build/ make lkvm-static -j$(nproc) ;\
++		ARCH=riscv LIBFDT_DIR=${KVMTOOL_WORK_DIR}/dtc/build/ make lkvm-static -j$(shell nproc) ;\
+ 		${CROSS_COMPILE}strip lkvm-static ;\
+ 		cd .. ;\
+ 	fi
+diff --git a/security-monitor/Makefile b/security-monitor/Makefile
+index 60ce784..33bf90f 100644
+--- a/security-monitor/Makefile
++++ b/security-monitor/Makefile
+@@ -57,7 +57,7 @@ opensbi: build
+ 	fi ;\
+ 	if [ -f "$(SM_WORK_DIR)/$(CHAIN)/release/$(EXEC_NAME)" ]; then \
+ 		mkdir -p $(OPENSBI_WORK_DIR) ;\
+-		SM_WORK_DIR=$(SM_WORK_DIR) $(MAKE) -j$(nproc) -C $(OPENSBI_SOURCE_DIR) O=$(OPENSBI_WORK_DIR) PLATFORM_DIR="$(PLATFORM_SOURCE_DIR)" PLATFORM="generic" CROSS_COMPILE=$(CROSS_COMPILE) FW_PAYLOAD_PATH=$(LINUX_IMAGE) FW_PAYLOAD=y PLATFORM_RISCV_XLEN=$(PLATFORM_RISCV_XLEN) PLATFORM_RISCV_ISA=$(PLATFORM_RISCV_ISA) PLATFORM_RISCV_ABI=$(PLATFORM_RISCV_ABI); \
++		SM_WORK_DIR=$(SM_WORK_DIR) $(MAKE) -j$(shell nproc) -C $(OPENSBI_SOURCE_DIR) O=$(OPENSBI_WORK_DIR) PLATFORM_DIR="$(PLATFORM_SOURCE_DIR)" PLATFORM="generic" CROSS_COMPILE=$(CROSS_COMPILE) FW_PAYLOAD_PATH=$(LINUX_IMAGE) FW_PAYLOAD=y PLATFORM_RISCV_XLEN=$(PLATFORM_RISCV_XLEN) PLATFORM_RISCV_ISA=$(PLATFORM_RISCV_ISA) PLATFORM_RISCV_ABI=$(PLATFORM_RISCV_ABI); \
+ 	fi
+ 
+ opensbi_bindings:
+diff --git a/tools/ace_run_hypervisor.sh b/tools/ace_run_hypervisor.sh
+index 33b9a71..06d41c9 100755
+--- a/tools/ace_run_hypervisor.sh
++++ b/tools/ace_run_hypervisor.sh
+@@ -63,7 +63,7 @@ ${QEMU_CMD} ${DEBUG_OPTIONS} \
+     -append "console=ttyS0 ro root=/dev/vda" \
+     -drive if=none,format=raw,file=${DRIVE},id=hd0 \
+     -device virtio-blk-device,scsi=off,drive=hd0 \
+-    -netdev user,id=net0,net=192.168.100.1/24,dhcpstart=192.168.100.128,hostfwd=tcp::${HOST_PORT}-:22 \
++    -netdev user,id=net0,net=192.168.100.1/24,dhcpstart=192.168.100.128,hostfwd=tcp:127.0.0.1:${HOST_PORT}-:22 \
+     -device virtio-net-device,netdev=net0 \
+     -device virtio-rng-pci \
+     -smp ${SMP}
+\ No newline at end of file
+diff --git a/tools/common.sh b/tools/common.sh
+index 492a6f1..7093649 100644
+--- a/tools/common.sh
++++ b/tools/common.sh
+@@ -8,7 +8,7 @@ export HYPERVISOR_TEST_LOGIN="root"
+ export HYPERVISOR_TEST_PASSWD="passwd"
+ export HYPERVISOR_TEST_HOSTNAME="localhost"
+ 
+-export SSH_PASSWD_PARAMS="-o PasswordAuthentication=yes -o PreferredAuthentications=keyboard-interactive,password -o PubkeyAuthentication=no -o StrictHostKeyChecking=no"
++export SSH_PASSWD_PARAMS="-o PasswordAuthentication=yes -o PreferredAuthentications=keyboard-interactive,password -o PubkeyAuthentication=no -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -o LogLevel=ERROR"
+ export SSH_CMD="sshpass -p ${HYPERVISOR_TEST_PASSWD} ssh ${SSH_PASSWD_PARAMS}"
+ 
+ # Usage: wait_for_ssh "root", "localhost", "22"
+@@ -21,7 +21,7 @@ function wait_for_ssh () {
+ 
+ function kill_users_qemu () {
+     USER="$(whoami)"
+-    PID="$(ps aux | grep qemu | grep ${USER} | awk -F' ' '{ print $2  }')"
++    PID="$(pgrep -u "${USER}" -f "${ACE_DIR}/qemu/bin/qemu-system-riscv64")"
+     if [ "$PID" != "" ]; then
+         kill -9 $PID
+         wait $PID 2>/dev/null
+@@ -31,7 +31,7 @@ function kill_users_qemu () {
+ # Usage: kill_qemu "22"
+ function kill_qemu () {
+     PORT=$1
+-    PID="$(ps aux | grep qemu | grep ${PORT} | awk -F' ' '{ print $2  }')"
++    PID="$(pgrep -u "$(whoami)" -f "hostfwd=tcp:127.0.0.1:${PORT}-:22")"
+     if [ "$PID" != "" ]; then
+         kill -9 $PID
+         wait $PID 2>/dev/null
+$ grep -n 'BR2_JLEVEL\|nproc' hypervisor/Makefile confidential-vms/linux_vm/Makefile security-monitor/Makefile
+hypervisor/Makefile:31:BR2_JLEVEL							?= 0
+hypervisor/Makefile:55:		$(MAKE) -s -C $(BUILDROOT_SOURCE_DIR) RISCV=$(RISCV_GNU_TOOLCHAIN_WORK_DIR) PATH=$(PATH) O=$(BUILDROOT_WORK_DIR) CROSS_COMPILE=$(CROSS_COMPILE) BR2_JLEVEL=$(BR2_JLEVEL) olddefconfig ;\
+hypervisor/Makefile:56:		$(MAKE) -s -C $(BUILDROOT_SOURCE_DIR) RISCV=$(RISCV_GNU_TOOLCHAIN_WORK_DIR) PATH=$(PATH) O=$(BUILDROOT_WORK_DIR) BR2_JLEVEL=$(BR2_JLEVEL) ;\
+hypervisor/Makefile:69:	$(MAKE) -s -C $(BUILDROOT_SOURCE_DIR) RISCV=$(RISCV_GNU_TOOLCHAIN_WORK_DIR) PATH=$(PATH) O=$(BUILDROOT_WORK_DIR) BR2_JLEVEL=$(BR2_JLEVEL) linux-rebuild all; \
+hypervisor/Makefile:70:	#$(MAKE) -s -C $(BUILDROOT_SOURCE_DIR) RISCV=$(RISCV_GNU_TOOLCHAIN_WORK_DIR) PATH=$(PATH) O=$(BUILDROOT_WORK_DIR) BR2_JLEVEL=0 qemu-rebuild all
+hypervisor/Makefile:91:		ARCH=riscv LIBFDT_DIR=${KVMTOOL_WORK_DIR}/dtc/build/ make lkvm-static -j$(shell nproc) ;\
+confidential-vms/linux_vm/Makefile:39:BR2_JLEVEL							?= 0
+confidential-vms/linux_vm/Makefile:62:		$(MAKE) -s -C $(LINUX_VM_BUILDROOT_SOURCE_DIR) RISCV=$(RISCV_GNU_TOOLCHAIN_WORK_DIR) PATH=$(PATH) O=$(LINUX_VM_BUILDROOT_WORK_DIR) CROSS_COMPILE=$(CROSS_COMPILE) BR2_JLEVEL=$(BR2_JLEVEL) olddefconfig; \
+confidential-vms/linux_vm/Makefile:63:		$(MAKE) -s -C $(LINUX_VM_BUILDROOT_SOURCE_DIR) RISCV=$(RISCV_GNU_TOOLCHAIN_WORK_DIR) PATH=$(PATH) O=$(LINUX_VM_BUILDROOT_WORK_DIR) BR2_JLEVEL=$(BR2_JLEVEL); \
+confidential-vms/linux_vm/Makefile:72:	$(MAKE) -s -C $(LINUX_VM_BUILDROOT_SOURCE_DIR) RISCV=$(RISCV_GNU_TOOLCHAIN_WORK_DIR) PATH=$(PATH) O=$(LINUX_VM_BUILDROOT_WORK_DIR) CROSS_COMPILE=$(CROSS_COMPILE) BR2_JLEVEL=$(BR2_JLEVEL) linux-rebuild all
+security-monitor/Makefile:60:		SM_WORK_DIR=$(SM_WORK_DIR) $(MAKE) -j$(shell nproc) -C $(OPENSBI_SOURCE_DIR) O=$(OPENSBI_WORK_DIR) PLATFORM_DIR="$(PLATFORM_SOURCE_DIR)" PLATFORM="generic" CROSS_COMPILE=$(CROSS_COMPILE) FW_PAYLOAD_PATH=$(LINUX_IMAGE) FW_PAYLOAD=y PLATFORM_RISCV_XLEN=$(PLATFORM_RISCV_XLEN) PLATFORM_RISCV_ISA=$(PLATFORM_RISCV_ISA) PLATFORM_RISCV_ABI=$(PLATFORM_RISCV_ABI); \
+$ OMP_NUM_THREADS=2
+$ nproc
+2
+$ section '8. Check the project repository'
+
+===== 8. Check the project repository =====
+$ cd ~/projects/IBM-ACE-On-QEMU-Reproduction
+$ git status --short
+?? docs/G05b_apply_safety_patches.md
+?? docs/SAFETY_AUDIT.md
+?? patches/
+?? scripts/G05b_apply_safety_patches.sh
+$ finish completed
+
+===== SUMMARY =====
+failed_commands=0  completed
+# masked_from_raw_sha256=a32caae7b9a9381789f7494800605afd784d1bd346ce8cc5ade999fb0c29f139

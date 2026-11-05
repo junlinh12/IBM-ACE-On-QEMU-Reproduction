@@ -1,0 +1,151 @@
+# G04 Rust Toolchain | run=G04_20261102T023215Z_DtsO6K | input_sha256=48e3362b5575ea72013f7a88d8fe6e5c48fb8e8590ee1d5f3b66cdb17d81c8ea
+# previous gate: G03 PASS (see logs/review/G03_review.md)
+$ section '1. Verify the downloaded files and all sealed evidence'
+
+===== 1. Verify the downloaded files and all sealed evidence =====
+$ cd ~/download
+$ sha256sum G04_rust_toolchain.sh G04_rust_toolchain.md
+48e3362b5575ea72013f7a88d8fe6e5c48fb8e8590ee1d5f3b66cdb17d81c8ea  G04_rust_toolchain.sh
+21fa441e72b66a4ba79d7d78b093614bf6e8a36b6481d7ed93d168f6d6a101b4  G04_rust_toolchain.md
+$ echo 'fafb35fa2c704138d2c2354eb6b6cdfcc01f5fd3647261d209852ad4aa7b31eb  G03_review.md'
+$ sha256sum -c -
+G03_review.md: OK
+$ cd ~/projects/IBM-ACE-On-QEMU-Reproduction/logs
+$ sha256sum -c ACE-G00-Host-Baseline-20261030T115047Z-a1SbSFY1.raw.log.sha256 G00_20261030T122505Z_7St35c.sha256 G01_20261030T125107Z_P3Dw1C.sha256 G02_20261030T130813Z_vP2nrT.sha256 G03_20261030T132027Z_gN9Ntr.sha256
+ACE-G00-Host-Baseline-20261030T115047Z-a1SbSFY1.raw.log: OK
+G00_20261030T122505Z_7St35c.raw.log: OK
+G00_20261030T122505Z_7St35c.input.sh: OK
+G01_20261030T125107Z_P3Dw1C.raw.log: OK
+G01_20261030T125107Z_P3Dw1C.input.sh: OK
+G02_20261030T130813Z_vP2nrT.raw.log: OK
+G02_20261030T130813Z_vP2nrT.input.sh: OK
+G03_20261030T132027Z_gN9Ntr.raw.log: OK
+G03_20261030T132027Z_gN9Ntr.input.sh: OK
+$ stop_if_failed 'step 1'
+$ section '2. Commit the reviewed G03 work (local only, UTC)'
+
+===== 2. Commit the reviewed G03 work (local only, UTC) =====
+$ cd ~/projects/IBM-ACE-On-QEMU-Reproduction
+$ cp ~/download/G03_review.md logs/review/
+$ git add scripts/G03_apt_packages.sh docs/G03_apt_packages.md
+$ git status --short
+A  docs/G03_apt_packages.md
+A  scripts/G03_apt_packages.sh
+$ git diff --cached --quiet
+$ TZ=UTC0
+$ git commit -m 'G03: install llvm-dev required by the upstream CI'
+[main 5cbf58c] G03: install llvm-dev required by the upstream CI
+ 2 files changed, 279 insertions(+)
+ create mode 100644 docs/G03_apt_packages.md
+ create mode 100644 scripts/G03_apt_packages.sh
+$ git log -1 '--format=%h  %aI  %an <%ae>  %s'
+5cbf58c  2026-11-02T02:32:15+00:00  junlinh12 <238169016+junlinh12@users.noreply.github.com>  G03: install llvm-dev required by the upstream CI
+$ git show --stat --format= HEAD
+ docs/G03_apt_packages.md    | 120 +++++++++++++++++++++++++++++++++
+ scripts/G03_apt_packages.sh | 159 ++++++++++++++++++++++++++++++++++++++++++++
+ 2 files changed, 279 insertions(+)
+$ cp ~/download/G04_rust_toolchain.sh scripts/
+$ cp ~/download/G04_rust_toolchain.md docs/
+$ stop_if_failed 'step 2'
+$ section '3. Record the Rust state before the change'
+
+===== 3. Record the Rust state before the change =====
+$ rustup --version
+rustup 1.29.1 (d95a37b6a 2026-08-13)
+info: This is the version for the rustup toolchain manager, not the rustc compiler.
+info: the currently active `rustc` version is `rustc 1.98.1 (48a229cea 2026-09-01)`
+$ rustup toolchain list
+stable-x86_64-unknown-linux-gnu (active, default)
+nightly-2024-11-27-x86_64-unknown-linux-gnu
+$ rustup default
+stable-x86_64-unknown-linux-gnu (default)
+$ cat ~/projects/IBM-ACE-On-QEMU-Reproduction/upstream/ACE-RISCV/rust-toolchain.toml
+[toolchain]
+channel = "nightly-2026-03-23"
+targets = [ "riscv64gc-unknown-none-elf" ]
+$ section '4. Record which Rust tools the upstream build uses'
+
+===== 4. Record which Rust tools the upstream build uses =====
+$ cd ~/projects/IBM-ACE-On-QEMU-Reproduction/upstream/ACE-RISCV
+$ git ls-files '*rust-toolchain*' '*Cargo.toml' '*.cargo/config*'
+rust-toolchain.toml
+security-monitor/Cargo.toml
+security-monitor/rust-crates/flattened_device_tree/Cargo.toml
+security-monitor/rust-crates/opensbi-sys/Cargo.toml
+security-monitor/rust-crates/pointers_utility/Cargo.toml
+security-monitor/rust-crates/riscv_cove_tap/Cargo.toml
+tools/cove_tap_tool/Cargo.toml
+tools/cove_tap_tool/rust-toolchain.toml
+$ git grep -nE 'cargo|rustup|rustc|rustfmt|clippy|objcopy' -- '*Makefile*' '*.mk'
+security-monitor/Makefile:5:CARGO = cargo
+security-monitor/Makefile:76:clippy:
+security-monitor/Makefile:77:	@$(CARGO) clippy
+tools/cove_tap_tool/Makefile:5:CARGO = cargo
+tools/cove_tap_tool/Makefile:38:clippy:
+tools/cove_tap_tool/Makefile:39:	@$(CARGO) clippy
+verification/Makefile:8:REFINEDRUST_CARGO ?= cargo-refinedrust
+verification/Makefile:9:REFINEDRUST_RUSTC ?= refinedrust-rustc
+verification/Makefile:32:	cd ../security-monitor/rust-crates/pointers_utility; RR_CONFIG=$(MAKEFILE_SOURCE_DIR)/RefinedRust.toml PATH="$(RISCV_GNU_TOOLCHAIN_WORK_DIR)/bin:$(PATH)" ACE_DIR=$(ACE_DIR) CROSS_COMPILE=$(CROSS_COMPILE) PLATFORM_RISCV_XLEN=$(PLATFORM_RISCV_XLEN) PLATFORM_RISCV_ISA=$(PLATFORM_RISCV_ISA) PLATFORM_RISCV_ABI=$(PLATFORM_RISCV_ABI) cargo refinedrust
+$ section '5. Install the pinned nightly (the default is not changed)'
+
+===== 5. Install the pinned nightly (the default is not changed) =====
+$ date -u
+Mon Nov  2 02:32:15 UTC 2026
+$ rustup toolchain install nightly-2026-03-23 --profile default --target riscv64gc-unknown-none-elf --component rustfmt --no-self-update
+info: syncing channel updates for nightly-2026-03-23-x86_64-unknown-linux-gnu
+info: latest update on 2026-03-23 for version 1.96.0-nightly (562dee482 2026-03-21)
+info: downloading 7 components
+
+  nightly-2026-03-23-x86_64-unknown-linux-gnu installed - rustc 1.96.0-nightly (562dee482 2026-03-21)
+
+$ date -u
+Mon Nov  2 02:32:36 UTC 2026
+$ stop_if_failed 'step 5'
+$ section '6. Verify the toolchain inside and outside the upstream tree'
+
+===== 6. Verify the toolchain inside and outside the upstream tree =====
+$ rustup toolchain list
+stable-x86_64-unknown-linux-gnu (default)
+nightly-2024-11-27-x86_64-unknown-linux-gnu
+nightly-2026-03-23-x86_64-unknown-linux-gnu (active)
+$ rustup default
+stable-x86_64-unknown-linux-gnu (default)
+$ cd ~/projects/IBM-ACE-On-QEMU-Reproduction/upstream/ACE-RISCV
+$ rustup show active-toolchain
+nightly-2026-03-23-x86_64-unknown-linux-gnu (overridden by '~/projects/IBM-ACE-On-QEMU-Reproduction/upstream/ACE-RISCV/rust-toolchain.toml')
+$ rustc --version
+rustc 1.96.0-nightly (562dee482 2026-03-21)
+$ cargo --version
+cargo 1.96.0-nightly (e84cb639e 2026-03-21)
+$ rustup target list --installed
+riscv64gc-unknown-none-elf
+x86_64-unknown-linux-gnu
+$ rustup component list --installed
+cargo-x86_64-unknown-linux-gnu
+clippy-x86_64-unknown-linux-gnu
+rust-docs-x86_64-unknown-linux-gnu
+rust-std-riscv64gc-unknown-none-elf
+rust-std-x86_64-unknown-linux-gnu
+rustc-x86_64-unknown-linux-gnu
+rustfmt-x86_64-unknown-linux-gnu
+$ cd ~/projects/IBM-ACE-On-QEMU-Reproduction
+$ rustup show active-toolchain
+stable-x86_64-unknown-linux-gnu (default)
+$ rustc --version
+rustc 1.98.1 (48a229cea 2026-09-01)
+$ section '7. Check the project repository'
+
+===== 7. Check the project repository =====
+$ cd ~/projects/IBM-ACE-On-QEMU-Reproduction
+$ git status --short
+?? docs/G04_rust_toolchain.md
+?? scripts/G04_rust_toolchain.sh
+$ git log '--format=%h  %aI  %s'
+5cbf58c  2026-11-02T02:32:15+00:00  G03: install llvm-dev required by the upstream CI
+3ee5ab0  2026-10-30T13:20:27+00:00  G02: pin IBM ACE-RISCV 1ebdebf and record source provenance
+a30129d  <local time>  G00-G01: host baseline and project skeleton
+$ finish completed
+
+===== SUMMARY =====
+failed_commands=0  completed
+# masked_from_raw_sha256=a199c6decaa122f8d4dddb82f15050ccbbdac69099277299838fae49c254eeb7

@@ -1,0 +1,228 @@
+# G06 Devtools | run=G06_20261102T040430Z_BPbdDC | input_sha256=0fb65977682f3d9b2deafdb2c3b73bf07f1b150f05a5f4c495298718e4bf3321
+# previous gate: G05b PASS (see logs/review/G05b_review.md)
+$ section '1. Verify the downloaded files and all sealed evidence'
+
+===== 1. Verify the downloaded files and all sealed evidence =====
+$ cd ~/download
+$ sha256sum G06_devtools.sh G06_devtools.md
+0fb65977682f3d9b2deafdb2c3b73bf07f1b150f05a5f4c495298718e4bf3321  G06_devtools.sh
+9982b09b5040cddc58d26f08964f3db62d10b3b0909ea900c09065a38b7d7455  G06_devtools.md
+$ sha256sum -c -
+$ echo '71806155032f5c9dc97e6838df1453950cc1c4c9a87c7a80cd0d0357c5ae1c2e  G05b_review.md'
+G05b_review.md: OK
+$ sha256sum -c -
+$ echo '19d484b204f189fb65d985d06369b9439c466ce5c6916d373fd58d58e80d71b0  SOURCE_PROVENANCE.md'
+SOURCE_PROVENANCE.md: OK
+$ sha256sum -c -
+$ echo '5f73a4dc30e4712afc863b78e7bc1d1fc70a71bf441540ae0e585364aefb771d  build_env.sh'
+build_env.sh: OK
+$ sha256sum -c -
+$ echo '3064e443ade7f24b46d5a85179afc94bf8fce1e0046a4581ea9e9549f8ed869b  0002-run-scripts-host-safety.patch'
+0002-run-scripts-host-safety.patch: OK
+$ cd ~/projects/IBM-ACE-On-QEMU-Reproduction/logs
+$ sha256sum -c ACE-G00-Host-Baseline-20261030T115047Z-a1SbSFY1.raw.log.sha256 G00_20261030T122505Z_7St35c.sha256 G01_20261030T125107Z_P3Dw1C.sha256 G02_20261030T130813Z_vP2nrT.sha256 G03_20261030T132027Z_gN9Ntr.sha256 G04_20261102T023215Z_DtsO6K.sha256 G05_20261102T025456Z_lCG0ac.sha256 G05b_20261102T035410Z_z0g7ji.sha256
+ACE-G00-Host-Baseline-20261030T115047Z-a1SbSFY1.raw.log: OK
+G00_20261030T122505Z_7St35c.raw.log: OK
+G00_20261030T122505Z_7St35c.input.sh: OK
+G01_20261030T125107Z_P3Dw1C.raw.log: OK
+G01_20261030T125107Z_P3Dw1C.input.sh: OK
+G02_20261030T130813Z_vP2nrT.raw.log: OK
+G02_20261030T130813Z_vP2nrT.input.sh: OK
+G03_20261030T132027Z_gN9Ntr.raw.log: OK
+G03_20261030T132027Z_gN9Ntr.input.sh: OK
+G04_20261102T023215Z_DtsO6K.raw.log: OK
+G04_20261102T023215Z_DtsO6K.input.sh: OK
+G05_20261102T025456Z_lCG0ac.raw.log: OK
+G05_20261102T025456Z_lCG0ac.input.sh: OK
+G05b_20261102T035410Z_z0g7ji.raw.log: OK
+G05b_20261102T035410Z_z0g7ji.input.sh: OK
+$ stop_if_failed 'step 1'
+$ section '2. Install revision 2 of patch 0002 and confirm both patches are applied'
+
+===== 2. Install revision 2 of patch 0002 and confirm both patches are applied =====
+$ cd ~/projects/IBM-ACE-On-QEMU-Reproduction
+$ cp ~/download/0002-run-scripts-host-safety.patch patches/
+$ cd ~/projects/IBM-ACE-On-QEMU-Reproduction/upstream/ACE-RISCV
+$ git apply --reverse --check ~/projects/IBM-ACE-On-QEMU-Reproduction/patches/0001-build-parallelism.patch
+$ git apply --reverse --check ~/projects/IBM-ACE-On-QEMU-Reproduction/patches/0002-run-scripts-host-safety.patch
+$ stop_if_failed 'step 2'
+$ section '3. Commit the reviewed G05b work (local only, UTC)'
+
+===== 3. Commit the reviewed G05b work (local only, UTC) =====
+$ cd ~/projects/IBM-ACE-On-QEMU-Reproduction
+$ cp ~/download/G05b_review.md logs/review/
+$ cp ~/download/SOURCE_PROVENANCE.md docs/
+$ cp ~/download/build_env.sh scripts/
+$ git add scripts/G05b_apply_safety_patches.sh docs/G05b_apply_safety_patches.md docs/SAFETY_AUDIT.md docs/SOURCE_PROVENANCE.md patches/README.md patches/0001-build-parallelism.patch patches/0002-run-scripts-host-safety.patch scripts/build_env.sh
+$ git status --short
+A  docs/G05b_apply_safety_patches.md
+A  docs/SAFETY_AUDIT.md
+M  docs/SOURCE_PROVENANCE.md
+A  patches/0001-build-parallelism.patch
+A  patches/0002-run-scripts-host-safety.patch
+A  patches/README.md
+A  scripts/G05b_apply_safety_patches.sh
+A  scripts/build_env.sh
+$ git diff --cached --quiet
+$ TZ=UTC0
+$ git commit -m 'G05b: safety patches for build parallelism and run scripts'
+[main 75ed2b3] G05b: safety patches for build parallelism and run scripts
+ 8 files changed, 643 insertions(+), 7 deletions(-)
+ create mode 100644 docs/G05b_apply_safety_patches.md
+ create mode 100644 docs/SAFETY_AUDIT.md
+ create mode 100644 patches/0001-build-parallelism.patch
+ create mode 100644 patches/0002-run-scripts-host-safety.patch
+ create mode 100644 patches/README.md
+ create mode 100644 scripts/G05b_apply_safety_patches.sh
+ create mode 100644 scripts/build_env.sh
+$ git log -1 '--format=%h  %aI  %an <%ae>  %s'
+75ed2b3  2026-11-02T04:04:30+00:00  junlinh12 <238169016+junlinh12@users.noreply.github.com>  G05b: safety patches for build parallelism and run scripts
+$ git show --stat --format= HEAD
+ docs/G05b_apply_safety_patches.md          | 138 +++++++++++++++++++++++
+ docs/SAFETY_AUDIT.md                       | 131 ++++++++++++++++++++++
+ docs/SOURCE_PROVENANCE.md                  |  21 ++--
+ patches/0001-build-parallelism.patch       |  91 +++++++++++++++
+ patches/0002-run-scripts-host-safety.patch |  61 ++++++++++
+ patches/README.md                          |  23 ++++
+ scripts/G05b_apply_safety_patches.sh       | 171 +++++++++++++++++++++++++++++
+ scripts/build_env.sh                       |  14 +++
+ 8 files changed, 643 insertions(+), 7 deletions(-)
+$ cp ~/download/G06_devtools.sh scripts/
+$ cp ~/download/G06_devtools.md docs/
+$ stop_if_failed 'step 3'
+$ section '4. Record the host and source state before the build'
+
+===== 4. Record the host and source state before the build =====
+$ uname -r
+7.0.0-38-generic
+$ free -h
+               total        used        free      shared  buff/cache   available
+Mem:            30Gi        18Gi       1.5Gi       3.3Gi        14Gi        12Gi
+Swap:          8.0Gi       608Ki       8.0Gi
+$ df -h ~/projects/IBM-ACE-On-QEMU-Reproduction
+Filesystem      Size  Used Avail Use% Mounted on
+/dev/nvme0n1p2  915G  391G  478G  45% /
+$ cd ~/projects/IBM-ACE-On-QEMU-Reproduction/upstream/ACE-RISCV
+$ git status --short
+ M confidential-vms/linux_vm/Makefile
+ M hypervisor/Makefile
+ M security-monitor/Makefile
+ M tools/ace_run_hypervisor.sh
+ M tools/common.sh
+$ section '5. Set the build environment'
+
+===== 5. Set the build environment =====
+$ source ~/projects/IBM-ACE-On-QEMU-Reproduction/scripts/build_env.sh
+$$ export ACE_DIR=~/projects/IBM-ACE-On-QEMU-Reproduction/build/ace/
+$$ ACE_DIR=~/projects/IBM-ACE-On-QEMU-Reproduction/build/ace/
+$$ export QEMU_SOURCE_DIR=~/projects/IBM-ACE-On-QEMU-Reproduction/build/qemu-source/
+$$ QEMU_SOURCE_DIR=~/projects/IBM-ACE-On-QEMU-Reproduction/build/qemu-source/
+$$ export BR2_DL_DIR=~/projects/IBM-ACE-On-QEMU-Reproduction/build/dl
+$$ BR2_DL_DIR=~/projects/IBM-ACE-On-QEMU-Reproduction/build/dl
+$$ export CARGO_HOME=~/projects/IBM-ACE-On-QEMU-Reproduction/build/cargo-home
+$$ CARGO_HOME=~/projects/IBM-ACE-On-QEMU-Reproduction/build/cargo-home
+$$ export BR2_JLEVEL=2
+$$ BR2_JLEVEL=2
+$$ export OMP_NUM_THREADS=2
+$$ OMP_NUM_THREADS=2
+$$ export CARGO_BUILD_JOBS=2
+$$ CARGO_BUILD_JOBS=2
+$ env
+$ sort
+$ grep -E '^(ACE_DIR|QEMU_SOURCE_DIR|BR2_DL_DIR|CARGO_HOME|BR2_JLEVEL|OMP_NUM_THREADS|CARGO_BUILD_JOBS)='
+ACE_DIR=~/projects/IBM-ACE-On-QEMU-Reproduction/build/ace/
+BR2_DL_DIR=~/projects/IBM-ACE-On-QEMU-Reproduction/build/dl
+BR2_JLEVEL=2
+CARGO_BUILD_JOBS=2
+CARGO_HOME=~/projects/IBM-ACE-On-QEMU-Reproduction/build/cargo-home
+OMP_NUM_THREADS=2
+QEMU_SOURCE_DIR=~/projects/IBM-ACE-On-QEMU-Reproduction/build/qemu-source/
+$ mkdir -p ~/projects/IBM-ACE-On-QEMU-Reproduction/build/ace/ ~/projects/IBM-ACE-On-QEMU-Reproduction/build/qemu-source/ ~/projects/IBM-ACE-On-QEMU-Reproduction/build/dl ~/projects/IBM-ACE-On-QEMU-Reproduction/build/cargo-home ~/projects/IBM-ACE-On-QEMU-Reproduction/build/downloads
+$ stop_if_failed 'step 5'
+$ section '6. Download the toolchain tarball and record its SHA-256'
+
+===== 6. Download the toolchain tarball and record its SHA-256 =====
+$ cd ~/projects/IBM-ACE-On-QEMU-Reproduction/build/downloads
+$ TOOLCHAIN=riscv64-glibc-ubuntu-22.04-gcc-nightly-2023.09.27-nightly.tar.gz
+$ '[' -f riscv64-glibc-ubuntu-22.04-gcc-nightly-2023.09.27-nightly.tar.gz ']'
+$ wget -q -O riscv64-glibc-ubuntu-22.04-gcc-nightly-2023.09.27-nightly.tar.gz.part https://github.com/riscv-collab/riscv-gnu-toolchain/releases/download/2023.09.27/riscv64-glibc-ubuntu-22.04-gcc-nightly-2023.09.27-nightly.tar.gz
+$ mv riscv64-glibc-ubuntu-22.04-gcc-nightly-2023.09.27-nightly.tar.gz.part riscv64-glibc-ubuntu-22.04-gcc-nightly-2023.09.27-nightly.tar.gz
+$ ls -l riscv64-glibc-ubuntu-22.04-gcc-nightly-2023.09.27-nightly.tar.gz
+-rw------- 1 <user> <user> 635643262 Sep 27  2023 riscv64-glibc-ubuntu-22.04-gcc-nightly-2023.09.27-nightly.tar.gz
+$ sha256sum riscv64-glibc-ubuntu-22.04-gcc-nightly-2023.09.27-nightly.tar.gz
+cf55e236f198054355bb9c6fd9ec6e599117a06927ae4e087d12cfbf8ad2e32c  riscv64-glibc-ubuntu-22.04-gcc-nightly-2023.09.27-nightly.tar.gz
+$ stop_if_failed 'step 6'
+$ section '7. Build the toolchain with the upstream Makefile'
+
+===== 7. Build the toolchain with the upstream Makefile =====
+$ cd ~/projects/IBM-ACE-On-QEMU-Reproduction/upstream/ACE-RISCV
+$ date -u
+Mon Nov  2 04:05:14 UTC 2026
+$ make -j2 devtools
+echo ~/projects/IBM-ACE-On-QEMU-Reproduction/build/ace/
+~/projects/IBM-ACE-On-QEMU-Reproduction/build/ace/
+if [ ! -f "~/projects/IBM-ACE-On-QEMU-Reproduction/build/ace//riscv-gnu-toolchain//bin/riscv64-unknown-linux-gnu-gcc" ]; then \
+	rm -rf ~/projects/IBM-ACE-On-QEMU-Reproduction/build/ace//riscv-gnu-toolchain/; \
+	mkdir -p ~/projects/IBM-ACE-On-QEMU-Reproduction/build/ace//riscv-gnu-toolchain/; \
+	wget -q https://github.com/riscv-collab/riscv-gnu-toolchain/releases/download/2023.09.27/riscv64-glibc-ubuntu-22.04-gcc-nightly-2023.09.27-nightly.tar.gz ; \
+	tar -zxf riscv64-glibc-ubuntu-22.04-gcc-nightly-2023.09.27-nightly.tar.gz --directory ~/projects/IBM-ACE-On-QEMU-Reproduction/build/ace//riscv-gnu-toolchain// ; \
+	mv ~/projects/IBM-ACE-On-QEMU-Reproduction/build/ace//riscv-gnu-toolchain//riscv/* ~/projects/IBM-ACE-On-QEMU-Reproduction/build/ace//riscv-gnu-toolchain// ; \
+	rm -f riscv64-glibc-ubuntu-22.04-gcc-nightly-2023.09.27-nightly.tar.gz ; \
+fi
+$ date -u
+Mon Nov  2 04:05:28 UTC 2026
+$ stop_if_failed 'step 7'
+$ section '8. Verify the installed toolchain'
+
+===== 8. Verify the installed toolchain =====
+$ cd ~/projects/IBM-ACE-On-QEMU-Reproduction/build/ace//riscv-gnu-toolchain
+$ ls bin
+$ wc -l
+34
+$ ./bin/riscv64-unknown-linux-gnu-gcc --version
+riscv64-unknown-linux-gnu-gcc () 12.2.0
+Copyright (C) 2022 Free Software Foundation, Inc.
+This is free software; see the source for copying conditions.  There is NO
+warranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+
+$ ./bin/riscv64-unknown-linux-gnu-gcc -dumpversion
+12.2.0
+$ ./bin/riscv64-unknown-linux-gnu-gcc -dumpmachine
+riscv64-unknown-linux-gnu
+$ find . -path '*/usr/include/linux/version.h' -exec grep -H LINUX_VERSION_CODE '{}' +
+./sysroot/usr/include/linux/version.h:#define LINUX_VERSION_CODE 330245
+$ sha256sum bin/riscv64-unknown-linux-gnu-gcc
+e4abbafacd00761506bcb5713e1f3ad94dfe91b3afb09a9bddc0cc428324f1cb  bin/riscv64-unknown-linux-gnu-gcc
+$ sha256sum
+$ tar -xzOf ~/projects/IBM-ACE-On-QEMU-Reproduction/build/downloads/riscv64-glibc-ubuntu-22.04-gcc-nightly-2023.09.27-nightly.tar.gz riscv/bin/riscv64-unknown-linux-gnu-gcc
+e4abbafacd00761506bcb5713e1f3ad94dfe91b3afb09a9bddc0cc428324f1cb  -
+$ du -sh .
+1.5G	.
+$ section '9. Check the upstream tree and the project'
+
+===== 9. Check the upstream tree and the project =====
+$ cd ~/projects/IBM-ACE-On-QEMU-Reproduction/upstream/ACE-RISCV
+$ git status --short
+ M confidential-vms/linux_vm/Makefile
+ M hypervisor/Makefile
+ M security-monitor/Makefile
+ M tools/ace_run_hypervisor.sh
+ M tools/common.sh
+$ ls '*.tar.gz'
+$ echo '(no leftover tarball)'
+(no leftover tarball)
+$ cd ~/projects/IBM-ACE-On-QEMU-Reproduction
+$ git status --short
+?? docs/G06_devtools.md
+?? scripts/G06_devtools.sh
+$ git check-ignore -v build/ace
+.gitignore:3:/build/	build/ace
+$ free -h
+               total        used        free      shared  buff/cache   available
+Mem:            30Gi        18Gi       832Mi       3.2Gi        15Gi        12Gi
+Swap:          8.0Gi       608Ki       8.0Gi
+$ finish completed
+
+===== SUMMARY =====
+failed_commands=0  completed
+# masked_from_raw_sha256=0d6c53d3934b13553f7b333af81c94efca9187c63d40283054c79fc97d9c1ffb

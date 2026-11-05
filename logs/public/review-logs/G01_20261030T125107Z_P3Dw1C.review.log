@@ -1,0 +1,140 @@
+# G01 Project Skeleton | run=G01_20261030T125107Z_P3Dw1C | input_sha256=92c97c3dcca2ad329d2610b41114ee99373450a8d2b8889b4b5948e23b777a5c
+# previous gate: G00 PASS (see logs/review/G00_review.md)
+# log folder migration: renamed 'Project Logs/' to 'logs/'
+$ section '1. Verify the downloaded files and the G00 evidence'
+
+===== 1. Verify the downloaded files and the G00 evidence =====
+$ cd ~/download
+$ sha256sum G01_project_skeleton.sh G01_project_skeleton.md
+92c97c3dcca2ad329d2610b41114ee99373450a8d2b8889b4b5948e23b777a5c  G01_project_skeleton.sh
+753a5f6a1fa1b6a46f62255c4a2321f22c2cc0b466b8849b2df1f483442a7a43  G01_project_skeleton.md
+$ sha256sum -c -
+$ echo 'd88c31af440a9a8d820a46e3df4855c130a004db19602c00e5ec2aeb38e48fb4  G00_host_baseline.sh'
+G00_host_baseline.sh: OK
+$ echo 'c542d734b4eabd0a4f94a8284f7f8522138f32512f0c6668a85f471321f98666  G00_host_baseline.md'
+$ sha256sum -c -
+G00_host_baseline.md: OK
+$ sha256sum -c -
+$ echo '574fa11c5dd1c9d340634ed86aa6ca6d3b72c9d1b5d37476653ce8e7e305577e  G00_review.md'
+G00_review.md: OK
+$ sha256sum -c -
+$ echo '75fa04fadf3bcb70f0575d2c06abb073e3059824346f03599a575a0b5aebde1e  PROJECT_CHARTER.md'
+PROJECT_CHARTER.md: OK
+$ cd ~/projects/IBM-ACE-On-QEMU-Reproduction/logs
+$ sha256sum -c G00_20261030T122505Z_7St35c.sha256
+G00_20261030T122505Z_7St35c.raw.log: OK
+G00_20261030T122505Z_7St35c.input.sh: OK
+$ stop_if_failed 'step 1'
+$ section '2. Create the project layout'
+
+===== 2. Create the project layout =====
+$ cd ~/projects/IBM-ACE-On-QEMU-Reproduction
+$ mkdir -p scripts docs patches upstream build logs/public
+$ touch logs/public/.keep
+$ section '3. Install the charter, scripts, documents, and the G00 review'
+
+===== 3. Install the charter, scripts, documents, and the G00 review =====
+$ cp ~/download/PROJECT_CHARTER.md PROJECT_CHARTER.md
+$ cp ~/download/G00_host_baseline.sh scripts/
+$ cp ~/download/G01_project_skeleton.sh scripts/
+$ cp ~/download/G00_host_baseline.md docs/
+$ cp ~/download/G01_project_skeleton.md docs/
+$ cp ~/download/G00_review.md logs/review/
+$ stop_if_failed 'step 3'
+$ section '4. Write the Git ignore rules'
+
+===== 4. Write the Git ignore rules =====
+$ cat
+$ cat .gitignore
+# IBM upstream sources and build artifacts: never published
+/upstream/
+/build/
+
+# logs: private by default
+/logs/**
+
+# Only material approved in G16 is published
+!/logs/public/
+!/logs/public/**
+
+# Editor and OS files
+*.swp
+*~
+.DS_Store
+$ section '5. Create the local Git repository and identity'
+
+===== 5. Create the local Git repository and identity =====
+$ git init -b main
+Initialized empty Git repository in ~/projects/IBM-ACE-On-QEMU-Reproduction/.git/
+$ GITHUB_USER=junlinh12
+$$ curl -fsS https://api.github.com/users/junlinh12
+$$ python3 -c 'import json, sys; print(json.load(sys.stdin)["id"])'
+$ GITHUB_ID=238169016
+$ stop_if_failed 'step 5'
+$ git config user.name junlinh12
+$ git config user.email 238169016+junlinh12@users.noreply.github.com
+$ git config --local --list
+core.repositoryformatversion=0
+core.filemode=true
+core.bare=false
+core.logallrefupdates=true
+user.name=junlinh12
+user.email=238169016+junlinh12@users.noreply.github.com
+$ section '6. Check what Git would publish'
+
+===== 6. Check what Git would publish =====
+$ git check-ignore -v upstream/ build/ logs/review/G00_review.md logs/G00_20261030T122505Z_7St35c.raw.log
+.gitignore:2:/upstream/	upstream/
+.gitignore:3:/build/	build/
+.gitignore:6:/logs/**	logs/review/G00_review.md
+.gitignore:6:/logs/**	logs/G00_20261030T122505Z_7St35c.raw.log
+$ git add --dry-run --all
+add '.gitignore'
+add 'PROJECT_CHARTER.md'
+add 'docs/G00_host_baseline.md'
+add 'docs/G01_project_skeleton.md'
+add 'logs/public/.keep'
+add 'scripts/G00_host_baseline.sh'
+add 'scripts/G01_project_skeleton.sh'
+$ git status --short
+?? .gitignore
+?? PROJECT_CHARTER.md
+?? docs/
+?? logs/
+?? scripts/
+$ section '7. Record the project layout'
+
+===== 7. Record the project layout =====
+$ find . -path ./.git -prune -o -print
+$ sort
+.
+./.gitignore
+./PROJECT_CHARTER.md
+./build
+./docs
+./docs/G00_host_baseline.md
+./docs/G01_project_skeleton.md
+./logs
+./logs/ACE-G00-Host-Baseline-20261030T115047Z-a1SbSFY1.input.sh
+./logs/ACE-G00-Host-Baseline-20261030T115047Z-a1SbSFY1.raw.log
+./logs/ACE-G00-Host-Baseline-20261030T115047Z-a1SbSFY1.raw.log.sha256
+./logs/G00_20261030T122505Z_7St35c.input.sh
+./logs/G00_20261030T122505Z_7St35c.raw.log
+./logs/G00_20261030T122505Z_7St35c.sha256
+./logs/G01_20261030T125107Z_P3Dw1C.input.sh
+./logs/G01_20261030T125107Z_P3Dw1C.raw.log
+./logs/public
+./logs/public/.keep
+./logs/review
+./logs/review/G00_20261030T122505Z_7St35c.review.log
+./logs/review/G00_review.md
+./patches
+./scripts
+./scripts/G00_host_baseline.sh
+./scripts/G01_project_skeleton.sh
+./upstream
+$ finish completed
+
+===== SUMMARY =====
+failed_commands=0  completed
+# masked_from_raw_sha256=f3d39c21dee8b514be14cbe6043d84de044f0e83894b17c94f66cdcfeffd6b2d

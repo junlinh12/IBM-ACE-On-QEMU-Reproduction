@@ -1,0 +1,262 @@
+# G09 Hypervisor | run=G09_20261102T114120Z_PLjTHu | input_sha256=50edd11b5e872409845173351cd3bee5a4f7cf717487f14d2fb05190e7e24851
+# previous gate: G08 PASS (see logs/review/G08_review.md)
+$ section '1. Verify the downloaded files and all sealed evidence'
+
+===== 1. Verify the downloaded files and all sealed evidence =====
+$ cd ~/download
+$ sha256sum G09_hypervisor.sh G09_hypervisor.md
+50edd11b5e872409845173351cd3bee5a4f7cf717487f14d2fb05190e7e24851  G09_hypervisor.sh
+c47d9a92ac21862e0b6759e7394e06be5f7b88326f2e6da053876386e1dd45a3  G09_hypervisor.md
+$ sha256sum -c -
+$ echo '031f6025b0755cf1705af33934f5fe1bf886c51808d8545aef82191a2aed4a4d  G08_review.md'
+G08_review.md: OK
+$ cd ~/projects/IBM-ACE-On-QEMU-Reproduction/logs
+$ sha256sum -c ACE-G00-Host-Baseline-20261030T115047Z-a1SbSFY1.raw.log.sha256 G00_20261030T122505Z_7St35c.sha256 G01_20261030T125107Z_P3Dw1C.sha256 G02_20261030T130813Z_vP2nrT.sha256 G03_20261030T132027Z_gN9Ntr.sha256 G04_20261102T023215Z_DtsO6K.sha256 G05_20261102T025456Z_lCG0ac.sha256 G05b_20261102T035410Z_z0g7ji.sha256 G06_20261102T040430Z_BPbdDC.sha256 G07_20261102T041114Z_vzwQUZ.sha256 G07_20261102T084900Z_ZTrxqN.sha256 G08_20261102T091256Z_nnjq89.sha256 G08_20261102T112611Z_dl5kmx.sha256 G08_20261102T112702Z_6hnn8n.sha256
+ACE-G00-Host-Baseline-20261030T115047Z-a1SbSFY1.raw.log: OK
+G00_20261030T122505Z_7St35c.raw.log: OK
+G00_20261030T122505Z_7St35c.input.sh: OK
+G01_20261030T125107Z_P3Dw1C.raw.log: OK
+G01_20261030T125107Z_P3Dw1C.input.sh: OK
+G02_20261030T130813Z_vP2nrT.raw.log: OK
+G02_20261030T130813Z_vP2nrT.input.sh: OK
+G03_20261030T132027Z_gN9Ntr.raw.log: OK
+G03_20261030T132027Z_gN9Ntr.input.sh: OK
+G04_20261102T023215Z_DtsO6K.raw.log: OK
+G04_20261102T023215Z_DtsO6K.input.sh: OK
+G05_20261102T025456Z_lCG0ac.raw.log: OK
+G05_20261102T025456Z_lCG0ac.input.sh: OK
+G05b_20261102T035410Z_z0g7ji.raw.log: OK
+G05b_20261102T035410Z_z0g7ji.input.sh: OK
+G06_20261102T040430Z_BPbdDC.raw.log: OK
+G06_20261102T040430Z_BPbdDC.input.sh: OK
+G07_20261102T041114Z_vzwQUZ.raw.log: OK
+G07_20261102T041114Z_vzwQUZ.input.sh: OK
+G07_20261102T084900Z_ZTrxqN.raw.log: OK
+G07_20261102T084900Z_ZTrxqN.input.sh: OK
+G08_20261102T091256Z_nnjq89.raw.log: OK
+G08_20261102T091256Z_nnjq89.input.sh: OK
+G08_20261102T112611Z_dl5kmx.raw.log: OK
+G08_20261102T112611Z_dl5kmx.input.sh: OK
+G08_20261102T112702Z_6hnn8n.raw.log: OK
+G08_20261102T112702Z_6hnn8n.input.sh: OK
+$ stop_if_failed 'step 1'
+$ section '2. Commit the reviewed G08 work (local only, UTC)'
+
+===== 2. Commit the reviewed G08 work (local only, UTC) =====
+$ cd ~/projects/IBM-ACE-On-QEMU-Reproduction
+$ cp ~/download/G08_review.md logs/review/
+$ git add scripts/G08_emulator.sh docs/G08_emulator.md
+$ git status --short
+A  docs/G08_emulator.md
+A  scripts/G08_emulator.sh
+$ git diff --cached --quiet
+$ TZ=UTC0
+$ git commit -m 'G08: QEMU 8.2.1 for the emulated platform (make emulator)'
+[main f949474] G08: QEMU 8.2.1 for the emulated platform (make emulator)
+ 2 files changed, 317 insertions(+)
+ create mode 100644 docs/G08_emulator.md
+ create mode 100644 scripts/G08_emulator.sh
+$ git log -1 '--format=%h  %aI  %an <%ae>  %s'
+f949474  2026-11-02T11:41:20+00:00  junlinh12 <238169016+junlinh12@users.noreply.github.com>  G08: QEMU 8.2.1 for the emulated platform (make emulator)
+$ git show --stat --format= HEAD
+ docs/G08_emulator.md    | 141 ++++++++++++++++++++++++++++++++++++++
+ scripts/G08_emulator.sh | 176 ++++++++++++++++++++++++++++++++++++++++++++++++
+ 2 files changed, 317 insertions(+)
+$ cp ~/download/G09_hypervisor.sh scripts/
+$ cp ~/download/G09_hypervisor.md docs/
+$ stop_if_failed 'step 2'
+$ section '3. Record the host and source state, and check memory and disk'
+
+===== 3. Record the host and source state, and check memory and disk =====
+$ uname -r
+7.0.0-38-generic
+$ free -h
+               total        used        free      shared  buff/cache   available
+Mem:            30Gi        23Gi       999Mi       3.8Gi        10Gi       7.4Gi
+Swap:          8.0Gi       656Mi       7.4Gi
+$ df -h ~/projects/IBM-ACE-On-QEMU-Reproduction
+Filesystem      Size  Used Avail Use% Mounted on
+/dev/nvme0n1p2  915G  396G  473G  46% /
+$ cd ~/projects/IBM-ACE-On-QEMU-Reproduction/upstream/ACE-RISCV
+$ git status --short
+ M confidential-vms/linux_vm/Makefile
+ M hypervisor/Makefile
+ M security-monitor/Makefile
+ M tools/ace_run_hypervisor.sh
+ M tools/common.sh
+$$ awk '/^MemAvailable:/ {print $2}' /proc/meminfo
+$ test 7690496 -ge 4194304
+$$ df -BG --output=avail ~/projects/IBM-ACE-On-QEMU-Reproduction
+$$ tail -n 1
+$$ tr -dc 0-9
+$ test 473 -ge 30
+$ stop_if_failed 'step 3'
+$ section '4. Set the build environment'
+
+===== 4. Set the build environment =====
+$ source ~/projects/IBM-ACE-On-QEMU-Reproduction/scripts/build_env.sh
+$$ export ACE_DIR=~/projects/IBM-ACE-On-QEMU-Reproduction/build/ace/
+$$ ACE_DIR=~/projects/IBM-ACE-On-QEMU-Reproduction/build/ace/
+$$ export QEMU_SOURCE_DIR=~/projects/IBM-ACE-On-QEMU-Reproduction/build/qemu-source/
+$$ QEMU_SOURCE_DIR=~/projects/IBM-ACE-On-QEMU-Reproduction/build/qemu-source/
+$$ export BR2_DL_DIR=~/projects/IBM-ACE-On-QEMU-Reproduction/build/dl
+$$ BR2_DL_DIR=~/projects/IBM-ACE-On-QEMU-Reproduction/build/dl
+$$ export CARGO_HOME=~/projects/IBM-ACE-On-QEMU-Reproduction/build/cargo-home
+$$ CARGO_HOME=~/projects/IBM-ACE-On-QEMU-Reproduction/build/cargo-home
+$$ export BR2_JLEVEL=2
+$$ BR2_JLEVEL=2
+$$ export OMP_NUM_THREADS=2
+$$ OMP_NUM_THREADS=2
+$$ export CARGO_BUILD_JOBS=2
+$$ CARGO_BUILD_JOBS=2
+$$ export WGETRC=~/projects/IBM-ACE-On-QEMU-Reproduction/scripts/wgetrc
+$$ WGETRC=~/projects/IBM-ACE-On-QEMU-Reproduction/scripts/wgetrc
+$ env
+$ grep -E '^(ACE_DIR|QEMU_SOURCE_DIR|BR2_DL_DIR|CARGO_HOME|BR2_JLEVEL|OMP_NUM_THREADS|CARGO_BUILD_JOBS|WGETRC)='
+$ sort
+ACE_DIR=~/projects/IBM-ACE-On-QEMU-Reproduction/build/ace/
+BR2_DL_DIR=~/projects/IBM-ACE-On-QEMU-Reproduction/build/dl
+BR2_JLEVEL=2
+CARGO_BUILD_JOBS=2
+CARGO_HOME=~/projects/IBM-ACE-On-QEMU-Reproduction/build/cargo-home
+OMP_NUM_THREADS=2
+QEMU_SOURCE_DIR=~/projects/IBM-ACE-On-QEMU-Reproduction/build/qemu-source/
+WGETRC=~/projects/IBM-ACE-On-QEMU-Reproduction/scripts/wgetrc
+$ stop_if_failed 'step 4'
+$ section '5. Build the hypervisor image with the upstream Makefile'
+
+===== 5. Build the hypervisor image with the upstream Makefile =====
+$ cd ~/projects/IBM-ACE-On-QEMU-Reproduction/upstream/ACE-RISCV
+$ date -u
+Mon Nov  2 11:41:20 UTC 2026
+$ make -j2 hypervisor
+echo ~/projects/IBM-ACE-On-QEMU-Reproduction/build/ace/
+~/projects/IBM-ACE-On-QEMU-Reproduction/build/ace/
+if [ ! -f "~/projects/IBM-ACE-On-QEMU-Reproduction/build/ace//riscv-gnu-toolchain//bin/riscv64-unknown-linux-gnu-gcc" ]; then \
+	rm -rf ~/projects/IBM-ACE-On-QEMU-Reproduction/build/ace//riscv-gnu-toolchain/; \
+	mkdir -p ~/projects/IBM-ACE-On-QEMU-Reproduction/build/ace//riscv-gnu-toolchain/; \
+	wget -q https://github.com/riscv-collab/riscv-gnu-toolchain/releases/download/2023.09.27/riscv64-glibc-ubuntu-22.04-gcc-nightly-2023.09.27-nightly.tar.gz ; \
+	tar -zxf riscv64-glibc-ubuntu-22.04-gcc-nightly-2023.09.27-nightly.tar.gz --directory ~/projects/IBM-ACE-On-QEMU-Reproduction/build/ace//riscv-gnu-toolchain// ; \
+	mv ~/projects/IBM-ACE-On-QEMU-Reproduction/build/ace//riscv-gnu-toolchain//riscv/* ~/projects/IBM-ACE-On-QEMU-Reproduction/build/ace//riscv-gnu-toolchain// ; \
+	rm -f riscv64-glibc-ubuntu-22.04-gcc-nightly-2023.09.27-nightly.tar.gz ; \
+fi
+PATH="~/projects/IBM-ACE-On-QEMU-Reproduction/build/ace//riscv-gnu-toolchain//bin:~/projects/IBM-ACE-On-QEMU-Reproduction/build/ace//riscv-gnu-toolchain//bin:~/bin:~/.cargo/bin:~/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin:/snap/bin" ACE_DIR=~/projects/IBM-ACE-On-QEMU-Reproduction/build/ace/ make -C hypervisor
+make[1]: Entering directory '~/projects/IBM-ACE-On-QEMU-Reproduction/upstream/ACE-RISCV/hypervisor'
+if [ ! -f "~/projects/IBM-ACE-On-QEMU-Reproduction/build/ace//hypervisor//buildroot/images/rootfs.ext2" ]; then \
+	echo "Building the hypervisor with buildroot"; \
+	rm -rf ~/projects/IBM-ACE-On-QEMU-Reproduction/build/ace//hypervisor//buildroot; \
+	mkdir -p ~/projects/IBM-ACE-On-QEMU-Reproduction/build/ace//hypervisor//buildroot; \
+	mkdir -p ~/projects/IBM-ACE-On-QEMU-Reproduction/build/ace//hypervisor//overlay/root; \
+	mkdir -p ~/projects/IBM-ACE-On-QEMU-Reproduction/build/ace//hypervisor//overlay; \
+	cp ~/projects/IBM-ACE-On-QEMU-Reproduction/upstream/ACE-RISCV/hypervisor//configurations/qemu_riscv64_virt_defconfig ~/projects/IBM-ACE-On-QEMU-Reproduction/build/ace//hypervisor//buildroot/.config; \
+	echo ~/projects/IBM-ACE-On-QEMU-Reproduction/build/ace//hypervisor//buildroot/.config; \
+	sed "s@^BR2_ROOTFS_OVERLAY=.*@BR2_ROOTFS_OVERLAY=\"~/projects/IBM-ACE-On-QEMU-Reproduction/build/ace//hypervisor//overlay\"@g" -i ~/projects/IBM-ACE-On-QEMU-Reproduction/build/ace//hypervisor//buildroot/.config; \
+	sed "s@^BR2_TARGET_ROOTFS_EXT2_SIZE=.*@BR2_TARGET_ROOTFS_EXT2_SIZE=\""512M"\"@g" -i ~/projects/IBM-ACE-On-QEMU-Reproduction/build/ace//hypervisor//buildroot/.config; \
+	sed "s@^BR2_LINUX_KERNEL_CUSTOM_CONFIG_FILE=.*@BR2_LINUX_KERNEL_CUSTOM_CONFIG_FILE=\"~/projects/IBM-ACE-On-QEMU-Reproduction/upstream/ACE-RISCV/hypervisor//configurations/linux64-defconfig\"@g" -i ~/projects/IBM-ACE-On-QEMU-Reproduction/build/ace//hypervisor//buildroot/.config; \
+	sed "s@^BR2_GLOBAL_PATCH_DIR=.*@BR2_GLOBAL_PATCH_DIR=\"~/projects/IBM-ACE-On-QEMU-Reproduction/upstream/ACE-RISCV/hypervisor//patches\"@g" -i ~/projects/IBM-ACE-On-QEMU-Reproduction/build/ace//hypervisor//buildroot/.config; \
+	if [ ! -f "~/projects/IBM-ACE-On-QEMU-Reproduction/upstream/ACE-RISCV/hypervisor//buildroot/Makefile" ]; then \
+		echo "Buildroot repository not initialized. Did you forget to run: git submodule update --init --recursive?" ;\
+		exit 1 ;\
+	fi ;\
+	make -s -C ~/projects/IBM-ACE-On-QEMU-Reproduction/upstream/ACE-RISCV/hypervisor//buildroot RISCV=~/projects/IBM-ACE-On-QEMU-Reproduction/build/ace//riscv-gnu-toolchain/ PATH=~/projects/IBM-ACE-On-QEMU-Reproduction/build/ace//riscv-gnu-toolchain//bin:~/projects/IBM-ACE-On-QEMU-Reproduction/build/ace//riscv-gnu-toolchain//bin:~/projects/IBM-ACE-On-QEMU-Reproduction/build/ace//riscv-gnu-toolchain//bin:~/bin:~/.cargo/bin:~/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin:/snap/bin O=~/projects/IBM-ACE-On-QEMU-Reproduction/build/ace//hypervisor//buildroot CROSS_COMPILE=riscv64-unknown-linux-gnu- BR2_JLEVEL=2 olddefconfig ;\
+	make -s -C ~/projects/IBM-ACE-On-QEMU-Reproduction/upstream/ACE-RISCV/hypervisor//buildroot RISCV=~/projects/IBM-ACE-On-QEMU-Reproduction/build/ace//riscv-gnu-toolchain/ PATH=~/projects/IBM-ACE-On-QEMU-Reproduction/build/ace//riscv-gnu-toolchain//bin:~/projects/IBM-ACE-On-QEMU-Reproduction/build/ace//riscv-gnu-toolchain//bin:~/projects/IBM-ACE-On-QEMU-Reproduction/build/ace//riscv-gnu-toolchain//bin:~/bin:~/.cargo/bin:~/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin:/snap/bin O=~/projects/IBM-ACE-On-QEMU-Reproduction/build/ace//hypervisor//buildroot BR2_JLEVEL=2 ;\
+fi
+Building the hypervisor with buildroot
+~/projects/IBM-ACE-On-QEMU-Reproduction/build/ace//hypervisor//buildroot/.config
+make[2]: Entering directory '~/projects/IBM-ACE-On-QEMU-Reproduction/upstream/ACE-RISCV/hypervisor/buildroot'
+In file included from ~/projects/IBM-ACE-On-QEMU-Reproduction/build/ace/hypervisor/buildroot/build/buildroot-config/zconf.tab.c:2484:
+./util.c: In function 'file_write_dep':
+./util.c:86:26: warning: '%s' directive writing 10 or more bytes into a region of size between 1 and 4097 [-Wformat-overflow=]
+   86 |         sprintf(buf2, "%s%s", dir, name);
+      |                          ^~
+./util.c:86:9: note: 'sprintf' output 11 or more bytes (assuming 4107) into a destination of size 4097
+   86 |         sprintf(buf2, "%s%s", dir, name);
+      |         ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  GEN     ~/projects/IBM-ACE-On-QEMU-Reproduction/build/ace/hypervisor/buildroot/Makefile
+~/projects/IBM-ACE-On-QEMU-Reproduction/build/ace/hypervisor/buildroot/.config:48:warning: override: BR2_LINUX_KERNEL_VMLINUX changes choice state
+~/projects/IBM-ACE-On-QEMU-Reproduction/build/ace/hypervisor/buildroot/.config:49:warning: override: BR2_LINUX_KERNEL_BZIMAGE changes choice state
+#
+# configuration written to ~/projects/IBM-ACE-On-QEMU-Reproduction/build/ace/hypervisor/buildroot/.config
+#
+make[2]: Leaving directory '~/projects/IBM-ACE-On-QEMU-Reproduction/upstream/ACE-RISCV/hypervisor/buildroot'
+make[2]: Entering directory '~/projects/IBM-ACE-On-QEMU-Reproduction/upstream/ACE-RISCV/hypervisor/buildroot'
+make[4]: warning: -j1 forced in submake: resetting jobserver mode.
+  GEN     ~/projects/IBM-ACE-On-QEMU-Reproduction/build/ace/hypervisor/buildroot/Makefile
+[7m>>> host-pkgconf 1.6.3 Downloading[27m
+[7m>>> host-tar 1.34 Downloading[27m
+[7m>>> host-m4 1.4.19 Downloading[27m
+[7m>>> host-libtool 2.4.6 Downloading[27m
+[7m>>> host-autoconf 2.71 Downloading[27m
+[7m>>> host-automake 1.16.5 Downloading[27m
+[7m>>> host-libzlib 1.3 Downloading[27m
+[7m>>> host-util-linux 2.39.2 Downloading[27m
+[7m>>> host-e2fsprogs 1.47.0 Downloading[27m
+[7m>>> host-attr 2.5.1 Downloading[27m
+[7m>>> host-acl 2.3.1 Downloading[27m
+[7m>>> host-fakeroot 1.32.1 Downloading[27m
+[7m>>> toolchain-external-bootlin 2023.08-1 Downloading[27m
+[7m>>> host-bison 3.8.2 Downloading[27m
+[7m>>> host-ncurses 6.4-20230603 Downloading[27m
+[7m>>> readline 8.2 Downloading[27m
+[7m>>> bash 5.2.15 Downloading[27m
+[7m>>> busybox 1.36.1 Downloading[27m
+[7m>>> dropbear 2022.83 Downloading[27m
+[7m>>> host-gettext-tiny 0.3.2 Downloading[27m
+[7m>>> host-flex 2.6.4 Downloading[27m
+[7m>>> dtc 1.7.0 Downloading[27m
+[7m>>> host-kmod 31 Downloading[27m
+[7m>>> libffi 3.4.4 Downloading[27m
+[7m>>> host-ninja 1.11.1.g95dee.kitware.jobserver-1 Downloading[27m
+[7m>>> host-autoconf-archive 2023.02.20 Downloading[27m
+[7m>>> host-expat 2.5.0 Downloading[27m
+[7m>>> host-python3 3.11.6 Downloading[27m
+[7m>>> host-python-flit-core 3.9.0 Downloading[27m
+[7m>>> host-python-installer 0.7.0 Downloading[27m
+[7m>>> host-python-packaging 23.1 Downloading[27m
+[7m>>> host-python-pyproject-hooks 1.0.0 Downloading[27m
+[7m>>> host-python-pypa-build 1.0.3 Downloading[27m
+[7m>>> host-python-wheel 0.40.0 Downloading[27m
+[7m>>> host-python-setuptools 68.2.2 Downloading[27m
+[7m>>> host-meson 1.1.1 Downloading[27m
+[7m>>> host-pcre2 10.42 Downloading[27m
+[7m>>> host-libglib2 2.76.1 Downloading[27m
+[7m>>> pcre2 10.42 Downloading[27m
+[7m>>> host-patchelf 0.13 Downloading[27m
+[7m>>> pixman 0.42.2 Downloading[27m
+[7m>>> host-python-distlib 0.3.7 Downloading[27m
+[7m>>> slirp 4.7.0 Downloading[27m
+[7m>>> qemu 8.1.1 Downloading[27m
+[7m>>> sshpass 1.10 Downloading[27m
+[7m>>> linux 6.3-rc4 Downloading[27m
+[7m>>> host-skeleton  Extracting[27m
+[7m>>> host-tar 1.34 Extracting[27m
+34786 blocks
+[7m>>> host-skeleton  Patching[27m
+[7m>>> host-tar 1.34 Patching[27m
+[7m>>> host-tar 1.34 Updating config.sub and config.guess[27m
+[7m>>> host-tar 1.34 Patching libtool[27m
+[7m>>> host-skeleton  Configuring[27m
+[7m>>> host-skeleton  Building[27m
+[7m>>> host-skeleton  Installing to host directory[27m
+[7m>>> host-tar 1.34 Configuring[27m
+configure: WARNING: unrecognized options: --enable-shared, --disable-static, --disable-gtk-doc, --disable-gtk-doc-html, --disable-doc, --disable-docs, --disable-documentation, --disable-debug, --with-xmlto, --with-fop
+make[3]: *** [package/pkg-generic.mk:179: ~/projects/IBM-ACE-On-QEMU-Reproduction/build/ace/hypervisor/buildroot/build/linux-6.3-rc4/.stamp_downloaded] Error 1
+make[3]: *** Waiting for unfinished jobs....
+configure: WARNING: libacl development library was not found or not usable.
+configure: WARNING: GNU tar will be built without ACL support.
+config.status: creating po/POTFILES
+config.status: creating po/Makefile
+configure: WARNING: unrecognized options: --enable-shared, --disable-static, --disable-gtk-doc, --disable-gtk-doc-html, --disable-doc, --disable-docs, --disable-documentation, --disable-debug, --with-xmlto, --with-fop
+make[2]: *** [Makefile:82: _all] Error 2
+make[2]: Leaving directory '~/projects/IBM-ACE-On-QEMU-Reproduction/upstream/ACE-RISCV/hypervisor/buildroot'
+make[1]: *** [Makefile:39: buildroot] Error 2
+make[1]: Leaving directory '~/projects/IBM-ACE-On-QEMU-Reproduction/upstream/ACE-RISCV/hypervisor'
+make: *** [Makefile:52: hypervisor] Error 2
+### FAILED: exit=2 line=144
+$ date -u
+Mon Nov  2 11:44:49 UTC 2026
+$ stop_if_failed 'step 5'
+
+===== SUMMARY =====
+failed_commands=1  STOPPED at: step 5
+# masked_from_raw_sha256=4533cc5e073b92ef850be63d0aac92949fb5d8d339463aff16f9b01f4c65c4eb

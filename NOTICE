@@ -1,0 +1,14 @@
+IBM-ACE-On-QEMU-Reproduction
+Copyright 2026 junlinh12
+
+This repository documents a reproduction of IBM Assured Confidential Execution (ACE) for RISC-V.
+It is not affiliated with or endorsed by IBM.
+
+The patches in patches/ modify files of IBM/ACE-RISCV (https://github.com/IBM/ACE-RISCV,
+commit 1ebdebf4cacc04fcb83191053b4e979cbcdcb2d6), Copyright IBM Corporation, licensed under the
+Apache License, Version 2.0. The documents in docs/ and the evidence in logs/public/ quote short
+excerpts and command output of that project for the purpose of documenting the reproduction.
+
+The upstream sources, the Linux kernel, QEMU, OpenSBI, Buildroot, and the other software built
+during the reproduction are not included in this repository; they are obtained from their
+original locations, as recorded in docs/SOURCE_PROVENANCE.md, under their own licenses.
