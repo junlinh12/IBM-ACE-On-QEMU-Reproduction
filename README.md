@@ -1,19 +1,46 @@
-# IBM ACE on QEMU: a Reproduction on Ubuntu 24.04
+# IBM ACE on QEMU: a Functional Reproduction on Ubuntu 24.04
 
-This repository documents an independent reproduction of **IBM Assured Confidential Execution (ACE)** for RISC-V
-([paper: arXiv:2505.12995](https://arxiv.org/abs/2505.12995), [code: IBM/ACE-RISCV](https://github.com/IBM/ACE-RISCV)) on an
-Ubuntu 24.04 host, with the RISC-V platform emulated by QEMU. It contains the scripts that were run, a document for every step, the
-patches that were needed, and sanitized evidence of every run.
+## Reproduced paper
 
-The reproduction builds and boots OpenSBI with the ACE security monitor, a RISC-V Linux hypervisor with KVM, and a confidential VM;
-it shows the local attestation of that VM and the release of a demo secret, and a negative control in which a wrong reference value
-prevents the release.
+The results in this repository are a reproduction of the following paper:
+
+> Wojciech Ozga, Guerney D. H. Hunt, Michael V. Le, Lennard Gäher, Avraham Shinnar, Elaine R. Palmer, Hani Jamjoom, and Silvio Dragone.
+> **"ACE: Confidential Computing for Embedded RISC-V Systems."** arXiv, 2025-05-19.
+> <https://arxiv.org/html/2505.12995v1>
+
+| | |
+|---|---|
+| Paper | "ACE: Confidential Computing for Embedded RISC-V Systems", <https://arxiv.org/html/2505.12995v1> |
+| Implementation reproduced | [IBM/ACE-RISCV](https://github.com/IBM/ACE-RISCV), the implementation that accompanies the paper, at commit `1ebdebf4cacc04fcb83191053b4e979cbcdcb2d6` (2026-10-25) |
+
+In this repository, "the paper" always means the version above. The arXiv entry was later revised under another title; this repository
+does not reproduce that revision.
+
+## What is and is not reproduced
+
+| Content of the paper | In this reproduction |
+|---|---|
+| Design and implementation of ACE (§4, §5): confidential memory statically partitioned and protected by PMP, promotion of a VM to a confidential VM (TVM) in a single step, local attestation with a TVM attestation payload (TAP) and release of its secrets | **reproduced functionally**, with the implementation at the commit above, on QEMU 8.2.1 emulating a RISC-V `virt` machine (see Results) |
+| Evaluation (§6): SiFive P550 board, LEBench, CoreMark, Nginx throughput, boot time, page-token memory overhead | **not reproduced**: the platform is emulated, so its performance is not comparable with hardware |
+| Formal verification of the security monitor with RefinedRust (§5.5) | **not reproduced** (outside the scope of this project) |
+
+Differences observed between the paper and the reproduced implementation: the paper describes SHA-384 for the TVM integrity
+measurements, while the security monitor at the pinned commit reports SHA3-256 (`Reference PCR4=Sha3_256=...`, G14); the paper's
+evaluation ran Linux 6.6.21 on the P550 board, while the pinned commit builds Linux 6.3-rc4 for the emulated platform. The results below
+are therefore results of the pinned implementation, not a reproduction of the paper's measurements.
+
+## About this repository
+
+This repository documents an independent reproduction on an Ubuntu 24.04 host. It contains the scripts that were run, a document for
+every step, the patches that were needed, and sanitized evidence of every run. The reproduction builds and boots OpenSBI with the ACE
+security monitor, a RISC-V Linux hypervisor with KVM, and a confidential VM; it shows the local attestation of that VM and the release
+of a demo secret, and a negative control in which a wrong reference value prevents the release.
 
 This project is not affiliated with or endorsed by IBM.
 
 ## Results
 
-All success criteria were met on the reference host. Upstream: IBM/ACE-RISCV commit `1ebdebf4cacc04fcb83191053b4e979cbcdcb2d6`.
+All success criteria were met on the reference host, with IBM/ACE-RISCV at commit `1ebdebf4cacc04fcb83191053b4e979cbcdcb2d6`.
 
 | ID | Criterion | Result | Where |
 |---|---|---|---|
@@ -26,7 +53,7 @@ All success criteria were met on the reference host. Upstream: IBM/ACE-RISCV com
 | E7 | Secret retrieval | `Secret=0xc0ffeec0ffeec0ffeec0ffee` in the VM, exactly once | G14 |
 | E8 | Regression tests | upstream `ace test`, unchanged: `test_attestation: success`, `test_smp: success` | G15 |
 | -  | Negative control | a TAP with PCR 4 changed in its last hex digit: `Local attestation failed: LocalAttestationFailed`, no secret; the original TAP in the same boot: secret released | G15b |
-| E9 | Publication audit | no personal or host information in the files or the history; dates in UTC; evidence sanitized | G16a, G16b |
+| E9 | Publication audit | no personal or host information in the files or the history; dates in UTC; evidence sanitized | G16a-G16c, G17 |
 
 What this shows is bounded: on an emulated platform, the security monitor compared the confidential VM's measurement with the reference
 value and released the secret if and only if they matched, in the two cases tested. It is not a security evaluation and not a result on
@@ -46,7 +73,8 @@ against the original task.
 | G05, G05b | audit of the upstream build and run scripts for a shared host ([`docs/SAFETY_AUDIT.md`](docs/SAFETY_AUDIT.md)); two patches |
 | G06-G12 | `make devtools`, `tools`, `emulator`, `hypervisor`, `firmware`, `confidential_vms`, and the upstream "rebuild all" |
 | G13-G15b | boot, attestation, upstream regression test, negative control |
-| G16a, G16b | publication audit and preparation ([`docs/PUBLICATION.md`](docs/PUBLICATION.md)) |
+| G16a-G16c | publication audit and preparation ([`docs/PUBLICATION.md`](docs/PUBLICATION.md)) |
+| G17, G18 | push to GitHub and verification; this README's statement of the reproduced paper |
 
 ## Changes made to run upstream on a shared host
 
@@ -96,7 +124,7 @@ uses `sudo` except G03, which installs one apt package.
 | [`logs/public/review-logs/`](logs/public/review-logs/) | the logs of every gate run, masked and sanitized ([`docs/PUBLICATION.md`](docs/PUBLICATION.md)) |
 | [`logs/public/SHA256SUMS`](logs/public/SHA256SUMS) | SHA-256 of every published evidence file |
 | [`logs/public/ORIGINALS.sha256`](logs/public/ORIGINALS.sha256) | SHA-256 of the private review copies they were made from |
-| [`logs/public/COMMIT_MAP.txt`](logs/public/COMMIT_MAP.txt) | the commit hashes cited in the reviews and the published commits they became (G16b) |
+| [`logs/public/COMMIT_MAP.txt`](logs/public/COMMIT_MAP.txt) | the commit hashes cited in the reviews and the published commits they became (G16b, G16c) |
 
 The raw logs, the console logs of the emulated machines, and all build output stay private: they contain the host's paths and names.
 
