@@ -1,19 +1,21 @@
-# reviewed-hash published-hash subject
-a30129d 0b0bcf9 G00-G01: host baseline and project skeleton
-3ee5ab0 313410a G02: pin IBM ACE-RISCV 1ebdebf and record source provenance
-5cbf58c 50061db G03: install llvm-dev required by the upstream CI
-6f2e410 68bd1f9 G04: install Rust nightly-2026-03-23; checkpoint 1
-22bbf68 105f317 G05: audit upstream build and run scripts (read-only)
-75ed2b3 57840a8 G05b: safety patches for build parallelism and run scripts
-1e7d46d f435f6f G06: RISC-V GNU toolchain (make devtools)
-968706f e022608 G07: ACE tools and TAP tool (make tools)
-f949474 6d06ebc G08: QEMU 8.2.1 for the emulated platform (make emulator)
-08fca23 24cfe6a G09: hypervisor image (make hypervisor); checkpoint 2
-5617893 08e16ec G10: OpenSBI with the ACE security monitor (make firmware)
-e1eb63a 096fa30 G11: confidential VM, TAPs, kvmtool (make confidential_vms)
-fd349d8 2f45ea5 G12: integrated rebuild and end-to-end artifact audit
-4faa6fe 3fccab4 G13: boot OpenSBI, the ACE security monitor, and the Linux hypervisor
-03ddfa0 56071b8 G14: confidential VM, local attestation, and the demo secret; checkpoint 3
-829f07a 3de21b0 G15: upstream regression test (ace test), unchanged
-52d2c67 8b70d96 G15b: negative control of the local attestation
-8200344 0652ec4 G16a: publication audit (read-only)
+# reviewed-hash after-G16b published-hash subject
+a30129d 0b0bcf9 0b0bcf9 G00-G01: host baseline and project skeleton
+3ee5ab0 313410a 313410a G02: pin IBM ACE-RISCV 1ebdebf and record source provenance
+5cbf58c 50061db 50061db G03: install llvm-dev required by the upstream CI
+6f2e410 68bd1f9 68bd1f9 G04: install Rust nightly-2026-03-23; checkpoint 1
+22bbf68 105f317 105f317 G05: audit upstream build and run scripts (read-only)
+75ed2b3 57840a8 28b6b01 G05b: safety patches for build parallelism and run scripts
+1e7d46d f435f6f 7ebe234 G06: RISC-V GNU toolchain (make devtools)
+968706f e022608 226beae G07: ACE tools and TAP tool (make tools)
+f949474 6d06ebc ccee6e0 G08: QEMU 8.2.1 for the emulated platform (make emulator)
+08fca23 24cfe6a 8a91c41 G09: hypervisor image (make hypervisor); checkpoint 2
+5617893 08e16ec f5cac5e G10: OpenSBI with the ACE security monitor (make firmware)
+e1eb63a 096fa30 439af5b G11: confidential VM, TAPs, kvmtool (make confidential_vms)
+fd349d8 2f45ea5 46335d9 G12: integrated rebuild and end-to-end artifact audit
+4faa6fe 3fccab4 c7786aa G13: boot OpenSBI, the ACE security monitor, and the Linux hypervisor
+03ddfa0 56071b8 b02575c G14: confidential VM, local attestation, and the demo secret; checkpoint 3
+829f07a 3de21b0 92889ef G15: upstream regression test (ace test), unchanged
+52d2c67 8b70d96 c9b9c10 G15b: negative control of the local attestation
+8200344 0652ec4 2ffb206 G16a: publication audit (read-only)
+- 64e2427 9b288a7 G16b: license, notice, README, and sanitized evidence for publication
+- 35fbd8a 9f70217 G16b: publication preparation (gate script and document)
